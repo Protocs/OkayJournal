@@ -18,65 +18,33 @@
 }
 
 .container {
-  max-width: 960px;
+    max-width: 960px;
 }
 
 .site-header {
-  background-color: rgba(0, 0, 0, .85);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
+    background-color: rgba(0, 0, 0, .85);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
 }
 .site-header a {
-  color: #999;
-  transition: ease-in-out color .15s;
+    color: #999;
+    transition: ease-in-out color .15s;
 }
 .site-header a:hover {
-  color: #fff;
-  text-decoration: none;
-}
-
-
-.product-device {
-  position: absolute;
-  right: 10%;
-  bottom: -30%;
-  width: 300px;
-  height: 540px;
-  background-color: #333;
-  border-radius: 21px;
-  -webkit-transform: rotate(30deg);
-  transform: rotate(30deg);
-}
-
-.product-device::before {
-  position: absolute;
-  top: 10%;
-  right: 10px;
-  bottom: 10%;
-  left: 10px;
-  content: "";
-  background-color: rgba(255, 255, 255, .1);
-  border-radius: 5px;
-}
-
-.product-device-2 {
-  top: -25%;
-  right: auto;
-  bottom: 0;
-  left: 5%;
-  background-color: #e5e5e5;
+    color: #fff;
+    text-decoration: none;
 }
 
 
 .flex-equal > * {
-  -ms-flex: 1;
-  flex: 1;
-}
-@media (min-width: 768px) {
-  .flex-md-equal > * {
     -ms-flex: 1;
     flex: 1;
-  }
+}
+@media (min-width: 768px) {
+    .flex-md-equal > * {
+    -ms-flex: 1;
+    flex: 1;
+    }
 }
 
 .overflow-hidden { overflow: hidden; }
@@ -88,7 +56,7 @@
     <div class="container d-flex flex-column flex-md-row justify-content-between">
         <a class="py-2 d-none d-md-inline-block" href="#">Возможности</a>
         <a class="py-2 d-none d-md-inline-block" href="#">Поддержка</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Авторизоваться</a>
+        <a class="py-2 d-none d-md-inline-block" href="/login">Авторизоваться</a>
     </div>
 </nav>
 
@@ -96,7 +64,8 @@
     <div class="col-md-5 p-lg-5 mx-auto my-5">
         <h1 class="display-4 font-weight-normal">OkayJournal</h1>
         <p class="lead font-weight-normal">Электронный дневник</p>
-        <a class="btn btn-outline-secondary" href="#">Зарегистрироваться</a>
+        <a class="btn btn-outline-secondary" href="/register">Попробовать</a>
+        <p>Есть аккаунт? <a href="/login">Войдите</a></p>
     </div>
 </div>
 
@@ -179,14 +148,7 @@
 <footer class="container py-5">
     <div class="row">
         <div class="col-12 col-md">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                 stroke-width="2" class="d-block mb-2" role="img" viewBox="0 0 24 24"
-                 focusable="false"><title>Product</title>
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/>
-            </svg>
-            <small class="d-block mb-3 text-muted">&copy; 2017-2019</small>
+            <small class="d-block mb-3 text-muted">&copy; 2019</small>
         </div>
         <div class="col-6 col-md">
             <h5>Features</h5>
