@@ -1,7 +1,7 @@
 from flask import render_template, request
 
 from .app import app
-from okayjournal.forms import LoginForm, RegisterForm
+from okayjournal.forms import LoginForm, RegisterRequestForm
 
 
 @app.route("/")
@@ -20,7 +20,8 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    form = RegisterForm()
+    form = RegisterRequestForm()
     if form.validate_on_submit():
         return "Регистрация"
-    return render_template("register.html", got=repr(request.form), form=form, title="Регистрация")
+    return render_template("register_request.html", got=repr(request.form), form=form,
+                           title="Запрос на регистрацию")

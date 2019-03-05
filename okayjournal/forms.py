@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-class RegisterForm(FlaskForm):
+class RegisterRequestForm(FlaskForm):
     region = StringField(id="input_region", validators=[DataRequired()])
     city = StringField(id="input_city", validators=[DataRequired()])
     school = StringField(id="input_school", validators=[DataRequired()])
@@ -20,4 +20,4 @@ class RegisterForm(FlaskForm):
     email = StringField(id="input_email", validators=[DataRequired()])
     password_first = PasswordField(id="input_password_first", validators=[DataRequired()])
     password_second = PasswordField(id="input_password_second", validators=[DataRequired()])
-    submit = SubmitField("Зарегистрировать")
+    submit = SubmitField("Отправить")

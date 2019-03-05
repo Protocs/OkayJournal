@@ -56,11 +56,11 @@ border-top-right-radius: 0;
     {{ form.hidden_tag() }}
     <!-- TODO: Лого -->
 
-    <h1 class="h3 mb-3 font-weight-normal">Регистрация школы</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Запрос на регистрацию школы</h1>
 
     <div class="mb-3">
         <label for="input_region">Регион</label>
-        {{ form.region(class_="form-control", placeholder="Регион", autofocus=True) }}
+        {{ form.region(class_="form-control", placeholder="Введите регион", autofocus=True) }}
         {% for error in form.region.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -70,7 +70,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_city">Город</label>
-        {{ form.city(class_="form-control", placeholder="Город") }}
+        {{ form.city(class_="form-control", placeholder="Введите город") }}
         {% for error in form.city.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -80,7 +80,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_school">Школа</label>
-        {{ form.school(class_="form-control", placeholder="Школа") }}
+        {{ form.school(class_="form-control", placeholder="Введите название школы") }}
         {% for error in form.school.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -90,7 +90,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_surname">Фамилия</label>
-        {{ form.surname(class_="form-control", placeholder="Фамилия") }}
+        {{ form.surname(class_="form-control", placeholder="Введите свою фамилию") }}
         {% for error in form.surname.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -100,7 +100,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_name">Имя</label>
-        {{ form.name(class_="form-control", placeholder="Имя") }}
+        {{ form.name(class_="form-control", placeholder="Введите свое имя") }}
         {% for error in form.name.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -110,7 +110,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_patronymic">Отчество</label>
-        {{ form.patronymic(class_="form-control", placeholder="Отчество") }}
+        {{ form.patronymic(class_="form-control", placeholder="Введите свое отчество") }}
         {% for error in form.patronymic.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -120,7 +120,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_email">Электронная почта</label>
-        {{ form.email(class_="form-control", placeholder="Электронная почта") }}
+        {{ form.email(class_="form-control", placeholder="Введите свою электронную почту") }}
         {% for error in form.email.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -130,7 +130,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_password_first">Придумайте пароль</label>
-        {{ form.password_first(class_="form-control", placeholder="Пароль") }}
+        {{ form.password_first(class_="form-control", placeholder="Введите пароль") }}
         {% for error in form.password_first.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}
@@ -140,7 +140,7 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_password_second">Введите пароль ещё раз</label>
-        {{ form.password_second(class_="form-control", placeholder="Пароль ещё раз") }}
+        {{ form.password_second(class_="form-control", placeholder="Введите пароль ещё раз") }}
         {% for error in form.password_second.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}

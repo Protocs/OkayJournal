@@ -57,27 +57,35 @@ body {
     <img src="../static/img/logo.png" alt="logo">
     <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
 
+    <div class="mb-3">
     {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
     {% for error in form.login.errors %}
     <div class="alert alert-danger py-2" role="alert">
         {{ error }}
     </div>
     {% endfor %}
+    </div>
 
+    <div class="mb-3">
     {{ form.password(class_='form-control', placeholder="Пароль") }}
     {% for error in form.password.errors %}
     <div class="alert alert-danger py-2" role="alert">
         {{ error }}
     </div>
     {% endfor %}
+    </div>
 
+    <div class="mb-3">
     <div class="checkbox my-3">
         <label>
             {{ form.remember }} Запомнить меня
         </label>
     </div>
+    </div>
 
+    <div class="mb-3">
     {{ form.submit(class_='btn btn-lg btn-primary btn-block') }}
+    </div>
     <br>{{ got }}
 </form>
 {% endblock %}
