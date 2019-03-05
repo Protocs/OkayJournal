@@ -54,7 +54,7 @@ body {
 {% block body %}
 <form class="form-signin" method="post">
     {{ form.hidden_tag() }}
-    <!-- TODO: Лого -->
+    <img src="../static/img/logo.png" alt="logo">
     <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
 
     {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
