@@ -57,6 +57,9 @@ border-top-right-radius: 0;
     <!-- TODO: Лого -->
 
     <h1 class="h3 mb-3 font-weight-normal">Запрос на регистрацию школы</h1>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
 
     <div class="mb-3">
         <label for="input_region">Регион</label>
