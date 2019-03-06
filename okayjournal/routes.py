@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, make_response, session
+from flask import render_template, request, redirect, make_response
 from werkzeug.security import generate_password_hash
 
 from .app import app
@@ -9,8 +9,10 @@ from .db import Request, db
 @app.route("/")
 @app.route("/index")
 def index():
+    print(request.referrer)
     response = make_response(
-        render_template("index.html", title="OkayJournal"), 200)
+        render_template("index.html", title="OkayJournal",
+                        after_reg=request.referrer == "http://127.0.0.1:8080/register"), 200)
     return response
 
 
