@@ -26,22 +26,20 @@ background-color: rgba(0, 0, 0, .85);
 -webkit-backdrop-filter: saturate(180%) blur(20px);
 backdrop-filter: saturate(180%) blur(20px);
 }
-
 .site-header a {
 color: #999;
 transition: ease-in-out color .15s;
 }
-
 .site-header a:hover {
 color: #fff;
 text-decoration: none;
 }
 
+
 .flex-equal > * {
 -ms-flex: 1;
 flex: 1;
 }
-
 @media (min-width: 768px) {
 .flex-md-equal > * {
 -ms-flex: 1;
@@ -67,7 +65,8 @@ flex: 1;
                 </button>
             </div>
             <div class="modal-body">
-                <p>* Тут будет уведомление об отправленном запросе *</p>
+                <p>Ваш запрос отправлен на обработку. Мы отправим письмо с ответом на Вашу электронную почту.</p>
+                <p>Спасибо, что выбрали OkayJournal!</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -77,13 +76,14 @@ flex: 1;
 </div>
 
 <script>
-    $(document).ready(function() {
-        $("#after_reg_notification").modal('show');
+    $(document).ready(function () {
+        if ([1, 2].indexOf(performance.navigation.type) === -1) {
+            $("#after_reg_notification").modal('show');
+        }
     });
-
 </script>
 
-{% endif %} <!-- if after_reg -->
+{% endif %}
 
 
 <nav class="site-header sticky-top py-1">
