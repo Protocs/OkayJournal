@@ -6,9 +6,11 @@
 body {
 display: flex;
 position: absolute;
+/*
 top: 80%;
 left: 50%;
 transform: translate(-50%, -50%);
+*/
 width: 100%;
 align-items: center;
 }
@@ -29,24 +31,23 @@ font-size: 16px;
 color: black;
 }
 
-.form-register #input_login {
-margin-bottom: -1px;
-border-bottom-right-radius: 0;
-border-bottom-left-radius: 0;
-}
-
-.form-register #input_password {
-border-top-left-radius: 0;
-border-top-right-radius: 0;
-}
-
 .form-register .form-control:focus {
 z-index: 2;
 }
 
-.alert {
+/* Без скругления углов сверху */
+.no-corner-rounding-up {
 border-top-left-radius: 0;
 border-top-right-radius: 0;
+}
+
+.no-corner-rounding-bottom {
+border-bottom-left-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+.no-corner-rounding {
+border-radius: 0;
 }
 
 {% endblock %}
@@ -58,64 +59,52 @@ border-top-right-radius: 0;
 
     <h1 class="h3 mb-3 font-weight-normal">Запрос на регистрацию школы</h1>
     {% if error %}
-    <p style="color: red;">{{ error }}</p>
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
     {% endif %}
 
     <div class="mb-3">
-        <label for="input_region">Регион</label>
-        {{ form.region(class_="form-control", placeholder="Введите регион", autofocus=True) }}
-        {% for error in form.region.errors %}
-        <div class="alert alert-danger py-2" role="alert">
-            {{ error }}
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="mb-3">
-        <label for="input_city">Город</label>
-        {{ form.city(class_="form-control", placeholder="Введите город") }}
-        {% for error in form.city.errors %}
-        <div class="alert alert-danger py-2" role="alert">
-            {{ error }}
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="mb-3">
         <label for="input_school">Школа</label>
-        {{ form.school(class_="form-control", placeholder="Введите название школы") }}
+        {{ form.region(class_="form-control no-corner-rounding-bottom", placeholder="Регион/Область",
+                       style="margin-bottom: -1px", autofocus=True) }}
+        {% for error in form.region.errors %}
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {{ form.city(class_="form-control no-corner-rounding", style="margin-bottom: -1px", placeholder="Город") }}
+        {% for error in form.city.errors %}
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {{ form.school(class_="form-control no-corner-rounding-up", placeholder="Школа") }}
         {% for error in form.school.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
     </div>
 
     <div class="mb-3">
-        <label for="input_surname">Фамилия</label>
-        {{ form.surname(class_="form-control", placeholder="Введите свою фамилию") }}
+        <label for="input_surname">ФИО</label>
+        {{ form.surname(class_="form-control no-corner-rounding-bottom", style="margin-bottom: -1px;",
+                        placeholder="Фамилия") }}
         {% for error in form.surname.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
-    </div>
-
-    <div class="mb-3">
-        <label for="input_name">Имя</label>
-        {{ form.name(class_="form-control", placeholder="Введите свое имя") }}
+        {{ form.name(class_="form-control no-corner-rounding", style="margin-bottom: -1px;", placeholder="Имя") }}
         {% for error in form.name.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
-    </div>
-
-    <div class="mb-3">
-        <label for="input_patronymic">Отчество</label>
-        {{ form.patronymic(class_="form-control", placeholder="Введите свое отчество") }}
+        {{ form.patronymic(class_="form-control no-corner-rounding-up", placeholder="Отчество") }}
         {% for error in form.patronymic.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
@@ -123,29 +112,26 @@ border-top-right-radius: 0;
 
     <div class="mb-3">
         <label for="input_email">Электронная почта</label>
-        {{ form.email(class_="form-control", placeholder="Введите свою электронную почту") }}
+        {{ form.email(class_="form-control", placeholder="Электронная почта") }}
         {% for error in form.email.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
     </div>
 
     <div class="mb-3">
-        <label for="input_password_first">Придумайте пароль</label>
-        {{ form.password_first(class_="form-control", placeholder="Введите пароль") }}
+        <label for="input_password_first">Пароль</label>
+        {{ form.password_first(class_="form-control no-corner-rounding-bottom", style="margin-bottom: -1px",
+                               placeholder="Пароль") }}
         {% for error in form.password_first.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}
-    </div>
-
-    <div class="mb-3">
-        <label for="input_password_second">Введите пароль ещё раз</label>
-        {{ form.password_second(class_="form-control", placeholder="Введите пароль ещё раз") }}
+        {{ form.password_second(class_="form-control no-corner-rounding-up", placeholder="Пароль ещё раз") }}
         {% for error in form.password_second.errors %}
-        <div class="alert alert-danger py-2" role="alert">
+        <div class="alert alert-danger py-2 no-corner-rounding-up" role="alert">
             {{ error }}
         </div>
         {% endfor %}

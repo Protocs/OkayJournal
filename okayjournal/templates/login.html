@@ -4,49 +4,49 @@
 
 {% block style %}
 body {
-    display: flex;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    align-items: center;
+display: flex;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 100%;
+align-items: center;
 }
 
 .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+width: 100%;
+max-width: 330px;
+padding: 15px;
+margin: auto;
 }
 
 .form-signin .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-    color: black;
+position: relative;
+box-sizing: border-box;
+height: auto;
+padding: 10px;
+font-size: 16px;
+color: black;
 }
 
 .form-signin #input_login {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+margin-bottom: -1px;
+border-bottom-right-radius: 0;
+border-bottom-left-radius: 0;
 }
 
 .form-signin #input_password {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
 }
 
 .form-signin .form-control:focus {
-    z-index: 2;
+z-index: 2;
 }
 
 .alert {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
 }
 
 {% endblock %}
@@ -54,37 +54,34 @@ body {
 {% block body %}
 <form class="form-signin" method="post">
     {{ form.hidden_tag() }}
-    <img src="../static/img/logo.png" alt="logo">
+    <a href="/"><img class="mb-3" src="../static/img/logo.png" alt="logo"></a>
     <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
 
     <div class="mb-3">
-    {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
-    {% for error in form.login.errors %}
-    <div class="alert alert-danger py-2" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </div>
-
-    <div class="mb-3">
-    {{ form.password(class_='form-control', placeholder="Пароль") }}
-    {% for error in form.password.errors %}
-    <div class="alert alert-danger py-2" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
+        {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
+        {% for error in form.login.errors %}
+        <div class="alert alert-danger py-2" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {{ form.password(class_='form-control', placeholder="Пароль") }}
+        {% for error in form.password.errors %}
+        <div class="alert alert-danger py-2" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
     </div>
 
     <div class="mb-3">
-    <div class="checkbox my-3">
-        <label>
-            {{ form.remember }} Запомнить меня
-        </label>
-    </div>
+        <div class="checkbox my-3">
+            <label>
+                {{ form.remember }} Запомнить меня
+            </label>
+        </div>
     </div>
 
     <div class="mb-3">
-    {{ form.submit(class_='btn btn-lg btn-primary btn-block') }}
+        {{ form.submit(class_='btn btn-lg btn-primary btn-block') }}
     </div>
     <br>{{ got }}
 </form>
