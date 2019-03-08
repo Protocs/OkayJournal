@@ -1,2 +1,34 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
+{% block style %}
+.dropdown-menu {
+transform: translate(-50%, 0);
+}
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+    <img class="mr-5" src="../static/img/logo.png" width="30" height="30" alt="OkayJournal">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Дневник</a>
+            </li>
+        </ul>
+        <span class="navbar-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                User
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="#">Настройки</a>
+                <a class="dropdown-item" href="#">Выйти</a>
+            </div>
+        </span>
+    </div>
+</nav>
+{% endblock %}

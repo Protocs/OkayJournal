@@ -52,4 +52,4 @@ def register():
 @app.route('/journal')
 @app.route('/journal/diary')
 def journal():
-    ...
+    return render_template('journal/diary.html')
