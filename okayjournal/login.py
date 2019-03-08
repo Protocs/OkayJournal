@@ -1,11 +1,14 @@
 from werkzeug.security import check_password_hash
 from flask import session
 
-from okayjournal.db import User
+from okayjournal.db import Student, Parent, SchoolAdmin, Teacher, SystemAdmin
 
 
 def login(username, password):
-    user = User.query.filter_by(login=username).first()
+    for user_class in [Student, Parent, SchoolAdmin, Teacher, SystemAdmin]:
+        user = user_class.query.filter_by(login=username).first()
+        if user:
+            break
     if user is None:
         return False
 
