@@ -57,6 +57,12 @@ border-top-right-radius: 0;
     <a href="/"><img class="mb-3" src="../static/img/logo.png" alt="logo"></a>
     <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
 
+    {% if login_error is defined %}
+    <div class="alert alert-danger py-2 rounded" role="alert">
+        {{ login_error }}
+    </div>
+    {% endif %}
+
     <div class="mb-3">
         {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
         {% for error in form.login.errors %}

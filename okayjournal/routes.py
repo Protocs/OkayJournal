@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm
 from okayjournal.db import Request, db
+from okayjournal.login import login
 
 
 @app.route("/")
@@ -14,10 +15,13 @@ def index():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login_route():
     form = LoginForm()
     if form.validate_on_submit():
-        return "Вошел"
+        login_successful = login(form.login.data, form.password.data)
+        if not login_successful:
+            return render_template('login.html', got=repr(request.form), form=form, title="Авторизация",
+                                   login_error="Неверный логин или пароль")
     return render_template("login.html", got=repr(request.form), form=form, title="Авторизация")
 
 
@@ -41,3 +45,11 @@ def register():
                                title="Запрос на регистрацию", error="Пароли не совпадают")
     return render_template("register_request.html", got=repr(request.form), form=form,
                            title="Запрос на регистрацию")
+
+
+# journal routes
+
+@app.route('/journal')
+@app.route('/journal/diary')
+def journal():
+    ...
