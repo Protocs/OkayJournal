@@ -5,8 +5,6 @@ from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm
 from okayjournal.db import Request, db, SchoolAdmin, School
 from okayjournal.login import login, generate_unique_login
-from okayjournal.db import Request, db
-from okayjournal.login import login
 from okayjournal.utils import logged_in
 
 
