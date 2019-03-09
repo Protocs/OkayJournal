@@ -1,6 +1,30 @@
 {% extends 'journal/base.html' %}
 
 {% block body %}
-    {{ super() }}
+{{ super() }}
+
+<div class="mx-5 mt-3">
+    {% for i in range(2) %}
+    <div class="row justify-content-around flex-nowrap align-items-stretch">
+        {% for j in range(3) %}
+        <div class="d-flex flex-column p-3" style="width: 35%">
+            <h3>Понедельник</h3>
+            <table class="table table-hover table-dark" style="border-radius: 0.35rem">
+                {% for k in range(6) %}
+                <tr>
+                    <td class="{% if k == 0 %} border-top-0 {% endif %} text-muted border-right"
+                        style="border-right-color: #32383e!important;">{{ k + 1 }}</td>
+                    <td class="{% if k == 0 %} border-top-0 {% endif %}"><b>Мотьематика</b></td>
+                    <td class="{% if k == 0 %} border-top-0 {% endif %} align-middle text-left p-0"
+                        style="font-size: 75%; width: 100%"><div class="text-truncate" style="max-height: 24px; max-width: 341px;">{% if j == 1 %}Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endif%}</div></td>
+                    <td class="{% if k == 0 %} border-top-0 {% endif %}" style="font-size: 125%;">5</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock %}
