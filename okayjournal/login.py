@@ -17,8 +17,7 @@ def login(username, password):
         if user:
             if not check_password_hash(user.password_hash, password):
                 return False
-            session['username'] = user.login
-            session['user_id'] = user.id
-            session["user_status"] = user_class.__name__
+            session['user'] = user_to_dict(user)
+            session['role'] = user_class.__name__
             return True
     return False

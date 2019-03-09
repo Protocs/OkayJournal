@@ -27,7 +27,7 @@ def login_route():
             return render_template('login.html', got=repr(request.form), form=form,
                                    title="Авторизация",
                                    login_error="Неверный логин или пароль")
-        if session.get("user_status") == "SystemAdmin":
+        if session['role'] == "SystemAdmin":
             return redirect("/admin")
         return redirect("/journal")
     return render_template("login.html", got=repr(request.form), form=form, title="Авторизация")
@@ -58,16 +58,17 @@ def register():
 
 @app.route("/logout")
 def logout():
-    session.pop("username", 0)
-    session.pop("user_id", 0)
-    session.pop("user_status", 0)
+    del session['user']
+    del session['role']
+
     return redirect("/")
 
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-    if session.get("user_status") != "SystemAdmin":
+    if session.get("role") != "SystemAdmin":
         return redirect("/index")
+
     if request.method == "POST":
         request_id, answer = list(request.form.items())[0]
         register_request = Request.query.filter_by(id=int(request_id)).first()
@@ -100,10 +101,4 @@ def admin():
 @app.route('/journal')
 @app.route('/journal/diary')
 def journal():
-    if session.get("user_id") is None:
-        return redirect("/")
-    user = globals()[session.get("user_status")].query.filter_by(
-        id=int(session.get("user_id"))).first()
-    if user is None:
-        return redirect("/")
-    return render_template('journal/diary.html', user=user, user_status=session.get("user_status"))
+    return render_template('journal/diary.html', session=session)

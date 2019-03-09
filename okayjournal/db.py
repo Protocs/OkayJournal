@@ -93,6 +93,17 @@ class Request(db.Model):
     password_hash = db.Column(db.String(128), unique=True, nullable=False)
 
 
+def user_to_dict(user):
+    """
+    Просто так засунуть обьект из БД в session невозможно.
+    Эта функция конвертирует User в словарь."""
+    # Список колонн модели User
+    columns = [attrname for attrname, val in vars(User).items()
+               if isinstance(val, db.Column)]
+    as_dict = {attrname: getattr(user, attrname) for attrname in columns}
+    return as_dict
+
+
 if not isfile("okayjournal/okayjournal.db"):
     db.create_all()
     # Добавим администратора
