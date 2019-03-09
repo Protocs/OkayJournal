@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block style %}
+
+.body {
+margin-left: 10px;
+margin-top: 10px;
+margin-right: 10px;
+}
+{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+    <img class="mr-5" src="../static/img/logo.png" width="30" height="25" alt="OkayJournal">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <span class="navbar-brand mb-0 h1">Управление системой</span>
+            </li>
+        </ul>
+        <ul class="navbar-nav mr-sm-2">
+            <li class="nav-item active">
+                <a class="nav-link" href="/logout">Выйти</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="body">
+
+    <h2>Запросы на регистрацию школы</h2>
+
+    {% for request in requests %}
+
+    <div class="alert alert-primary">
+        <div class="container">
+            <h2>Запрос №{{ request.id }}</h2>
+            <h3>Школа</h3>
+            <p>Регион - {{ request.region }}, город - {{ request.city }}, школа - {{ request.school
+                }}</p>
+            <h3>Пришло от: </h3>
+            <p>{{ request.surname }} {{ request.name }} {{ request.patronymic }}, электронная почта -
+                {{ request.email }}</p>
+            <form method="post" id="{{ request.id }}">
+                <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="ok">
+                    Принять
+                </button>
+                <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="no">
+                    Отклонить
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

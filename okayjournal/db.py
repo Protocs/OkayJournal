@@ -89,12 +89,14 @@ class Request(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
     surname = db.Column(db.String(30), unique=False, nullable=False)
     patronymic = db.Column(db.String(30), unique=False, nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), unique=True, nullable=False)
 
 
 if not isfile("okayjournal/okayjournal.db"):
     db.create_all()
     # Добавим администратора
+    # noinspection PyArgumentList
     db.session.add(SystemAdmin(name="admin",
                                surname="admin",
                                patronymic="admin",

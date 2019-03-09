@@ -2,13 +2,13 @@
 
 {% block style %}
 .dropdown-menu {
-transform: translate(-50%, 0);
+transform: translate(-5%, 0);
 }
 {% endblock %}
 
 {% block body %}
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-    <img class="mr-5" src="../static/img/logo.png" width="30" height="30" alt="OkayJournal">
+    <img class="mr-5" src="../static/img/logo.png" width="30" height="25" alt="OkayJournal">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -16,19 +16,26 @@ transform: translate(-50%, 0);
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Дневник</a>
+                <a class="nav-link" href="#">Мои сообщения</a>
             </li>
+            {% if user_status == "SchoolAdmin" %}
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Управление школой</a>
+            </li>
+            {% endif %}
         </ul>
         <span class="navbar-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button"
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink"
+               role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                User
+                {{ user.surname }} {{ user.name[0] }}. {{ user.patronymic[0] }}.
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="#">Настройки</a>
-                <a class="dropdown-item" href="#">Выйти</a>
+                <a class="dropdown-item" href="/logout">Выйти</a>
             </div>
         </span>
     </div>
 </nav>
+
 {% endblock %}
