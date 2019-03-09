@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
 from werkzeug.security import generate_password_hash
 
 from okayjournal.app import app
@@ -52,4 +52,4 @@ def register():
 @app.route('/journal')
 @app.route('/journal/diary')
 def journal():
-    return render_template('journal/diary.html')
+    return render_template('journal/diary.html', session=session)
