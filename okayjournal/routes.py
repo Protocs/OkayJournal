@@ -47,6 +47,14 @@ def register():
                            title="Запрос на регистрацию")
 
 
+@app.route('/logout')
+def logout():
+    session.pop('username', 0)
+    session.pop('user_id', 0)
+
+    return redirect('/')
+
+
 # journal routes
 
 @app.route('/journal')
