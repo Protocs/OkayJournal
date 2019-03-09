@@ -4,7 +4,7 @@ from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm
 from okayjournal.db import *
 from okayjournal.login import login, generate_unique_login
-from okayjournal.utils import logged_in
+from okayjournal.utils import logged_in, login_required
 
 
 @app.route("/")
@@ -104,6 +104,7 @@ def admin():
 
 # journal routes
 
+@login_required
 @app.route('/journal')
 @app.route('/journal/diary')
 def journal():
