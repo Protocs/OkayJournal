@@ -1,3 +1,7 @@
+from tkinter import simpledialog, Tk
+
+from werkzeug.security import generate_password_hash
+
 from okayjournal.app import db
 
 
@@ -32,3 +36,14 @@ class Request(db.Model):
 
 
 db.create_all()
+
+# Создание админа при первом запуске
+if User.query.filter_by(login='admin').first() is None:
+    Tk().withdraw()
+    password = simpledialog.askstring("Установить пароль админа",
+                                      "Сервер запускается в первый раз. "
+                                      "Установите пароль учетной записи администратора (admin).",
+                                      show='*')
+    db.session.add(User(name='', surname='', patronymic='', login='admin',
+                        password_hash=generate_password_hash(password), status=''))
+    db.session.commit()
