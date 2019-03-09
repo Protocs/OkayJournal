@@ -5,13 +5,19 @@ from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm
 from okayjournal.db import Request, db, SchoolAdmin, School
 from okayjournal.login import login, generate_unique_login
+from okayjournal.db import Request, db
+from okayjournal.login import login
+from okayjournal.utils import logged_in
 
 
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html", title="OkayJournal",
-                           after_reg=request.referrer == "http://127.0.0.1:8080/register")
+    if logged_in():
+        return redirect('/journal')
+    else:
+        return render_template("index.html", title="OkayJournal",
+                               after_reg=request.referrer == "http://127.0.0.1:8080/register")
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -46,9 +52,9 @@ def register():
                                    password_hash=generate_password_hash(password_first)))
             db.session.commit()
             return redirect("/")
-        return render_template("register_request.html", got=repr(request.form), form=form,
+        return render_template("register_request.html", form=form,
                                title="Запрос на регистрацию", error="Пароли не совпадают")
-    return render_template("register_request.html", got=repr(request.form), form=form,
+    return render_template("register_request.html", form=form,
                            title="Запрос на регистрацию")
 
 
