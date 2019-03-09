@@ -28,11 +28,12 @@ def login_route():
                                    form=form,
                                    title="Авторизация",
                                    login_error="Неверный логин или пароль")
-        if session['role'] == "SystemAdmin":
-            return redirect("/admin")
+
+        # Запоминание пользователя
+        session.permanent = form.remember.data
+
         return redirect("/journal")
-    return render_template("login.html", got=repr(request.form), form=form,
-                           title="Авторизация")
+    return render_template("login.html", form=form, title="Авторизация")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -108,4 +109,6 @@ def admin():
 @app.route('/journal')
 @app.route('/journal/diary')
 def journal():
+    if session['role'] == 'SystemAdmin':
+        return redirect('/admin')
     return render_template('journal/diary.html', session=session)
