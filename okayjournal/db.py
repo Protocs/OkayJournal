@@ -19,19 +19,27 @@ class SystemAdmin(User, db.Model):
 
 
 class Parent(User, db.Model):
-    school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
-    school = db.relationship("School", backref=db.backref("parents"), lazy=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+    school = db.relationship("School", backref=db.backref("parents"),
+                             lazy=True)
 
 
 class Teacher(User, db.Model):
-    school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
-    school = db.relationship("School", backref=db.backref("teachers"), lazy=True)
-    homeroom_grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=True)
-    homeroom_grade = db.relationship("Grade", backref=db.backref("homeroom_teacher"), lazy=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+    school = db.relationship("School", backref=db.backref("teachers"),
+                             lazy=True)
+    homeroom_grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"),
+                                  nullable=True)
+    homeroom_grade = db.relationship("Grade",
+                                     backref=db.backref("homeroom_teacher"),
+                                     lazy=True)
 
 
 class SchoolAdmin(User, db.Model):
-    school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
     school = db.relationship("School", backref=db.backref("admins"), lazy=True)
 
 
@@ -44,10 +52,14 @@ class Grade(db.Model):
 class Student(User, db.Model):
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref=db.backref("students", lazy=True))
-    parent_id = db.Column(db.Integer, db.ForeignKey("parent.id"), nullable=False)
-    parent = db.relationship("Parent", backref=db.backref("children"), lazy=True)
-    school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
-    school = db.relationship("School", backref=db.backref("students"), lazy=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey("parent.id"),
+                          nullable=False)
+    parent = db.relationship("Parent", backref=db.backref("children"),
+                             lazy=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+    school = db.relationship("School", backref=db.backref("students"),
+                             lazy=True)
 
 
 class Subject(db.Model):
@@ -55,7 +67,8 @@ class Subject(db.Model):
     day = db.Column(db.String(15), unique=False, nullable=False)
     subject_number = db.Column(db.Integer, unique=False, nullable=False)
     subject = db.Column(db.String(25), nullable=False, unique=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher.id"), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher.id"),
+                           nullable=False)
     teacher = db.relationship("Teacher", backref="subjects", lazy=True)
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref="subjects", lazy=True)
@@ -68,8 +81,10 @@ class Marks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     mark = db.Column(db.Integer, nullable=False, unique=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"),
+                           nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"),
+                           nullable=False)
     subject = db.relationship("Subject", backref="marks", lazy=True)
     student = db.relationship("Student", backref="marks", lazy=True)
 
