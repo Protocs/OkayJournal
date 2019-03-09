@@ -5,13 +5,17 @@ from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm
 from okayjournal.db import Request, db
 from okayjournal.login import login
+from okayjournal.utils import logged_in
 
 
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html", title="OkayJournal",
-                           after_reg=request.referrer == "http://127.0.0.1:8080/register")
+    if logged_in():
+        return redirect('/journal')
+    else:
+        return render_template("index.html", title="OkayJournal",
+                               after_reg=request.referrer == "http://127.0.0.1:8080/register")
 
 
 @app.route('/login', methods=['GET', 'POST'])
