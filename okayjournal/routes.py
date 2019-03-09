@@ -20,9 +20,11 @@ def login_route():
     if form.validate_on_submit():
         login_successful = login(form.login.data, form.password.data)
         if not login_successful:
-            return render_template('login.html', got=repr(request.form), form=form, title="Авторизация",
+            return render_template('login.html', form=form, title="Авторизация",
                                    login_error="Неверный логин или пароль")
-    return render_template("login.html", got=repr(request.form), form=form, title="Авторизация")
+        else:
+            return redirect('/journal')
+    return render_template("login.html", form=form, title="Авторизация")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -41,9 +43,9 @@ def register():
                                    password_hash=generate_password_hash(password_first)))
             db.session.commit()
             return redirect("/")
-        return render_template("register_request.html", got=repr(request.form), form=form,
+        return render_template("register_request.html", form=form,
                                title="Запрос на регистрацию", error="Пароли не совпадают")
-    return render_template("register_request.html", got=repr(request.form), form=form,
+    return render_template("register_request.html", form=form,
                            title="Запрос на регистрацию")
 
 
