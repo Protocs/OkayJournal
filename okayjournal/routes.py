@@ -134,7 +134,7 @@ def messages():
             sender_role=session["role"],
             recipient_id=int(request.form["user-select"]),
             recipient_role=request.form["role-select"],
-            text="STUB"
+            text=request.form["message"]
         ))
         db.session.commit()
     users = {}
@@ -146,10 +146,20 @@ def messages():
                                    user_class.patronymic):
             users[user_class.__name__].append(user)
     dialogs = {}
-    for message in Message.query.filter_by(sender_id=session["user"]["id"],
-                                           sender_role=session["role"]):
+    messages_from_cur_user = Message.query.filter_by(
+        sender_id=session["user"]["id"],
+        sender_role=session["role"]
+    ).group_by(Message.recipient_id, Message.recipient_role)
+    messages_for_cur_user = Message.query.filter_by(
+        recipient_id=session["user"]["id"],
+        recipient_role=session["role"]
+    ).group_by(Message.sender_id, Message.sender_role)
+    all_messages = messages_for_cur_user.union(messages_from_cur_user)
+    for message in all_messages.order_by(Message.date):
         recipient = find_user_by_role(message.recipient_id,
                                       message.recipient_role)
+        sender = find_user_by_role(message.sender_id,
+                                   message.sender_role)
         if recipient in dialogs:
             continue
         last_message = Message.query.filter_by(sender_id=session["user"]["id"],
@@ -157,11 +167,18 @@ def messages():
                                                recipient_id=recipient.id,
                                                recipient_role=
                                                recipient.__class__.__name__)
-        if len(last_message.all()) == 1:
-            last_message = None
-        else:
-            last_message = last_message.all()[-1]
-        dialogs.update({recipient: last_message})
+        if last_message.all():
+            dialogs.update({recipient: last_message.all()[-1]})
+        if sender not in dialogs and \
+                (sender.id, sender.__class__.__name__) != (
+        session["user"]["id"],
+        session["role"]):
+            last_message = Message.query.filter_by(
+                sender_id=sender.id,
+                sender_role=sender.__class__.__name__,
+                recipient_id=session["user"]["id"],
+                recipient_role=session["role"])
+            dialogs.update({sender: last_message.all()[-1]})
     return render_template("journal/messages.html", session=session,
                            users=users, dialogs=dialogs)
 
@@ -218,7 +235,6 @@ def classes():
 @app.route('/subjects')
 def subjects():
     return render_template('journal/subjects.html', session=session)
-
 
 # @school_admin_only
 # @app.route('/schedules')

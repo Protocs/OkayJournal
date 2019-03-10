@@ -116,6 +116,7 @@ class Message(db.Model):
     recipient_id = db.Column(db.Integer, nullable=False, unique=False)
     text = db.Column(db.Text, unique=False, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    read = db.Column(db.Boolean, nullable=False, default=False)
 
 
 USER_CLASSES = [Student, Parent, SchoolAdmin, Teacher]

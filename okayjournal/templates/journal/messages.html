@@ -41,7 +41,7 @@ text-decoration: none;
                                 <label class="input-group-text"
                                        for="role-select">Роль получателя</label>
                             </div>
-                            <select class="custom-select" id="role-select" name="role-select">
+                            <select class="custom-select" id="role-select" name="role-select" required>
                                 <option value="Teacher" selected>Учитель</option>
                                 <option value="Parent">Родитель</option>
                                 {% if session["role"] != "SchoolAdmin" %}
@@ -56,10 +56,7 @@ text-decoration: none;
                                 <label class="input-group-text"
                                        for="user-select">Получатель</label>
                             </div>
-                            <select class="custom-select" id="user-select" {% if not users["Teacher"] %} disabled {%
-                            endif
-                            %} name="user-select">
-
+                            <select class="custom-select" id="user-select" name="user-select" required>
                             {% for teacher in users["Teacher"] %}
                             <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }} {{
                                 teacher.patronymic
@@ -67,6 +64,13 @@ text-decoration: none;
                             </option>
                             {% endfor %}
                             </select>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Сообщение</span>
+                            </div>
+                            <textarea class="form-control" aria-label="Введите сообщение" name="message" required></textarea>
                         </div>
 
                     </div>
@@ -84,38 +88,25 @@ text-decoration: none;
     <script type="text/javascript">
     $("#role-select").change(function() {
         $("#user-select").empty();
-        $("#user-select").prop("disabled", false);
         if ($("#role-select").val()==="SchoolAdmin") {
             {% for user in users["SchoolAdmin"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
             {% endfor %}
         }
         else if ($("#role-select").val()==="Teacher") {
-            {% if not users["Teacher"] %}
-            $("#user-select").attr("disabled", true);
-            {% else %}
             {% for user in users["Teacher"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
             {% endfor %}
-            {% endif %}
         }
         else if ($("#role-select").val()==="Parent") {
-            {% if not users["Parent"] %}
-            $("#user-select").attr("disabled", true);
-            {% else %}
             {% for user in users["Parent"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
             {% endfor %}
-            {% endif %}
         }
         else if ($("#role-select").val()==="Student") {
-            {% if not users["Student"] %}
-            $("#user-select").prop("disabled", true);
-            {% else %}
             {% for user in users["Student"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
             {% endfor %}
-            {% endif %}
         }
     });
 
@@ -130,243 +121,15 @@ text-decoration: none;
                     <h1 class="text-muted text-center m-0">+</h1>
                 </div>
             </a>
-            <!--<div class="m-3">-->
-            <!--<button type="button" class="btn btn-link" -->
-            <!--Добавить получателя...-->
-            <!--</button>-->
-            <!--</div>-->
+            {% for recipient, last_message in dialogs.items() %}
             <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
+                <h5>{{ recipient.surname }} {{ recipient.name }} {{ recipient.patronymic }}</h5>
+                <small class="text-muted">
+                    {% if (last_message.sender_id, last_message.sender_role) == (session["user"]["id"], session["role"]) %}
+                    Вы: {% endif %}
+                    {{ last_message.text }}</small>
             </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
-            <div class="dialog-btn container py-2 px-3 border-bottom">
-                <h5>Жмышенко В. А.</h5>
-                <small class="text-muted">Вы: атугацаицааицшаи</small>
-            </div>
+            {% endfor %}
         </div>
 
         <div class="d-flex flex-column flex-grow-1 w-100 border" id="dialog">
