@@ -158,27 +158,24 @@ def messages():
     for message in all_messages.order_by(Message.date):
         recipient = find_user_by_role(message.recipient_id,
                                       message.recipient_role)
-        sender = find_user_by_role(message.sender_id,
-                                   message.sender_role)
         if recipient in dialogs:
             continue
-        last_message = Message.query.filter_by(sender_id=session["user"]["id"],
-                                               sender_role=session["role"],
-                                               recipient_id=recipient.id,
-                                               recipient_role=
-                                               recipient.__class__.__name__)
-        if last_message.all():
-            dialogs.update({recipient: last_message.all()[-1]})
-        if sender not in dialogs and \
-                (sender.id, sender.__class__.__name__) != (
-        session["user"]["id"],
-        session["role"]):
-            last_message = Message.query.filter_by(
-                sender_id=sender.id,
-                sender_role=sender.__class__.__name__,
-                recipient_id=session["user"]["id"],
-                recipient_role=session["role"])
-            dialogs.update({sender: last_message.all()[-1]})
+        if (recipient.id, recipient.__class__.__name__) == \
+                (session["user"]["id"], session["role"]):
+            continue
+        for_messages = Message.query.filter_by(
+            sender_id=session["user"]["id"],
+            sender_role=session["role"],
+            recipient_id=recipient.id,
+            recipient_role=recipient.__class__.__name__)
+        from_messages = Message.query.filter_by(
+            sender_id=recipient.id,
+            sender_role=recipient.__class__.__name__,
+            recipient_id=session["user"]["id"],
+            recipient_role=session["role"])
+        last_message = for_messages.union(
+            from_messages).order_by(Message.date).all()
+        dialogs.update({recipient: last_message[-1]})
     return render_template("journal/messages.html", session=session,
                            users=users, dialogs=dialogs)
 
