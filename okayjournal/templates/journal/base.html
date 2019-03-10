@@ -16,9 +16,9 @@ transform: translate(-5%, 0);
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Мои сообщения</a>
+                <a class="nav-link" href="/messages">Мои сообщения</a>
             </li>
-            {% if user_status == "SchoolAdmin" %}
+            {% if session["role"] == "SchoolAdmin" %}
             <li class="nav-item active">
                 <a class="nav-link" href="#">Управление школой</a>
             </li>
@@ -28,7 +28,7 @@ transform: translate(-5%, 0);
             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink"
                role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ session['user'].surname }} {{ session['user'].name[0] }}. {{ session['user'].patronymic[0] }}.
+                {{ session['user']["surname"] }} {{ session['user']["name"][0] }}. {{ session['user']["patronymic"][0] }}.
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="#">Настройки</a>

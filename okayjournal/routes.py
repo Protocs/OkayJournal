@@ -112,3 +112,65 @@ def journal():
     if session['role'] == 'SystemAdmin':
         return redirect('/admin')
     return render_template('journal/diary.html', session=session)
+
+
+@login_required
+@app.route("/messages", methods=["POST", "GET"])
+def messages():
+    if request.method == "POST":
+        db.session.add(Message(
+            sender_id=session["user"]["id"],
+            sender_role=session["role"],
+            recipient_id=int(request.form["user-select"]),
+            recipient_role=request.form["role-select"],
+            text="STUB"
+        ))
+        db.session.commit()
+    users = {}
+    for user_class in USER_CLASSES:
+        users[user_class.__name__] = []
+        query = user_class.query.filter_by(
+            school_id=session["user"]["school_id"])
+        for user in query.order_by(user_class.surname, user_class.name,
+                                   user_class.patronymic):
+            users[user_class.__name__].append(user)
+    dialogs = {}
+    for message in Message.query.filter_by(sender_id=session["user"]["id"],
+                                           sender_role=session["role"]):
+        recipient = find_user_by_role(message.recipient_id,
+                                      message.recipient_role)
+        if recipient in dialogs:
+            continue
+        last_message = Message.query.filter_by(sender_id=session["user"]["id"],
+                                               sender_role=session["role"],
+                                               recipient_id=recipient.id,
+                                               recipient_role=
+                                               recipient.__class__.__name__)
+        if len(last_message.all()) == 1:
+            last_message = None
+        else:
+            last_message = last_message.all()[-1]
+        dialogs.update({recipient: last_message})
+    return render_template("journal/messages.html", session=session,
+                           users=users, dialogs=dialogs)
+
+
+@login_required
+@app.route("/messages/<login>", methods=["GET", "POST"])
+def dialog(login):
+    recipient = find_user_by_login(login)
+    messages_from_sender = Message.query.filter_by(
+        sender_id=session["user"]["id"],
+        sender_role=session["role"],
+        recipient_id=recipient.id,
+        recipient_role=recipient.__class__.__name__
+    )
+    messages_from_recipient = Message.query.filter_by(
+        sender_id=recipient.id,
+        sender_role=recipient.__class__.__name__,
+        recipient_id=session["user"]["id"],
+        recipient_role=session["role"]
+    )
+    all_messages = messages_from_sender.union(messages_from_recipient)
+    print(all_messages.all())
+    return "<p>...</p>"

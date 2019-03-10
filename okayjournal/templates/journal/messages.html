@@ -1,0 +1,141 @@
+{% extends "journal/base.html" %}
+
+{% block style %}
+
+{{ super() }}
+
+.dialog {
+padding-left: 2px;
+padding-top: 1px;
+border: 1px solid gray;
+}
+.dialog:hover {
+background-color: #e9ebef;
+}
+
+{% endblock %}
+
+{% block body %}
+
+{{ super() }}
+
+<div class="m-3">
+    <button type="button" class="btn btn-link" data-toggle="modal"
+            data-target="#addRecipient">Добавить получателя...
+    </button>
+</div>
+
+<div class="modal fade" id="addRecipient" tabindex="-1" role="dialog"
+     aria-labelledby="addRecipientLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRecipientLabel">Добавить
+                    получателя</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" name="addRecipientForm">
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text"
+                               for="role-select">Роль получателя</label>
+                    </div>
+                    <select class="custom-select" id="role-select" name="role-select">
+                        <option value="Teacher" selected>Учитель</option>
+                        <option value="Parent">Родитель</option>
+                        {% if session["role"] != "SchoolAdmin" %}
+                        <option value="SchoolAdmin">Администратор школы</option>
+                        {% endif %}
+                        <option value="Student">Ученик</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text"
+                               for="user-select">Получатель</label>
+                    </div>
+                    <select class="custom-select" id="user-select" {% if not users["Teacher"] %} disabled {% endif %} name="user-select">
+
+                        {% for teacher in users["Teacher"] %}
+                        <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }} {{ teacher.patronymic }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Отменить
+                </button>
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="m-3">
+
+{% for recipient, last_message in dialogs.items() %}
+    <div class="dialog">
+        <div class="media position-relative">
+          <div class="media-body">
+            <h6 class="mt-0">{{ recipient.surname }} {{ recipient.name }} {{ recipient.patronymic }}</h6>
+              {% if last_message %}
+              <p class="text-muted">{{ last_message }}</p>
+              {% else %}
+              <p class="text-muted">Ваш диалог пустой</p>
+              {% endif %}
+              <a href="/messages/{{ recipient.login }}" class="stretched-link">Перейти к диалогу</a>
+          </div>
+        </div>
+    </div>
+{% endfor %}
+
+</div>
+
+<script type="text/javascript">
+    $("#role-select").change(function() {
+        $("#user-select").empty();
+        $("#user-select").prop("disabled", false);
+        if ($("#role-select").val()==="SchoolAdmin") {
+            {% for user in users["SchoolAdmin"] %}
+                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
+            {% endfor %}
+        }
+        else if ($("#role-select").val()==="Teacher") {
+            {% if not users["Teacher"] %}
+            $("#user-select").attr("disabled", true);
+            {% else %}
+            {% for user in users["Teacher"] %}
+                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
+            {% endfor %}
+            {% endif %}
+        }
+        else if ($("#role-select").val()==="Parent") {
+            {% if not users["Parent"] %}
+            $("#user-select").attr("disabled", true);
+            {% else %}
+            {% for user in users["Parent"] %}
+                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
+            {% endfor %}
+            {% endif %}
+        }
+        else if ($("#role-select").val()==="Student") {
+            {% if not users["Student"] %}
+            $("#user-select").prop("disabled", true);
+            {% else %}
+            {% for user in users["Student"] %}
+                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
+            {% endfor %}
+            {% endif %}
+        }
+    });
+</script>
+
+{% endblock %}

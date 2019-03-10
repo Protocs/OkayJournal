@@ -108,15 +108,46 @@ class Request(db.Model):
     password_hash = db.Column(db.String(128), unique=True, nullable=False)
 
 
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, nullable=False, unique=False)
+    sender_role = db.Column(db.String(11), nullable=False, unique=False)
+    recipient_role = db.Column(db.String(11), nullable=False, unique=False)
+    recipient_id = db.Column(db.Integer, nullable=False, unique=False)
+    text = db.Column(db.Text, unique=False, nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+
+
+USER_CLASSES = [Student, Parent, SchoolAdmin, Teacher]
+POSSIBLE_ATTRIBUTES = ["id", "name", "surname", "patronymic",
+                       "password_hash", "login", "email", "school_id",
+                       "homeroom_grade_id", "grade_id", "parent_id"]
+
+
 def user_to_dict(user):
     """
     Просто так засунуть обьект из БД в session невозможно.
     Эта функция конвертирует User в словарь."""
-    # Список колонн модели User
-    columns = [attrname for attrname, val in vars(User).items()
-               if isinstance(val, db.Column)]
-    as_dict = {attrname: getattr(user, attrname) for attrname in columns}
-    return as_dict
+    result = {}
+    for k, v in vars(user).items():
+        if k in POSSIBLE_ATTRIBUTES:
+            result.update({k: v})
+    return result
+
+
+def find_user_by_role(id, role):
+    """Возвращает объект пользователя по его id и role.
+    Если пользователь не найден, вернет None."""
+    return globals()[role].query.filter_by(id=id).first()
+
+
+def find_user_by_login(login):
+    """Возвращает объект пользователя по его логину.
+    Если пользователь не найден, вернет None"""
+    for user_class in USER_CLASSES:
+        user = user_class.query.filter_by(login=login).first()
+        if user:
+            return user
 
 
 if not isfile("okayjournal/okayjournal.db"):
