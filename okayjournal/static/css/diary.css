@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Courgette');
+
+.day {
+    width: 35%;
+}
+
+.day table {
+    border-radius: 0.35rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.4) !important;
+}
+
+.lesson-number {
+    border-right-color: #32383e !important;
+}
+
+.homework {
+    font-size: 75%;
+    width: 100%;
+}
+
+.homework div {
+    max-height: 24px;
+    max-width: 341px;
+}
+
+.mark_ {
+    font-size: 150%;
+    font-family: 'Courgette', cursive;
+}
