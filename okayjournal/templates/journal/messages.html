@@ -12,17 +12,15 @@ nav {
 flex-shrink: 0;
 }
 
+a:hover {
+text-decoration: none;
+}
+
 {% endblock %}
 
 {% block body %}
 <div class="d-flex flex-column" style="height: 100vh;">
     {{ super() }}
-
-    <!--<div class="m-3">-->
-    <!--<button type="button" class="btn btn-link" data-toggle="modal"-->
-    <!--data-target="#addRecipient">Добавить получателя...-->
-    <!--</button>-->
-    <!--</div>-->
 
     <div class="modal fade" id="addRecipient" tabindex="-1" role="dialog"
          aria-labelledby="addRecipientLabel" aria-hidden="true">
@@ -122,13 +120,21 @@ flex-shrink: 0;
     });
 
 
+
     </script>
 
     <div class="d-flex m-3">
         <div class="dialogs-drawer d-flex flex-column border border-right-0">
-            <div class="dialog-btn container py-1 px-3 border-bottom">
-                <h1 class="text-muted text-center m-0">+</h1>
-            </div>
+            <a href="#" data-toggle="modal" data-target="#addRecipient">
+                <div class="dialog-btn container py-1 px-3 border-bottom">
+                    <h1 class="text-muted text-center m-0">+</h1>
+                </div>
+            </a>
+            <!--<div class="m-3">-->
+            <!--<button type="button" class="btn btn-link" -->
+            <!--Добавить получателя...-->
+            <!--</button>-->
+            <!--</div>-->
             <div class="dialog-btn container py-2 px-3 border-bottom">
                 <h5>Жмышенко В. А.</h5>
                 <small class="text-muted">Вы: атугацаицааицшаи</small>
