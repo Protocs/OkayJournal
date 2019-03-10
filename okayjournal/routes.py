@@ -185,3 +185,9 @@ def dialog(login):
     all_messages = messages_from_sender.union(messages_from_recipient)
     print(all_messages.all())
     return "<p>...</p>"
+
+
+@login_required
+@app.route('/school_managing')
+def school_managing():
+    return render_template('journal/school_managing.html', session=session)
