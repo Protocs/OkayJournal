@@ -1,0 +1,21 @@
+{% extends 'journal/base.html' %}
+
+{% block body %}
+{{ super() }}
+
+<div class="row py-3 mx-auto w-75 justify-content-between">
+    {% for i in range(11) %}
+    <div class="card p-3 m-2">
+        <h3 class="card-title">{{ i + 1 }} классы</h3>
+        <div class="card-text">
+            <button type="button" class="btn btn-primary">А</button>
+            <button type="button" class="btn btn-primary">Б</button>
+            <button type="button" class="btn btn-primary">В</button>
+            <button type="button" class="btn btn-primary">Г</button>
+            <button type="button" class="btn btn-light">+</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

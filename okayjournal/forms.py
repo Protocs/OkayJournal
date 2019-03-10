@@ -16,8 +16,20 @@ class RegisterRequestForm(FlaskForm):
     school = StringField(id="input_school", validators=[DataRequired()])
     name = StringField(id="input_name", validators=[DataRequired()])
     surname = StringField(id="input_surname", validators=[DataRequired()])
-    patronymic = StringField(id="input_patronymic", validators=[DataRequired()])
+    patronymic = StringField(id="input_patronymic",
+                             validators=[DataRequired()])
     email = StringField(id="input_email", validators=[DataRequired()])
-    password_first = PasswordField(id="input_password_first", validators=[DataRequired()])
-    password_second = PasswordField(id="input_password_second", validators=[DataRequired()])
+    password_first = PasswordField(id="input_password_first",
+                                   validators=[DataRequired()])
+    password_second = PasswordField(id="input_password_second",
+                                    validators=[DataRequired()])
     submit = SubmitField("Отправить")
+
+
+class SchoolEditForm(FlaskForm):
+    region = StringField("Регион", id="input_region",
+                         validators=[DataRequired()])
+    city = StringField("Город", id="input_city", validators=[DataRequired()])
+    school = StringField("Название школы", id="input_school",
+                         validators=[DataRequired()])
+    submit = SubmitField("Изменить")

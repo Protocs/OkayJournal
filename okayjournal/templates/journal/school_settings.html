@@ -1,0 +1,22 @@
+{% extends 'journal/base.html' %}
+
+{% block body %}
+{{ super() }}
+
+<form class="mx-auto mt-3 w-50">
+    <div class="form-group">
+        {{ form.region.label }}
+        {{ form.region(class_='form-control', placeholder=form.region.label.text) }}
+    </div>
+    <div class="form-group">
+        {{ form.city.label }}
+        {{ form.city(class_='form-control', placeholder=form.city.label.text) }}
+    </div>
+    <div class="form-group">
+        {{ form.school.label }}
+        {{ form.school(class_='form-control', placeholder=form.school.label.text) }}
+    </div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+
+{% endblock %}

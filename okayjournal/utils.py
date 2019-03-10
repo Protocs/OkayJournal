@@ -1,4 +1,4 @@
-from flask import session, redirect
+from flask import session, redirect, make_response
 
 
 def logged_in():
@@ -12,6 +12,16 @@ def login_required(func):
     def decorated(*args, **kwargs):
         if not logged_in():
             return redirect('/login')
+        return func(*args, **kwargs)
+
+    return decorated
+
+
+def school_admin_only(func):
+    @login_required
+    def decorated(*args, **kwargs):
+        if session['role'] != 'SchoolAdmin':
+            return make_response("Вы не являетесь школьным администратором.")
         return func(*args, **kwargs)
 
     return decorated

@@ -3,10 +3,10 @@ from itertools import cycle
 from flask import render_template, request, redirect, session
 
 from okayjournal.app import app
-from okayjournal.forms import LoginForm, RegisterRequestForm
+from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm
 from okayjournal.db import *
 from okayjournal.login import login, generate_unique_login
-from okayjournal.utils import logged_in, login_required
+from okayjournal.utils import logged_in, login_required, school_admin_only
 
 
 @app.route("/")
@@ -187,7 +187,40 @@ def dialog(login):
     return "<p>...</p>"
 
 
-@login_required
+@school_admin_only
 @app.route('/school_managing')
 def school_managing():
     return render_template('journal/school_managing.html', session=session)
+
+
+@school_admin_only
+@app.route('/users')
+def users():
+    return render_template('journal/users.html', session=session)
+
+
+@school_admin_only
+@app.route('/school_settings')
+def school_settings():
+    form = SchoolEditForm()
+    # TODO
+    return render_template('journal/school_settings.html', session=session,
+                           form=form)
+
+
+@school_admin_only
+@app.route('/classes')
+def classes():
+    return render_template('journal/classes.html', session=session)
+
+
+@school_admin_only
+@app.route('/subjects')
+def subjects():
+    return render_template('journal/subjects.html', session=session)
+
+
+# @school_admin_only
+# @app.route('/schedules')
+# def schedules():
+#     return render_template('journal/schedules.html', session=session)
