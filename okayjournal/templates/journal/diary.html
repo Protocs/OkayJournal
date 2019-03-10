@@ -12,7 +12,7 @@
     <div class="row justify-content-around flex-nowrap align-items-stretch">
         {% for j in range(3) %}
         <div class="day d-flex flex-column p-3">
-            <h3>Понедельник</h3>
+            <h3>{{ next(week_days) }}</h3>
             <table class="table table-hover table-dark">
                 {% for k in range(6) %}
                 <tr>

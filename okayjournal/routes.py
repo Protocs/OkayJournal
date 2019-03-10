@@ -1,3 +1,5 @@
+from itertools import cycle
+
 from flask import render_template, request, redirect, session
 
 from okayjournal.app import app
@@ -111,7 +113,16 @@ def admin():
 def journal():
     if session['role'] == 'SystemAdmin':
         return redirect('/admin')
-    return render_template('journal/diary.html', session=session)
+
+    week_days = cycle(['Понедельник',
+                       'Вторник',
+                       'Среда',
+                       'Четверг',
+                       'Пятница',
+                       'Суббота'])
+
+    return render_template('journal/diary.html', session=session,
+                           week_days=week_days, next=next)
 
 
 @login_required
