@@ -24,7 +24,8 @@
 
 .homework div {
     max-height: 24px;
-    max-width: 341px;
+    max-width: 15vw;
+    margin: auto;
 }
 
 .mark_ {
