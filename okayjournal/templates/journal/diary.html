@@ -4,6 +4,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}">
 {% endblock %}
 
+{% block style %}
+tr:first-child * {
+border-top: 0;
+}
+{% endblock %}
+
 {% block body %}
 {{ super() }}
 
@@ -16,10 +22,10 @@
             <table class="table table-hover table-dark">
                 {% for k in range(6) %}
                 <tr>
-                    <td class="lesson-number text-muted border-right align-middle {% if k == 0 %} border-top-0 {% endif %}">{{ k + 1 }}</td>
-                    <td class="align-middle {% if k == 0 %} border-top-0 {% endif %}"><b>Мотьематика</b></td>
-                    <td class="homework align-middle text-left p-0 {% if k == 0 %} border-top-0 {% endif %}"><div class="text-truncate">{% if j == 1 %}Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endif%}</div></td>
-                    <td class="mark_ align-middle pr-3 pl-0 py-0 {% if k == 0 %} border-top-0 {% endif %} "><div class="text-nowrap">5 5</div></td>
+                    <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
+                    <td class="align-middle"><b>Мотьематика</b></td>
+                    <td class="homework align-middle text-left p-0"><div class="text-truncate">{% if j == 1 %}Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endif%}</div></td>
+                    <td class="mark_ align-middle pr-3 pl-0 py-0"><div class="text-nowrap">5 5</div></td>
                 </tr>
                 {% endfor %}
             </table>
