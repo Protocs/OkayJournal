@@ -148,36 +148,53 @@ def messages():
                                    user_class.patronymic):
             users[user_class.__name__].append(user)
     dialogs = {}
+    # Вытащим все сообщения, которые были отправлены текущим пользователем
+    # И сгруппируем их по получателю
     messages_from_cur_user = Message.query.filter_by(
         sender_id=session["user"]["id"],
         sender_role=session["role"]
     ).group_by(Message.recipient_id, Message.recipient_role)
+    # Вытащим все сообщения, которые были отправлены текущему пользователю
+    # И сгруппируем их по отправителю
     messages_for_cur_user = Message.query.filter_by(
         recipient_id=session["user"]["id"],
         recipient_role=session["role"]
     ).group_by(Message.sender_id, Message.sender_role)
+    # Объединим полученные сообщения в один объект BaseQuery
     all_messages = messages_for_cur_user.union(messages_from_cur_user)
+    # Пройдемся по каждому сообщению, чтобы составить список диалогов
     for message in all_messages.order_by(Message.date):
+        # Вытащим получателя и отправителя сообщения
         recipient = find_user_by_role(message.recipient_id,
                                       message.recipient_role)
-        if recipient in dialogs:
+        sender = find_user_by_role(message.sender_id,
+                                   message.sender_role)
+        # Если получатель совпадает с текущим пользователем,
+        # то текущий диалог с отправителем
+        if (recipient.id, recipient.__class__.__name__) \
+                == (session["user"]["id"], session["role"]):
+            partner = sender
+        # Если же нет, то текущий диалог с получателем
+        else:
+            partner = recipient
+        # Если диалог с этим человеком уже есть в словаре, то пойдем дальше
+        if partner in dialogs:
             continue
-        if (recipient.id, recipient.__class__.__name__) == \
-                (session["user"]["id"], session["role"]):
-            continue
-        for_messages = Message.query.filter_by(
+        # Получим сообщения, отправленные собеседнику и собеседником
+        for_partner_messages = Message.query.filter_by(
             sender_id=session["user"]["id"],
             sender_role=session["role"],
-            recipient_id=recipient.id,
-            recipient_role=recipient.__class__.__name__)
-        from_messages = Message.query.filter_by(
-            sender_id=recipient.id,
-            sender_role=recipient.__class__.__name__,
+            recipient_id=partner.id,
+            recipient_role=partner.__class__.__name__)
+        from_partner_messages = Message.query.filter_by(
+            sender_id=partner.id,
+            sender_role=partner.__class__.__name__,
             recipient_id=session["user"]["id"],
             recipient_role=session["role"])
-        last_message = for_messages.union(
-            from_messages).order_by(Message.date).all()
-        dialogs.update({recipient: last_message[-1]})
+        # Вытащим последнее отправленное сообщение
+        last_message = for_partner_messages.union(
+            from_partner_messages).order_by(Message.date).all()
+        dialogs.update({partner: last_message[-1]})
     return render_template("journal/messages.html", session=session,
                            users=users, dialogs=dialogs)
 
