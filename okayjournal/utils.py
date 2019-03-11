@@ -14,6 +14,7 @@ def login_required(func):
             return redirect('/login')
         return func(*args, **kwargs)
 
+    decorated.__name__ = func.__name__
     return decorated
 
 
@@ -24,4 +25,5 @@ def school_admin_only(func):
             return make_response("Вы не являетесь школьным администратором.")
         return func(*args, **kwargs)
 
+    decorated.__name__ = func.__name__
     return decorated

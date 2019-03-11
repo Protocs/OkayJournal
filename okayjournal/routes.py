@@ -109,9 +109,9 @@ def admin():
 
 # journal routes
 
-@login_required
 @app.route('/journal')
 @app.route('/journal/diary')
+@login_required
 def journal():
     if session['role'] == 'SystemAdmin':
         return redirect('/admin')
@@ -127,8 +127,8 @@ def journal():
                            week_days=week_days, next=next)
 
 
-@login_required
 @app.route("/messages", methods=["POST", "GET"])
+@login_required
 def messages():
     if request.method == "POST":
         db.session.add(Message(
@@ -199,8 +199,8 @@ def messages():
                            users=users, dialogs=dialogs)
 
 
-@login_required
 @app.route("/messages/<login>", methods=["GET", "POST"])
+@login_required
 def dialog(login):
     recipient = find_user_by_login(login)
     messages_from_sender = Message.query.filter_by(
@@ -220,20 +220,20 @@ def dialog(login):
     return "<p>...</p>"
 
 
-@school_admin_only
 @app.route('/school_managing')
+@school_admin_only
 def school_managing():
     return render_template('journal/school_managing.html', session=session)
 
 
-@school_admin_only
 @app.route('/users')
+@school_admin_only
 def users():
     return render_template('journal/users.html', session=session)
 
 
-@school_admin_only
 @app.route('/school_settings')
+@school_admin_only
 def school_settings():
     form = SchoolEditForm()
     # TODO
@@ -241,20 +241,20 @@ def school_settings():
                            form=form)
 
 
-@school_admin_only
 @app.route('/classes')
+@school_admin_only
 def classes():
     return render_template('journal/classes.html', session=session)
 
 
-@school_admin_only
 @app.route('/subjects')
+@school_admin_only
 def subjects():
     return render_template('journal/subjects.html', session=session)
 
 
-@login_required
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
     form = ChangePasswordForm()
     if form.validate_on_submit():
