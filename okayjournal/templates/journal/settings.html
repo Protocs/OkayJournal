@@ -1,0 +1,79 @@
+{% extends 'journal/base.html' %}
+
+{% block style %}
+{{ super() }}
+
+#old_password {
+border-bottom-left-radius: 0 !important;
+border-bottom-right-radius: 0 !important;
+}
+
+#new_password_again {
+border-top-left-radius: 0 !important;
+border-top-right-radius: 0 !important;
+}
+
+.form-control {
+position: relative;
+margin-bottom: -1px;
+}
+
+.form-control:focus {
+z-index: 2;
+}
+
+{% endblock %}
+
+{% block body %}
+{{ super() }}
+
+<div class="py-3 w-25 mx-auto">
+    <h3>Сменить пароль</h3>
+
+    {% if password_change_error is defined %}
+    <div class="alert alert-danger">
+        Неверный текущий пароль
+    </div>
+    {% endif %}
+
+    {% if password_change_success is defined %}
+    <div class="alert alert-success">
+        Пароль успешно изменен
+    </div>
+    {% endif %}
+
+    <form method="post">
+        <div class="form-group">
+            {{ form.hidden_tag() }}
+
+            {{ form.old_password(class_='form-control', placeholder=form.old_password.label.text) }}
+
+            {% for error in form.old_password.errors %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endfor %}
+
+            {{ form.new_password(class_='form-control rounded-0', placeholder=form.new_password.label.text) }}
+
+            {% for error in form.new_password.errors %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endfor %}
+
+            {% for error in form.new_password_again.errors %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endfor %}
+
+            {{ form.new_password_again(class_='form-control',
+                                       placeholder=form.new_password_again.label.text) }}
+
+            {{ form.submit(class_='btn btn-primary mt-3') }}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

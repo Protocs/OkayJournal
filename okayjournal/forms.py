@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, EqualTo
 
 
 class LoginForm(FlaskForm):
@@ -33,3 +33,13 @@ class SchoolEditForm(FlaskForm):
     school = StringField("Название школы", id="input_school",
                          validators=[DataRequired()])
     submit = SubmitField("Изменить")
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField("Старый пароль", validators=[DataRequired()])
+    new_password = PasswordField("Новый пароль", validators=[DataRequired()])
+    new_password_again = PasswordField(
+        "Новый пароль (ещё раз)",
+        validators=[DataRequired(),
+                    EqualTo('new_password', "Пароли не совпадают")])
+    submit = SubmitField("Сменить")

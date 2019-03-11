@@ -1,9 +1,11 @@
 from itertools import cycle
 
 from flask import render_template, request, redirect, session
+from werkzeug.security import check_password_hash
 
 from okayjournal.app import app
-from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm
+from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
+    ChangePasswordForm
 from okayjournal.db import *
 from okayjournal.login import login, generate_unique_login
 from okayjournal.utils import logged_in, login_required, school_admin_only
@@ -233,7 +235,24 @@ def classes():
 def subjects():
     return render_template('journal/subjects.html', session=session)
 
-# @school_admin_only
-# @app.route('/schedules')
-# def schedules():
-#     return render_template('journal/schedules.html', session=session)
+
+@login_required
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        old_password_right = check_password_hash(
+            session['user']['password_hash'],
+            form.old_password.data)
+        if not old_password_right:
+            return render_template('journal/settings.html', session=session,
+                                   form=form, password_change_error=True)
+
+        user = find_user_by_role(session['user']['id'], session['role'])
+        user.password_hash = generate_password_hash(form.new_password.data)
+        db.session.commit()
+        session['user']['password_hash'] = user.password_hash
+        return render_template('journal/settings.html', session=session,
+                               form=form, password_change_success=True)
+
+    return render_template('journal/settings.html', session=session, form=form)
