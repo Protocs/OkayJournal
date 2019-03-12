@@ -16,7 +16,11 @@ transform: translate(-5%, 0);
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/messages">Мои сообщения</a>
+                <a class="nav-link" href="/messages">Мои сообщения
+                    {% if unread %}
+                    <span class="badge badge-light">{{ unread }}</span>
+                    {% endif %}
+                </a>
             </li>
             {% if session["role"] == "SchoolAdmin" %}
             <li class="nav-item active">

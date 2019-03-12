@@ -125,7 +125,11 @@ def journal():
                        'Суббота'])
 
     return render_template('journal/diary.html', session=session,
-                           week_days=week_days, next=next)
+                           week_days=week_days, next=next,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]
+                           ))
 
 
 @app.route("/messages", methods=["POST", "GET"])
@@ -201,7 +205,10 @@ def messages():
             if user not in dialogs and not user_equal(user, session):
                 users[user_class.__name__].append(user)
     return render_template("journal/messages.html", session=session,
-                           users=users, dialogs=dialogs)
+                           users=users, dialogs=dialogs,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route("/messages/<login>", methods=["GET", "POST"])
@@ -228,13 +235,19 @@ def dialog(login):
 @app.route('/school_managing')
 @school_admin_only
 def school_managing():
-    return render_template('journal/school_managing.html', session=session)
+    return render_template('journal/school_managing.html', session=session,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route('/users')
 @school_admin_only
 def users():
-    return render_template('journal/users.html', session=session)
+    return render_template('journal/users.html', session=session,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route('/school_settings')
@@ -243,19 +256,27 @@ def school_settings():
     form = SchoolEditForm()
     # TODO
     return render_template('journal/school_settings.html', session=session,
-                           form=form)
+                           form=form, unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route('/classes')
 @school_admin_only
 def classes():
-    return render_template('journal/classes.html', session=session)
+    return render_template('journal/classes.html', session=session,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route('/subjects')
 @school_admin_only
 def subjects():
-    return render_template('journal/subjects.html', session=session)
+    return render_template('journal/subjects.html', session=session,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -277,4 +298,7 @@ def settings():
         return render_template('journal/settings.html', session=session,
                                form=form, password_change_success=True)
 
-    return render_template('journal/settings.html', session=session, form=form)
+    return render_template('journal/settings.html', session=session, form=form,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))

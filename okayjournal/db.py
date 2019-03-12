@@ -151,6 +151,14 @@ def find_user_by_login(login):
             return user
 
 
+def get_count_unread_messages(user_id, user_role):
+    messages = Message.query.filter_by(recipient_id=user_id,
+                                       recipient_role=user_role,
+                                       read=False)
+    return len(messages.order_by(Message.sender_id,
+                                 Message.sender_role).all())
+
+
 if not isfile("okayjournal/okayjournal.db"):
     db.create_all()
     # Добавим администратора
