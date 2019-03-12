@@ -64,7 +64,7 @@ border-top-right-radius: 0;
     {% endif %}
 
     <div class="mb-3">
-        {{ form.login(class_='form-control', placeholder="Логин", autofocus=True) }}
+        {{ form.login(class_='form-control', placeholder="Логин или электронная почта", autofocus=True) }}
         {% for error in form.login.errors %}
         <div class="alert alert-danger py-2" role="alert">
             {{ error }}

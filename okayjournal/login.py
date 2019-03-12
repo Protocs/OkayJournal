@@ -15,6 +15,9 @@ def generate_unique_login(user_id, user_status):
 def login(username, password):
     for user_class in [Student, Parent, SchoolAdmin, Teacher, SystemAdmin]:
         user = user_class.query.filter_by(login=username).first()
+        # Если не нашли пользователя по логину, пробуем по почте
+        if not user:
+            user = user_class.query.filter_by(email=username).first()
         if user:
             if not check_password_hash(user.password_hash, password):
                 return False
