@@ -8,7 +8,8 @@ from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
     ChangePasswordForm
 from okayjournal.db import *
 from okayjournal.login import login, generate_unique_login
-from okayjournal.utils import logged_in, login_required, school_admin_only
+from okayjournal.utils import logged_in, login_required, school_admin_only, \
+    user_equal
 
 
 @app.route("/")
@@ -139,14 +140,6 @@ def messages():
             text=request.form["message"]
         ))
         db.session.commit()
-    users = {}
-    for user_class in USER_CLASSES:
-        users[user_class.__name__] = []
-        query = user_class.query.filter_by(
-            school_id=session["user"]["school_id"])
-        for user in query.order_by(user_class.surname, user_class.name,
-                                   user_class.patronymic):
-            users[user_class.__name__].append(user)
     dialogs = {}
     # Вытащим все сообщения, которые были отправлены текущим пользователем
     # И сгруппируем их по получателю
@@ -171,8 +164,7 @@ def messages():
                                    message.sender_role)
         # Если получатель совпадает с текущим пользователем,
         # то текущий диалог с отправителем
-        if (recipient.id, recipient.__class__.__name__) \
-                == (session["user"]["id"], session["role"]):
+        if user_equal(recipient, session):
             partner = sender
         # Если же нет, то текущий диалог с получателем
         else:
@@ -195,6 +187,19 @@ def messages():
         last_message = for_partner_messages.union(
             from_partner_messages).order_by(Message.date).all()
         dialogs.update({partner: last_message[-1]})
+    # Список пользователей, которые будут отображаться в добавлении нового
+    # диалога
+    users = {}
+    for user_class in USER_CLASSES:
+        users[user_class.__name__] = []
+        query = user_class.query.filter_by(
+            school_id=session["user"]["school_id"])
+        for user in query.order_by(user_class.surname, user_class.name,
+                                   user_class.patronymic):
+            # Если пользователь уже есть в диалогах, не добавляем его
+            # Также не добавляем и текущего пользователя
+            if user not in dialogs and not user_equal(user, session):
+                users[user_class.__name__].append(user)
     return render_template("journal/messages.html", session=session,
                            users=users, dialogs=dialogs)
 
