@@ -1,13 +1,12 @@
 from itertools import cycle
 
-from flask import render_template, request, redirect, session, jsonify, \
-    make_response
+from flask import render_template, request, redirect, session, jsonify
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 
 from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
-    ChangePasswordForm
+    ChangePasswordForm, AddTeacherForm
 from okayjournal.db import *
 from okayjournal.login import login, generate_unique_login
 from okayjournal.utils import logged_in, login_required, school_admin_only, \
@@ -69,12 +68,12 @@ def register():
             try:
                 db.session.commit()
             except IntegrityError:
-                return render_template("register_request.html", 
-                               form=form,
-                               title="Запрос на регистрацию",
-                               error="Учётная запись с такой "
-                                     "электронной почтой или названием "
-                                     "школы уже существует")
+                error = "Учётная запись с такой электронной почтой " \
+                        "или названием школы уже существует"
+                return render_template("register_request.html",
+                                       form=form,
+                                       title="Запрос на регистрацию",
+                                       error=error)
             return redirect("/")
         return render_template("register_request.html", form=form,
                                title="Запрос на регистрацию",
@@ -108,15 +107,15 @@ def admin():
             admins = SchoolAdmin.query.all()
             last_id = 0 if not admins else admins[-1].id
             # noinspection PyArgumentList
-            school_admin = SchoolAdmin(name=register_request.name,
-                                       surname=register_request.surname,
-                                       patronymic=register_request.patronymic,
-                                       email=register_request.email,
-                                       login=generate_unique_login(
-                                           last_id + 1, "SchoolAdmin"),
-                                       school_id=school.id,
-                                       password_hash=
-                                       register_request.password_hash)
+            school_admin = SchoolAdmin(
+                name=register_request.name,
+                surname=register_request.surname,
+                patronymic=register_request.patronymic,
+                email=register_request.email,
+                login=generate_unique_login(
+                    last_id + 1, "SchoolAdmin"),
+                school_id=school.id,
+                password_hash=register_request.password_hash)
             db.session.add(school_admin)
             db.session.commit()
         db.session.delete(register_request)
@@ -276,10 +275,12 @@ def school_managing():
 @app.route('/users')
 @school_admin_only
 def users():
+    add_teacher_form = AddTeacherForm()
     return render_template('journal/users.html', session=session,
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           add_teacher_form=add_teacher_form)
 
 
 @app.route('/school_settings')
@@ -288,7 +289,8 @@ def school_settings():
     form = SchoolEditForm()
     # TODO
     return render_template('journal/school_settings.html', session=session,
-                           form=form, unread=get_count_unread_messages(
+                           form=form,
+                           unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
 

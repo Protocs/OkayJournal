@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
+    SelectField, IntegerField
 from wtforms.validators import DataRequired, EqualTo
 
 
@@ -43,3 +44,11 @@ class ChangePasswordForm(FlaskForm):
         validators=[DataRequired(),
                     EqualTo('new_password', "Пароли не совпадают")])
     submit = SubmitField("Сменить")
+
+
+class AddTeacherForm(FlaskForm):
+    surname = StringField("Фамилия", validators=[DataRequired()])
+    name = StringField("Имя", validators=[DataRequired()])
+    patronymic = StringField("Отчество", validators=[DataRequired()])
+    email = StringField("Электронная почта", validators=[DataRequired()])
+    submit = SubmitField("Добавить")
