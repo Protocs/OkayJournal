@@ -1,5 +1,32 @@
 from flask import session, redirect, make_response
-from .db import USER_CLASSES
+from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
+
+from random import choice, shuffle
+from string import ascii_lowercase as lowercase, ascii_uppercase as uppercase, \
+    digits
+
+LOGIN_PREFIXES = {Student.__name__: "stud", Parent.__name__: "par",
+                  SchoolAdmin.__name__: "admin", Teacher.__name__: "teach"}
+
+SYMBOLS = list(filter(lambda chr: chr not in ['l', 'I', '1', 'o', 'O', '0'],
+                      list(uppercase) + list(lowercase) + list(digits)))
+
+
+def generate_unique_login(user_id, user_status):
+    return LOGIN_PREFIXES[user_status] + str(user_id).zfill(6)
+
+
+def generate_throwaway_password():
+    """Возвращает случайно сгенерированный пароль длиною в 8 символов."""
+    result = ""
+    used_symbols = []
+    for k in range(8):
+        symbol = choice(SYMBOLS)
+        while symbol in used_symbols:
+            symbol = choice(SYMBOLS)
+        result += symbol
+        used_symbols.append(symbol)
+    return result
 
 
 def logged_in():

@@ -9,9 +9,9 @@ from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
     ChangePasswordForm, AddTeacherForm
 from okayjournal.db import *
-from okayjournal.login import login, generate_unique_login
+from okayjournal.login import login
 from okayjournal.utils import logged_in, login_required, school_admin_only, \
-    user_equal
+    user_equal, generate_throwaway_password, generate_unique_login
 
 
 @app.route("/")
