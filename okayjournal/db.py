@@ -182,3 +182,14 @@ if not isfile("okayjournal/okayjournal.db"):
                                login="admin",
                                password_hash=generate_password_hash("admin")))
     db.session.commit()
+
+# print('aye')
+# # noinspection PyArgumentList
+# db.session.add(Teacher(name="Михаил",
+#                        surname="Зубенко",
+#                        patronymic="Петрович",
+#                        email="zubenko@dev.null",
+#                        login="teach000001",
+#                        password_hash=generate_password_hash('1'),
+#                        school_id=1))
+# db.session.commit()

@@ -16,6 +16,29 @@ a:hover {
 text-decoration: none;
 }
 
+#message-text {
+position: relative;
+border-top-right-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+#message-text:focus {
+z-index: 2;
+}
+
+#message-send {
+border-top-left-radius: 0;
+border-bottom-left-radius: 0;
+margin-left: -1px;
+}
+
+.message {
+flex-shrink: 1;
+padding: 5px;
+padding-left: 10px;
+padding-right: 10px;
+}
+
 {% endblock %}
 
 {% block body %}
@@ -57,12 +80,12 @@ text-decoration: none;
                                        for="user-select">Получатель</label>
                             </div>
                             <select class="custom-select" id="user-select" name="user-select" required>
-                            {% for teacher in users["Teacher"] %}
-                            <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }} {{
-                                teacher.patronymic
-                                }}
-                            </option>
-                            {% endfor %}
+                                {% for teacher in users["Teacher"] %}
+                                <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }} {{
+                                    teacher.patronymic
+                                    }}
+                                </option>
+                                {% endfor %}
                             </select>
                         </div>
 
@@ -70,7 +93,8 @@ text-decoration: none;
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Сообщение</span>
                             </div>
-                            <textarea class="form-control" aria-label="Введите сообщение" name="message" required></textarea>
+                            <textarea class="form-control" aria-label="Введите сообщение" name="message"
+                                      required></textarea>
                         </div>
 
                     </div>
@@ -112,12 +136,14 @@ text-decoration: none;
 
 
 
+
+
     </script>
 
     <div class="d-flex m-3 h-100">
         <div class="dialogs-drawer d-flex flex-column border border-right-0">
             <a href="#" data-toggle="modal" data-target="#addRecipient">
-                <div class="dialog-btn container py-1 px-3 border-bottom">
+                <div class="dialog-btn container py-1 px-3 border-bottom" id="div-new-dialog">
                     <h1 class="text-muted text-center m-0">+</h1>
                 </div>
             </a>
@@ -125,15 +151,28 @@ text-decoration: none;
             <div class="dialog-btn container py-2 px-3 border-bottom">
                 <h5>{{ partner.surname }} {{ partner.name }} {{ partner.patronymic }}</h5>
                 <small class="text-muted">
-                    {% if (last_message.sender_id, last_message.sender_role) == (session["user"]["id"], session["role"]) %}
+                    {% if (last_message.sender_id, last_message.sender_role) == (session["user"]["id"], session["role"])
+                    %}
                     Вы: {% endif %}
-                    {{ last_message.text }}</small>
+                    {{ last_message.text }}
+                </small>
             </div>
             {% endfor %}
         </div>
 
-        <div class="d-flex flex-column flex-grow-1 w-100 border" id="dialog">
-
+        <div class="flex-grow-1 w-100 border" id="dialog">
+            <div class="d-flex flex-column w-100 h-100" id="dialog-content">
+                <div class="py-2 pl-4 border-bottom" style="font-size: 150%;" id="dialog-header">Зубенко М. П.</div>
+                <div class="d-flex flex-column-reverse flex-grow-1 h-100 p-3">
+                    <div class="message card">
+                        ауе
+                    </div>
+                </div>
+                <div class="d-flex m-2">
+                    <input class="form-control p-2 flex-grow-1 w-100" id="message-text">
+                    <button class="btn btn-light" id="message-send" style="border-color: rgb(206, 212, 218)"> ></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -142,5 +181,10 @@ text-decoration: none;
 <!--var height = parseInt($('#dialog').css('height'), 10) + 1;-->
 <!--$('#dialog').css('height', height.toString(10) + 'px');-->
 <!--</script>-->
+<script>
+    $('#dialog-header').css('height', $('#div-new-dialog').css('height'));
+
+
+</script>
 
 {% endblock %}
