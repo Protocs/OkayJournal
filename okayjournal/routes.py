@@ -3,6 +3,7 @@ from itertools import cycle
 from flask import render_template, request, redirect, session, jsonify
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
+from validate_email import validate_email
 
 from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
@@ -55,7 +56,19 @@ def register():
     if form.validate_on_submit():
         password_first = request.form["password_first"]
         password_second = request.form["password_second"]
+        if not validate_email(request.form["email"]):
+            return render_template("register_request.html",
+                                   form=form,
+                                   title="Запрос на регистрацию",
+                                   error="Некорректный адрес электронной "
+                                         "почты")
         if password_first == password_second:
+            if len(password_first) < 8:
+                return render_template("register_request.html",
+                                       form=form,
+                                       title="Запрос на регистрацию",
+                                       error="В пароле должно быть не менее 8 "
+                                             "символов")
             db.session.add(Request(region=request.form["region"],
                                    city=request.form["city"],
                                    school=request.form["school"],
