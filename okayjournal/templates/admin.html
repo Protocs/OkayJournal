@@ -23,33 +23,28 @@
 </nav>
 
 <div class="m-3">
-
     <h2>Запросы на регистрацию школы</h2>
 
     {% for request in requests %}
-
     <div class="alert alert-primary">
-        <div class="container">
-            <h2>Запрос №{{ request.id }}</h2>
-            <h3>Школа</h3>
-            <p>Регион - {{ request.region }}, город - {{ request.city }}, школа - {{ request.school
-                }}</p>
-            <h3>Пришло от: </h3>
-            <p>{{ request.surname }} {{ request.name }} {{ request.patronymic }}, электронная почта -
-                {{ request.email }}</p>
-            <form method="post" id="{{ request.id }}">
-                <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="ok">
-                    Принять
-                </button>
-                <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="no">
-                    Отклонить
-                </button>
-            </form>
-        </div>
+        <h2>Запрос №{{ request.id }}</h2>
+        <h3>Школа</h3>
+        <p>Регион - {{ request.region }}, город - {{ request.city }}, школа - {{ request.school }}</p>
+        <h3>Пришло от: </h3>
+        <p>
+            {{ request.surname }} {{ request.name }} {{ request.patronymic }}, электронная почта -
+            {{ request.email }}
+        </p>
+        <form method="post" id="{{ request.id }}">
+            <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="ok">
+                Принять
+            </button>
+            <button class="btn btn-dark" type="submit" name="{{ request.id }}" value="no">
+                Отклонить
+            </button>
+        </form>
     </div>
-
+    {% endfor %}
 </div>
-
-{% endfor %}
 
 {% endblock %}
