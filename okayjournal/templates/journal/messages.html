@@ -1,44 +1,7 @@
 {% extends "journal/base.html" %}
 
-{% block style %}
-{{ super() }}
-
-.dialogs-drawer {
-width: 35%;
-overflow-y: scroll;
-}
-
-nav {
-flex-shrink: 0;
-}
-
-a:hover {
-text-decoration: none;
-}
-
-#message-text {
-position: relative;
-border-top-right-radius: 0;
-border-bottom-right-radius: 0;
-}
-
-#message-text:focus {
-z-index: 2;
-}
-
-#message-send {
-border-top-left-radius: 0;
-border-bottom-left-radius: 0;
-margin-left: -1px;
-}
-
-.message {
-flex-shrink: 1;
-padding: 5px;
-padding-left: 10px;
-padding-right: 10px;
-}
-
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -76,14 +39,12 @@ padding-right: 10px;
 
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"
-                                       for="user-select">Получатель</label>
+                                <label class="input-group-text" for="user-select">Получатель</label>
                             </div>
                             <select class="custom-select" id="user-select" name="user-select" required>
                                 {% for teacher in users["Teacher"] %}
-                                <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }} {{
-                                    teacher.patronymic
-                                    }}
+                                <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }}
+                                    {{ teacher.patronymic }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -133,15 +94,10 @@ padding-right: 10px;
             {% endfor %}
         }
     });
-
-
-
-
-
     </script>
 
-    <div class="d-flex m-3 h-100">
-        <div class="dialogs-drawer d-flex flex-column border border-right-0">
+    <div class="messenger">
+        <div class="dialogs-drawer">
             <a href="#" data-toggle="modal" data-target="#addRecipient">
                 <div class="dialog-btn container py-1 px-3 border-bottom" id="div-new-dialog">
                     <h1 class="text-muted text-center m-0">+</h1>
@@ -160,12 +116,26 @@ padding-right: 10px;
             {% endfor %}
         </div>
 
-        <div class="flex-grow-1 w-100 border" id="dialog">
+        <div class="flex-grow-1 w-100 border" id="dialog" style="border-top-right-radius: 0.5rem;border-bottom-right-radius: 0.5rem;">
             <div class="d-flex flex-column w-100 h-100" id="dialog-content">
-                <div class="py-2 pl-4 border-bottom" style="font-size: 150%;" id="dialog-header">Зубенко М. П.</div>
-                <div class="d-flex flex-column-reverse flex-grow-1 h-100 p-3">
-                    <div class="message card">
+                <div class="py-3 pl-4 border-bottom align-middle" style="font-size: 150%;" id="dialog-header">
+                    <span style="position: relative; bottom: 0.25em;">Зубенко М. П.</span>
+                </div>
+                <div class="d-flex flex-column-reverse flex-grow-1 align-items-end h-100 p-3" style="overflow-y: scroll">
+                    <div class="message card align-items-end">
+                        На краю дороги стоял дуб. Вероятно, в десять раз старше берез, составлявших лес, он был в десять раз толще, и в два раза выше каждой березы. Это был огромный, в два обхвата дуб, с обломанными, давно, видно, суками и с обломанной корой, заросшей старыми болячками. С огромными своими неуклюже, несимметрично растопыренными корявыми руками и пальцами, он старым, сердитым и презрительным уродом стоял между улыбающимися березами. Только он один не хотел подчиняться обаянию весны и не хотел видеть ни весны, ни солнца.
+
+                        «Весна, и любовь, и счастие! — как будто говорил этот дуб. — И как не надоест вам все один и тот же глупый бессмысленный обман! Все одно и то же, и все обман! Нет ни весны, ни солнца, ни счастья. Вон смотрите, сидят задавленные мертвые ели, всегда одинакие, и вон и я растопырил свои обломанные, ободранные пальцы, где ни выросли они — из спины, из боков. Как выросли — так и стою, и не верю вашим надеждам и обманам» .
+
+                        Князь Андрей несколько раз оглянулся на этот дуб, проезжая по лесу, как будто он чего-то ждал от него. Цветы и трава были и под дубом, но он все так же, хмурясь, неподвижно, уродливо и упорно, стоял посреди их.
+
+                        «Да, он прав, тысячу раз прав этот дуб, — думал князь Андрей, — пускай другие, молодые, вновь поддаются на этот обман, а мы знаем жизнь, — наша жизнь кончена! » Целый новый ряд мыслей безнадежных, но грустно-приятных в связи с этим дубом возник в душе князя Андрея. Во время этого путешествия он как будто вновь обдумал всю свою жизнь и пришел к тому же прежнему, успокоительному и безнадежному, заключению, что ему начинать ничего было не надо, что он должен доживать свою жизнь, не делая зла, не тревожась и ничего не желая.
+                        <span class="ml-3 mr-1" style="font-size: 70%; color: #a2a2a2; position: relative; bottom: 1px;">23:59</span>
+                        <span class="mr-1" style="position: relative; top: 0.25rem; font-size: 100%; color: #6db4ff; letter-spacing: -0.5em;">✓✓</span>
+                    </div>
+                    <div class="message card align-items-end align-self-start">
                         ауе
+                        <span class="ml-3 mr-1" style="font-size: 70%; color: #a2a2a2;">23:59</span>
                     </div>
                 </div>
                 <div class="d-flex m-2">
@@ -176,15 +146,12 @@ padding-right: 10px;
         </div>
     </div>
 </div>
-
 <!--<script>-->
 <!--var height = parseInt($('#dialog').css('height'), 10) + 1;-->
 <!--$('#dialog').css('height', height.toString(10) + 'px');-->
 <!--</script>-->
 <script>
     $('#dialog-header').css('height', $('#div-new-dialog').css('height'));
-
-
 </script>
 
 {% endblock %}
