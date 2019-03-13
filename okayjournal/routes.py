@@ -2,6 +2,7 @@ from itertools import cycle
 
 from flask import render_template, request, redirect, session
 from werkzeug.security import check_password_hash
+from sqlalchemy.exc import IntegrityError
 
 from okayjournal.app import app
 from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
@@ -57,7 +58,15 @@ def register():
                                    email=request.form["email"],
                                    password_hash=generate_password_hash(
                                        password_first)))
-            db.session.commit()
+            try:
+                db.session.commit()
+            except IntegrityError:
+                return render_template("register_request.html", 
+                               form=form,
+                               title="Запрос на регистрацию",
+                               error="Учётная запись с такой "
+                                     "электронной почтой или названием "
+                                     "школы уже существует")
             return redirect("/")
         return render_template("register_request.html", form=form,
                                title="Запрос на регистрацию",
