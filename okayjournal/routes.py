@@ -1,6 +1,7 @@
 from itertools import cycle
 
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, jsonify, \
+    make_response
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 
@@ -220,10 +221,13 @@ def messages():
                                user_role=session["role"]))
 
 
-@app.route("/messages/<login>", methods=["GET", "POST"])
+@app.route("/messages/<login>")
 @login_required
 def dialog(login):
+    """Возвращает JSON-объект сообщений"""
     recipient = find_user_by_login(login)
+    if not recipient:
+        return jsonify({"error": "Recipient not found"})
     messages_from_sender = Message.query.filter_by(
         sender_id=session["user"]["id"],
         sender_role=session["role"],
@@ -237,8 +241,23 @@ def dialog(login):
         recipient_role=session["role"]
     )
     all_messages = messages_from_sender.union(messages_from_recipient)
-    print(all_messages.all())
-    return "<p>...</p>"
+    response = {}
+    for message in all_messages.order_by(Message.date).all():
+        response.update({message.id: {
+            "sender": {
+                "id": message.sender_id,
+                "role": message.sender_role
+            },
+            "recipient": {
+                "id": message.recipient_id,
+                "role": message.recipient_role
+            },
+            "text": message.text,
+            "date": message.date,
+            "read": message.read
+        }})
+
+    return jsonify(response)
 
 
 @app.route('/school_managing')
