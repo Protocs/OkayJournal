@@ -1,0 +1,42 @@
+{% extends "journal/base.html" %}
+
+{% block style %}
+tr:first-child * {
+border-top: 0;
+}
+{% endblock %}
+
+{% block body %}
+
+{{ super() }}
+
+<div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 overflow-hidden">
+    <p class="lead">Классна:</p>
+    <p class="lead">Прикольна:</p>
+    <p class="lead">Панятна:</p>
+</div>
+
+<div class="mx-5 mt-3">
+    {% for i in range(2) %}
+    <div class="row justify-content-around flex-nowrap align-items-stretch">
+        {% for j in range(3) %}
+        <div class="day d-flex flex-column p-3">
+            <h3>234</h3>
+            <table class="table table-hover table-dark">
+                {% for k in range(6) %}
+                <tr>
+                    <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
+                    <td class="align-middle"><b>Мотьематика</b></td>
+                    <td class="homework align-middle text-left p-0"><div class="text-truncate">{% if j == 1 %}Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endif%}</div></td>
+                    <td class="mark_ align-middle pr-3 pl-0 py-0"><div class="text-nowrap">5 5</div></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+>
+
+{% endblock %}
