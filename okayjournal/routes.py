@@ -39,7 +39,12 @@ def login_route():
         # Запоминание пользователя
         session.permanent = form.remember.data
 
-        return redirect("/journal")
+        if session["role"] == "Student":
+            return redirect("/diary")
+        elif session["role"] == "Teacher":
+            return redirect("/journal")
+        elif session['role'] == 'SystemAdmin':
+            return redirect('/admin')
     return render_template("login.html", form=form, title="Авторизация")
 
 
@@ -85,8 +90,9 @@ def logout():
 
 
 @app.route("/admin", methods=["GET", "POST"])
+@login_required
 def admin():
-    if session.get("role") != "SystemAdmin":
+    if session["role"] != "SystemAdmin":
         return redirect("/index")
 
     if request.method == "POST":
@@ -120,13 +126,9 @@ def admin():
 
 # journal routes
 
-@app.route('/journal')
-@app.route('/journal/diary')
+@app.route('/diary')
 @login_required
-def journal():
-    if session['role'] == 'SystemAdmin':
-        return redirect('/admin')
-
+def diary():
     week_days = cycle(['Понедельник',
                        'Вторник',
                        'Среда',
@@ -330,3 +332,8 @@ def settings():
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
+
+
+@app.route('/journal')
+def journal():
+    return render_template('journal.html')
