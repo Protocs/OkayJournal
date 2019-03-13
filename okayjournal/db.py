@@ -77,7 +77,7 @@ class Subject(db.Model):
     recess = db.Column(db.Integer, unique=False, nullable=True)
 
 
-class Homework(db.Model):
+class SubjectDescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"),
                            nullable=False)
@@ -85,6 +85,7 @@ class Homework(db.Model):
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref="homework", lazy=True)
     subject = db.relationship("Subject", backref="homework", lazy=True)
+    theme = db.Column(db.Text, nullable=False, unique=False)
     homework = db.Column(db.Text, nullable=False, unique=False)
 
 
