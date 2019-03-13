@@ -45,6 +45,8 @@ def login_route():
             return redirect("/journal")
         elif session['role'] == 'SystemAdmin':
             return redirect('/admin')
+        elif session["role"] == "SchoolAdmin":
+            return redirect("/school_managing")
     return render_template("login.html", form=form, title="Авторизация")
 
 
