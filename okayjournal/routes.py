@@ -1,4 +1,5 @@
 from itertools import cycle
+import email.utils
 
 from flask import render_template, request, redirect, session, jsonify
 from werkzeug.security import check_password_hash
@@ -234,7 +235,8 @@ def messages():
                            users=users, dialogs=dialogs,
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           type=type)
 
 
 @app.route("/messages/<login>")
@@ -260,6 +262,7 @@ def dialog(login):
     response = {}
     for message in all_messages.order_by(Message.date).all():
         response.update({message.id: {
+            'id': message.id,
             "sender": {
                 "id": message.sender_id,
                 "role": message.sender_role
@@ -269,11 +272,23 @@ def dialog(login):
                 "role": message.recipient_role
             },
             "text": message.text,
-            "date": message.date,
+            "date": email.utils.formatdate(message.date.timestamp()),
             "read": message.read
         }})
 
     return jsonify(response)
+
+
+@app.route('/send_message', methods=['POST'])
+@login_required
+def send_message():
+    db.session.add(Message(sender_id=session['user']['id'],
+                           sender_role=session['role'],
+                           recipient_id=request.json['recipient_id'],
+                           recipient_role=request.json['recipient_role'],
+                           text=request.json['text']))
+    db.session.commit()
+    return jsonify({'success': 'OK'})
 
 
 @app.route('/school_managing')
