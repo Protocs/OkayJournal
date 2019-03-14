@@ -7,8 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from validate_email import validate_email
 
 from okayjournal.app import app
-from okayjournal.forms import LoginForm, RegisterRequestForm, SchoolEditForm, \
-    ChangePasswordForm, AddTeacherForm
+from okayjournal.forms import *
 from okayjournal.db import *
 from okayjournal.login import login
 from okayjournal.utils import logged_in, login_required, school_admin_only, \
@@ -332,13 +331,24 @@ def classes():
                                user_role=session["role"]))
 
 
-@app.route('/subjects')
+@app.route('/subjects', methods=["GET", "POST"])
 @school_admin_only
 def subjects():
+    if request.method == "POST":
+        db.session.add(Subject(
+            name=request.form["name"],
+            school_id=session["user"]["school_id"]
+        ))
+        db.session.commit()
+    subject_list = Subject.query.filter_by(
+        school_id=session["user"]["school_id"]).all()
+    form = AddSubjectForm()
     return render_template('journal/subjects.html', session=session,
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           subjects=subject_list,
+                           form=form)
 
 
 @app.route('/settings', methods=['GET', 'POST'])

@@ -47,6 +47,8 @@ class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, unique=False, nullable=False)
     letter = db.Column(db.String(1), unique=False, nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
 
 
 class Student(User, db.Model):
@@ -64,9 +66,20 @@ class Student(User, db.Model):
 
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(25), unique=True, nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+
+
+class Schedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     day = db.Column(db.String(15), unique=False, nullable=False)
     subject_number = db.Column(db.Integer, unique=False, nullable=False)
-    subject = db.Column(db.String(25), nullable=False, unique=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"),
+                           nullable=False)
+    subject = db.relationship("Subject", backref="schedule", lazy=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teacher.id"),
                            nullable=False)
     teacher = db.relationship("Teacher", backref="subjects", lazy=True)
@@ -81,6 +94,8 @@ class SubjectDescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"),
                            nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref="homework", lazy=True)
@@ -97,6 +112,8 @@ class Marks(db.Model):
                            nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey("student.id"),
                            nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
     subject = db.relationship("Subject", backref="marks", lazy=True)
     student = db.relationship("Student", backref="marks", lazy=True)
 

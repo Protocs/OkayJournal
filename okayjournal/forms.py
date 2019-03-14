@@ -52,3 +52,8 @@ class AddTeacherForm(FlaskForm):
     patronymic = StringField("Отчество", validators=[DataRequired()])
     email = StringField("Электронная почта", validators=[DataRequired()])
     submit = SubmitField("Добавить")
+
+
+class AddSubjectForm(FlaskForm):
+    name = StringField("Название предмета", validators=[DataRequired()])
+    submit = SubmitField("Добавить")
