@@ -1,7 +1,7 @@
 from flask import session, redirect, make_response
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
 
-from random import choice, shuffle
+from random import choice
 from string import ascii_lowercase as lowercase, ascii_uppercase as uppercase, \
     digits
 
@@ -12,8 +12,10 @@ SYMBOLS = list(filter(lambda chr: chr not in ['l', 'I', '1', 'o', 'O', '0'],
                       list(uppercase) + list(lowercase) + list(digits)))
 
 
-def generate_unique_login(user_id, user_status):
-    return LOGIN_PREFIXES[user_status] + str(user_id).zfill(6)
+def generate_unique_login(user_status):
+    users = globals()[user_status].query.all()
+    last_id = users[-1].id if users else 0
+    return LOGIN_PREFIXES[user_status] + str(last_id + 1).zfill(6)
 
 
 def generate_throwaway_password():
@@ -51,6 +53,16 @@ def school_admin_only(func):
     def decorated(*args, **kwargs):
         if session['role'] != 'SchoolAdmin':
             return make_response("Вы не являетесь школьным администратором.")
+        return func(*args, **kwargs)
+
+    decorated.__name__ = func.__name__
+    return decorated
+
+
+def need_to_change_password(func):
+    def decorated(*args, **kwargs):
+        if session["user"]["throwaway_password"]:
+            return redirect("/settings")
         return func(*args, **kwargs)
 
     decorated.__name__ = func.__name__

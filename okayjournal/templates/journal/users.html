@@ -1,7 +1,8 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/links.css') }}">
 {% endblock %}
 
 {% block style %}
@@ -48,52 +49,78 @@ border-bottom-right-radius: 0.25rem;
 {{ super() }}
 
 <div class="modal fade" tabindex="-1" role="dialog" id="add-teacher">
+    <form method="post" id="add-teacher-form">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Добавить учителя</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
             </div>
             <div class="modal-body d-flex">
                 <div class="w-50">
-                    <form method="post" id="add-teacher">
                         <div class="form-group">
                             <label for="surname">ФИО</label>
                             <div class="composed-text-inputs">
-                                {{ add_teacher_form.surname(class_='form-control',
-                                placeholder=add_teacher_form.surname.label.text) }}
+                                {{
+                                add_teacher_form.surname(class_='form-control',
+                                placeholder="Введите фамилию") }}
                                 {{ add_teacher_form.name(class_='form-control',
-                                placeholder=add_teacher_form.name.label.text) }}
-                                {{ add_teacher_form.patronymic(class_='form-control',
-                                placeholder=add_teacher_form.patronymic.label.text) }}
+                                placeholder="Введите имя") }}
+                                {{
+                                add_teacher_form.patronymic(class_='form-control',
+                                placeholder="Введите отчество") }}
                             </div>
                         </div>
                         <div class="form-group">
                             {{ add_teacher_form.email.label }}
-                            {{ add_teacher_form.surname(class_='form-control',
-                            placeholder=add_teacher_form.email.label.text) }}
+                            {{ add_teacher_form.email(class_='form-control',
+                            placeholder="Введите электронную почту") }}
                         </div>
-                    </form>
                 </div>
                 <div class="w-50">
                     Предметы
-                    <!-- TODO -->
+                    <select class="custom-select" name="subjectSelect1"
+                            id="subjectSelect1" required>
+                    </select>
+                    <select class="custom-select" name="subjectSelect2"
+                            id="subjectSelect2">
+                    </select>
+                    <select class="custom-select" name="subjectSelect3"
+                            id="subjectSelect3">
+                    </select>
+                    <select class="custom-select" name="subjectSelect4"
+                            id="subjectSelect4">
+                    </select>
+                    <select class="custom-select" name="subjectSelect5"
+                            id="subjectSelect5">
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Отменить
+                </button>
                 <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
-                {{ add_teacher_form.submit(class_='btn btn-primary', form='add-teacher') }}
+                {{ add_teacher_form.submit(class_='btn btn-primary',
+                form='add-teacher-form') }}
             </div>
         </div>
     </div>
+    </form>
 </div>
-
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}
 <div class="mx-3 my-3 d-flex justify-content-around">
     <div class="col">
         <h3 class="text-center">Учителя</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-teacher">
+            <a href="#" class="hidden-link" data-toggle="modal"
+               data-target="#add-teacher">
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             <li class="list-group-item">Cras justo odio</li>
@@ -104,7 +131,8 @@ border-bottom-right-radius: 0.25rem;
     <div class="col">
         <h3 class="text-center">Ученики</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-student">
+            <a href="#" class="hidden-link" data-toggle="modal"
+               data-target="#add-student">
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             <li class="list-group-item">Cras justo odio</li>
@@ -117,7 +145,8 @@ border-bottom-right-radius: 0.25rem;
     <div class="col">
         <h3 class="text-center">Родители</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-parent">
+            <a href="#" class="hidden-link" data-toggle="modal"
+               data-target="#add-parent">
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             <li class="list-group-item">Cras justo odio</li>
@@ -128,5 +157,7 @@ border-bottom-right-radius: 0.25rem;
         </ul>
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/teacher_add.js') }}"></script>
 
 {% endblock %}

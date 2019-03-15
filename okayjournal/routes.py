@@ -10,8 +10,7 @@ from okayjournal.app import app
 from okayjournal.forms import *
 from okayjournal.db import *
 from okayjournal.login import login
-from okayjournal.utils import logged_in, login_required, school_admin_only, \
-    user_equal, generate_throwaway_password, generate_unique_login
+from okayjournal.utils import *
 
 
 @app.route("/")
@@ -117,18 +116,16 @@ def admin():
                             city=register_request.city,
                             school=register_request.school)
             db.session.add(school)
-            admins = SchoolAdmin.query.all()
-            last_id = 0 if not admins else admins[-1].id
             # noinspection PyArgumentList
             school_admin = SchoolAdmin(
                 name=register_request.name,
                 surname=register_request.surname,
                 patronymic=register_request.patronymic,
                 email=register_request.email,
-                login=generate_unique_login(
-                    last_id + 1, "SchoolAdmin"),
+                login=generate_unique_login("SchoolAdmin"),
                 school_id=school.id,
-                password_hash=register_request.password_hash)
+                password_hash=register_request.password_hash,
+                throwaway_password=False)
             db.session.add(school_admin)
             db.session.commit()
         db.session.delete(register_request)
@@ -142,6 +139,7 @@ def admin():
 
 @app.route('/diary')
 @login_required
+@need_to_change_password
 def diary():
     week_days = cycle(['Понедельник',
                        'Вторник',
@@ -160,6 +158,7 @@ def diary():
 
 @app.route("/messages", methods=["POST", "GET"])
 @login_required
+@need_to_change_password
 def messages():
     if request.method == "POST":
         db.session.add(Message(
@@ -240,6 +239,7 @@ def messages():
 
 @app.route("/messages/<login>")
 @login_required
+@need_to_change_password
 def dialog(login):
     """Возвращает JSON-объект сообщений"""
     recipient = find_user_by_login(login)
@@ -280,6 +280,7 @@ def dialog(login):
 
 @app.route('/send_message', methods=['POST'])
 @login_required
+@need_to_change_password
 def send_message():
     db.session.add(Message(sender_id=session['user']['id'],
                            sender_role=session['role'],
@@ -292,6 +293,7 @@ def send_message():
 
 @app.route('/school_managing')
 @school_admin_only
+@need_to_change_password
 def school_managing():
     return render_template('journal/school_managing.html', session=session,
                            unread=get_count_unread_messages(
@@ -299,10 +301,39 @@ def school_managing():
                                user_role=session["role"]))
 
 
-@app.route('/users')
+@app.route('/users', methods=["GET", "POST"])
 @school_admin_only
+@need_to_change_password
 def users():
     add_teacher_form = AddTeacherForm()
+    if request.method == "POST":
+        if not validate_email(request.form["email"]):
+            return render_template('journal/users.html', session=session,
+                                   unread=get_count_unread_messages(
+                                       user_id=session["user"]["id"],
+                                       user_role=session["role"]),
+                                   add_teacher_form=add_teacher_form,
+                                   error="Некорректный адрес электронной "
+                                         "почты")
+        password = generate_throwaway_password()
+        login = generate_unique_login("Teacher")
+        print(login, password)
+        # noinspection PyArgumentList
+        teacher = Teacher(school_id=session["user"]["school_id"],
+                          name=request.form["name"],
+                          surname=request.form["surname"],
+                          patronymic=request.form["patronymic"],
+                          email=request.form["email"],
+                          login=login,
+                          password_hash=
+                          generate_password_hash(password))
+        for k in request.form:
+            if k.startswith("subjectSelect"):
+                if request.form[k] != "none":
+                    subj = Subject.query.filter_by(id=int(request.form[k]))
+                    teacher.subjects.append(subj.first())
+        db.session.add(teacher)
+        db.session.commit()
     return render_template('journal/users.html', session=session,
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
@@ -310,8 +341,24 @@ def users():
                            add_teacher_form=add_teacher_form)
 
 
+@app.route("/get_subjects")
+@school_admin_only
+@need_to_change_password
+def get_subjects():
+    subject_list = Subject.query.filter_by(
+        school_id=session["user"]["school_id"]).all()
+    response = {}
+    for subject in subject_list:
+        response.update({subject.id: {
+            "id": subject.id,
+            "name": subject.name,
+        }})
+    return jsonify(response)
+
+
 @app.route('/school_settings')
 @school_admin_only
+@need_to_change_password
 def school_settings():
     form = SchoolEditForm()
     # TODO
@@ -324,6 +371,7 @@ def school_settings():
 
 @app.route('/classes')
 @school_admin_only
+@need_to_change_password
 def classes():
     return render_template('journal/classes.html', session=session,
                            unread=get_count_unread_messages(
@@ -333,6 +381,7 @@ def classes():
 
 @app.route('/subjects', methods=["GET", "POST"])
 @school_admin_only
+@need_to_change_password
 def subjects():
     if request.method == "POST":
         db.session.add(Subject(
@@ -356,6 +405,7 @@ def subjects():
 def settings():
     form = ChangePasswordForm()
     if form.validate_on_submit():
+        print(session["user"]["password_hash"])
         old_password_right = check_password_hash(
             session['user']['password_hash'],
             form.old_password.data)
@@ -365,8 +415,11 @@ def settings():
 
         user = find_user_by_role(session['user']['id'], session['role'])
         user.password_hash = generate_password_hash(form.new_password.data)
+        user.throwaway_password = False
         db.session.commit()
-        session['user']['password_hash'] = user.password_hash
+        id, role = session["user"]["id"], session["role"]
+        del session["user"]
+        session["user"] = user_to_dict(find_user_by_role(id, role))
         return render_template('journal/settings.html', session=session,
                                form=form, password_change_success=True)
 
@@ -377,5 +430,7 @@ def settings():
 
 
 @app.route('/journal')
+@login_required
+@need_to_change_password
 def journal():
     return render_template('journal.html')

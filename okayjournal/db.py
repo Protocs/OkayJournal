@@ -3,6 +3,14 @@ from os.path import isfile
 from datetime import datetime
 from werkzeug.security import generate_password_hash
 
+# Many-to-Many relationships
+
+teacher_subjects = db.Table("teacher_subjects",
+                            db.Column("teacher_id", db.Integer,
+                                      db.ForeignKey("teacher.id")),
+                            db.Column("subject_id", db.Integer,
+                                      db.ForeignKey("subject.id")))
+
 
 class User:
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +19,8 @@ class User:
     patronymic = db.Column(db.String(30), unique=False, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     login = db.Column(db.String(31), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), unique=False, nullable=False)
+    throwaway_password = db.Column(db.Boolean, default=True)
 
 
 class SystemAdmin(User, db.Model):
@@ -35,6 +44,8 @@ class Teacher(User, db.Model):
     homeroom_grade = db.relationship("Grade",
                                      backref=db.backref("homeroom_teacher"),
                                      lazy=True)
+    subjects = db.relationship("Subject", secondary=teacher_subjects,
+                               backref=db.backref("teachers", lazy=True))
 
 
 class SchoolAdmin(User, db.Model):
@@ -66,7 +77,7 @@ class Student(User, db.Model):
 
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), unique=True, nullable=False)
+    name = db.Column(db.String(25), unique=False, nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
                           nullable=False)
 
@@ -82,7 +93,8 @@ class Schedule(db.Model):
                           nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teacher.id"),
                            nullable=False)
-    teacher = db.relationship("Teacher", backref="subjects", lazy=True)
+    teacher = db.relationship("Teacher", backref=db.backref("schedule"),
+                              lazy=True)
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref="subjects", lazy=True)
     start = db.Column(db.String(5), nullable=False, unique=False)
@@ -151,7 +163,8 @@ class Message(db.Model):
 USER_CLASSES = [Student, Parent, SchoolAdmin, Teacher]
 POSSIBLE_ATTRIBUTES = ["id", "name", "surname", "patronymic",
                        "password_hash", "login", "email", "school_id",
-                       "homeroom_grade_id", "grade_id", "parent_id"]
+                       "homeroom_grade_id", "grade_id", "parent_id",
+                       "throwaway_password"]
 
 
 def user_to_dict(user):
