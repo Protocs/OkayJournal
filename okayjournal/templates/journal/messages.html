@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block body %}
+<user user-id="{{ session['user']['id'] }}" user-role="{{ session['role'] }}"></user>
+
 <div class="d-flex flex-column" style="height: 100vh;">
     {{ super() }}
 

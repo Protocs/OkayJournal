@@ -4,6 +4,7 @@ from flask import session
 from okayjournal.db import (Student, Parent, SchoolAdmin, Teacher,
                             SystemAdmin, user_to_dict)
 
+
 def login(username, password):
     for user_class in [Student, Parent, SchoolAdmin, Teacher, SystemAdmin]:
         user = user_class.query.filter_by(login=username).first()

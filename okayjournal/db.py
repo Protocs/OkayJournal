@@ -156,7 +156,8 @@ class Message(db.Model):
     recipient_role = db.Column(db.String(11), nullable=False, unique=False)
     recipient_id = db.Column(db.Integer, nullable=False, unique=False)
     text = db.Column(db.Text, unique=False, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    date = db.Column(db.DateTime, nullable=False,
+                     default=lambda: datetime.now())
     read = db.Column(db.Boolean, nullable=False, default=False)
 
 

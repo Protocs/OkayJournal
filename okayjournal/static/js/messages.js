@@ -20,6 +20,7 @@ function openDialog(element) {
 
     $('#dialog-recipient').text($(element).attr('recipient-name'));
 
+    updateMessages();
     $('.dialog-content').show();
 }
 
@@ -31,7 +32,7 @@ function addMessage(message) {
     });
 
     // Переносим сообщение влево, если оно от собеседника
-    if (message.id == recipientId)
+    if ($('user').attr('user-id') == message.recipient.id && $('user').attr('user-role') == message.recipient.role)
         messageBody.addClass('align-self-start');
 
     // Метка времени
