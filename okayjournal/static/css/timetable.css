@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Courgette');
+
+.day {
+    width: 35%;
+}
+
+.day table {
+    border-radius: 0.35rem;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.day table:hover {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.4) !important;
+}
+
+.lesson-number {
+    border-right-color: #32383e !important;
+    width: 1px;
+}
