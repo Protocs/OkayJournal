@@ -356,17 +356,33 @@ def get_subjects():
     return jsonify(response)
 
 
-@app.route('/school_settings')
+@app.route('/school_settings', methods=['GET', 'POST'])
 @school_admin_only
 @need_to_change_password
 def school_settings():
+    school = School.query.filter_by(id=session['user']['school_id']).first()
+
     form = SchoolEditForm()
-    # TODO
+    if form.validate_on_submit():
+        school.region = form.region.data
+        school.city = form.city.data
+        school.school = form.school.data
+        db.session.commit()
+
+        return render_template('journal/school_settings.html', session=session,
+                               form=form,
+                               unread=get_count_unread_messages(
+                                   user_id=session["user"]["id"],
+                                   user_role=session["role"]),
+                               school=school,
+                               success=True)
+
     return render_template('journal/school_settings.html', session=session,
                            form=form,
                            unread=get_count_unread_messages(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           school=school)
 
 
 @app.route('/classes')
