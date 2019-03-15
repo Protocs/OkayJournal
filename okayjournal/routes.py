@@ -434,3 +434,21 @@ def settings():
 @need_to_change_password
 def journal():
     return render_template('journal.html')
+
+@app.route('/timetable')
+@login_required
+@need_to_change_password
+def timetable():
+    week_days = cycle(['Понедельник',
+                       'Вторник',
+                       'Среда',
+                       'Четверг',
+                       'Пятница',
+                       'Суббота'])
+
+    return render_template('journal/timetable.html', session=session,
+                           week_days=week_days, next=next,
+                           unread=get_count_unread_messages(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]
+                           ))
