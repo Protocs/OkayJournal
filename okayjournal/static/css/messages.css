@@ -22,7 +22,7 @@ a:hover {
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
 
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .dialog-content {
@@ -35,12 +35,15 @@ a:hover {
 #dialog-messages {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     flex-grow: 1;
     align-items: flex-end;
     height: 100%;
     padding: 1rem;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+#dialog-messages > :first-child {
+    margin-top: auto !important;
 }
 
 #message-text {

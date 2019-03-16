@@ -121,7 +121,6 @@ function updateDialogs() {
             var name = $("<h5/>", {
                 text: dialogs[d]["partner"]["name"]
             });
-            if ()
             var last_message = $("<small/>", {
                 class: "text-muted",
                 text: dialogs[d]["text"]
