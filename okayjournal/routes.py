@@ -157,10 +157,9 @@ def diary():
 
     return render_template('journal/diary.html', session=session,
                            week_days=week_days, next=next,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]
-                           ))
+                               user_role=session["role"]))
 
 
 @app.route("/messages", methods=["POST", "GET"])
@@ -176,53 +175,7 @@ def messages():
             text=request.form["message"]
         ))
         db.session.commit()
-    dialogs = {}
-    # Вытащим все сообщения, которые были отправлены текущим пользователем
-    # И сгруппируем их по получателю
-    messages_from_cur_user = Message.query.filter_by(
-        sender_id=session["user"]["id"],
-        sender_role=session["role"]
-    ).group_by(Message.recipient_id, Message.recipient_role)
-    # Вытащим все сообщения, которые были отправлены текущему пользователю
-    # И сгруппируем их по отправителю
-    messages_for_cur_user = Message.query.filter_by(
-        recipient_id=session["user"]["id"],
-        recipient_role=session["role"]
-    ).group_by(Message.sender_id, Message.sender_role)
-    # Объединим полученные сообщения в один объект BaseQuery
-    all_messages = messages_for_cur_user.union(messages_from_cur_user)
-    # Пройдемся по каждому сообщению, чтобы составить список диалогов
-    for message in all_messages.order_by(Message.date):
-        # Вытащим получателя и отправителя сообщения
-        recipient = find_user_by_role(message.recipient_id,
-                                      message.recipient_role)
-        sender = find_user_by_role(message.sender_id,
-                                   message.sender_role)
-        # Если получатель совпадает с текущим пользователем,
-        # то текущий диалог с отправителем
-        if user_equal(recipient, session):
-            partner = sender
-        # Если же нет, то текущий диалог с получателем
-        else:
-            partner = recipient
-        # Если диалог с этим человеком уже есть в словаре, то пойдем дальше
-        if partner in dialogs:
-            continue
-        # Получим сообщения, отправленные собеседнику и собеседником
-        for_partner_messages = Message.query.filter_by(
-            sender_id=session["user"]["id"],
-            sender_role=session["role"],
-            recipient_id=partner.id,
-            recipient_role=partner.__class__.__name__)
-        from_partner_messages = Message.query.filter_by(
-            sender_id=partner.id,
-            sender_role=partner.__class__.__name__,
-            recipient_id=session["user"]["id"],
-            recipient_role=session["role"])
-        # Вытащим последнее отправленное сообщение
-        last_message = for_partner_messages.union(
-            from_partner_messages).order_by(Message.date).all()
-        dialogs.update({partner: last_message[-1]})
+
     # Список пользователей, которые будут отображаться в добавлении нового
     # диалога
     users = {}
@@ -232,70 +185,14 @@ def messages():
             school_id=session["user"]["school_id"])
         for user in query.order_by(user_class.surname, user_class.name,
                                    user_class.patronymic):
-            # Если пользователь уже есть в диалогах, не добавляем его
-            # Также не добавляем и текущего пользователя
-            if user not in dialogs and not user_equal(user, session):
+            if not user_equal(user, session):
                 users[user_class.__name__].append(user)
     return render_template("journal/messages.html", session=session,
-                           users=users, dialogs=dialogs,
-                           unread=get_count_unread_messages(
+                           users=users,
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
                            type=type)
-
-
-@app.route("/messages/<login>")
-@login_required
-@need_to_change_password
-def dialog(login):
-    """Возвращает JSON-объект сообщений"""
-    recipient = find_user_by_login(login)
-    if not recipient:
-        return jsonify({"error": "Recipient not found"})
-    messages_from_sender = Message.query.filter_by(
-        sender_id=session["user"]["id"],
-        sender_role=session["role"],
-        recipient_id=recipient.id,
-        recipient_role=recipient.__class__.__name__
-    )
-    messages_from_recipient = Message.query.filter_by(
-        sender_id=recipient.id,
-        sender_role=recipient.__class__.__name__,
-        recipient_id=session["user"]["id"],
-        recipient_role=session["role"]
-    )
-    all_messages = messages_from_sender.union(messages_from_recipient)
-    response = {}
-    for message in all_messages.order_by(Message.date).all():
-        response.update({message.id: {
-            'id': message.id,
-            "sender": {
-                "id": message.sender_id,
-                "role": message.sender_role
-            },
-            "recipient": {
-                "id": message.recipient_id,
-                "role": message.recipient_role
-            },
-            "text": message.text,
-            "date": email.utils.formatdate(message.date.timestamp()),
-            "read": message.read
-        }})
-
-    return jsonify(response)
-
-
-@app.route('/send_message', methods=['POST'])
-@login_required
-@need_to_change_password
-def send_message():
-    db.session.add(Message(sender_id=session['user']['id'],
-                           sender_role=session['role'],
-                           recipient_id=request.json['recipient_id'],
-                           recipient_role=request.json['recipient_role'],
-                           text=request.json['text']))
-    db.session.commit()
-    return jsonify({'success': 'OK'})
 
 
 @app.route('/school_managing')
@@ -303,7 +200,7 @@ def send_message():
 @need_to_change_password
 def school_managing():
     return render_template('journal/school_managing.html', session=session,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
 
@@ -316,7 +213,7 @@ def users():
     if request.method == "POST":
         if not validate_email(request.form["email"]):
             return render_template('journal/users.html', session=session,
-                                   unread=get_count_unread_messages(
+                                   unread=get_count_unread_dialogs(
                                        user_id=session["user"]["id"],
                                        user_role=session["role"]),
                                    add_teacher_form=add_teacher_form,
@@ -344,25 +241,10 @@ def users():
         db.session.add(teacher)
         db.session.commit()
     return render_template('journal/users.html', session=session,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
                            add_teacher_form=add_teacher_form)
-
-
-@app.route("/get_subjects")
-@school_admin_only
-@need_to_change_password
-def get_subjects():
-    subject_list = Subject.query.filter_by(
-        school_id=session["user"]["school_id"]).all()
-    response = {}
-    for subject in subject_list:
-        response.update({subject.id: {
-            "id": subject.id,
-            "name": subject.name,
-        }})
-    return jsonify(response)
 
 
 @app.route('/school_settings', methods=['GET', 'POST'])
@@ -380,7 +262,7 @@ def school_settings():
 
         return render_template('journal/school_settings.html', session=session,
                                form=form,
-                               unread=get_count_unread_messages(
+                               unread=get_count_unread_dialogs(
                                    user_id=session["user"]["id"],
                                    user_role=session["role"]),
                                school=school,
@@ -388,7 +270,7 @@ def school_settings():
 
     return render_template('journal/school_settings.html', session=session,
                            form=form,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
                            school=school)
@@ -399,7 +281,7 @@ def school_settings():
 @need_to_change_password
 def classes():
     return render_template('journal/classes.html', session=session,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
 
@@ -418,7 +300,7 @@ def subjects():
         school_id=session["user"]["school_id"]).all()
     form = AddSubjectForm()
     return render_template('journal/subjects.html', session=session,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
                            subjects=subject_list,
@@ -436,7 +318,10 @@ def settings():
             form.old_password.data)
         if not old_password_right:
             return render_template('journal/settings.html', session=session,
-                                   form=form, password_change_error=True)
+                                   form=form, password_change_error=True,
+                                   unread=get_count_unread_dialogs(
+                                       user_id=session["user"]["id"],
+                                       user_role=session["role"]))
 
         user = find_user_by_role(session['user']['id'], session['role'])
         user.password_hash = generate_password_hash(form.new_password.data)
@@ -446,10 +331,13 @@ def settings():
         del session["user"]
         session["user"] = user_to_dict(find_user_by_role(id, role))
         return render_template('journal/settings.html', session=session,
-                               form=form, password_change_success=True)
+                               form=form, password_change_success=True,
+                               unread=get_count_unread_dialogs(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
 
     return render_template('journal/settings.html', session=session, form=form,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
 
@@ -474,7 +362,7 @@ def timetable():
 
     return render_template('journal/timetable.html', session=session,
                            week_days=week_days, next=next,
-                           unread=get_count_unread_messages(
+                           unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]
                            ))

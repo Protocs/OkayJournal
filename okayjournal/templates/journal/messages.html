@@ -101,30 +101,12 @@
     </script>
 
     <div class="messenger">
-        <div class="dialogs-drawer">
+        <div class="dialogs-drawer" id="dialogs">
             <a href="#" data-toggle="modal" data-target="#addRecipient">
                 <div class="dialog-btn container py-1 px-3 border-bottom" id="div-new-dialog">
                     <h1 class="text-muted text-center m-0">+</h1>
                 </div>
             </a>
-            {% for partner, last_message in dialogs.items() %}
-            <a href="#" class="hidden-link"
-               recipient="{{ partner.login }}" recipient-role="{{ type(partner).__name__ }}"
-               recipient-id="{{ partner.id }}"
-               recipient-name="{{ partner.surname }} {{ partner.name }} {{ partner.patronymic }}"
-               onclick="openDialog(this)">
-                <div class="dialog-btn container py-2 px-3 border-bottom">
-                    <h5>{{ partner.surname }} {{ partner.name }} {{ partner.patronymic }}</h5>
-                    <small class="text-muted">
-                        {% if (last_message.sender_id, last_message.sender_role) == (session["user"]["id"],
-                        session["role"])
-                        %}
-                        Вы: {% endif %}
-                        {{ last_message.text }}
-                    </small>
-                </div>
-            </a>
-            {% endfor %}
         </div>
 
         <div class="flex-grow-1 w-100 border" id="dialog"

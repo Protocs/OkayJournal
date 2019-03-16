@@ -194,12 +194,21 @@ def find_user_by_login(login):
             return user
 
 
-def get_count_unread_messages(user_id, user_role):
+def get_count_unread_dialogs(user_id, user_role):
     messages = Message.query.filter_by(recipient_id=user_id,
                                        recipient_role=user_role,
                                        read=False)
-    return len(messages.order_by(Message.sender_id,
+    return len(messages.group_by(Message.sender_id,
                                  Message.sender_role).all())
+
+
+def get_count_unread_messages(recipient, sender):
+    messages = Message.query.filter_by(recipient_id=recipient[0],
+                                       recipient_role=recipient[1],
+                                       sender_id=sender[0],
+                                       sender_role=sender[1],
+                                       read=False)
+    return len(messages.all())
 
 
 if not isfile("okayjournal/okayjournal.db"):
@@ -213,14 +222,3 @@ if not isfile("okayjournal/okayjournal.db"):
                                login="admin",
                                password_hash=generate_password_hash("admin")))
     db.session.commit()
-
-# print('aye')
-# # noinspection PyArgumentList
-# db.session.add(Teacher(name="Михаил",
-#                        surname="Зубенко",
-#                        patronymic="Петрович",
-#                        email="zubenko@dev.null",
-#                        login="teach000001",
-#                        password_hash=generate_password_hash('1'),
-#                        school_id=1))
-# db.session.commit()

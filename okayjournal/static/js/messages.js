@@ -2,7 +2,7 @@ $('#dialog-header').css('height', $('#div-new-dialog').css('height'));
 
 $('.dialog-content').hide();
 
-$('#message-text').on('keypress', function(e) {
+$('#message-text').on('keypress', function (e) {
     if (e.key == 'Enter')
         sendMessage();
 })
@@ -15,10 +15,10 @@ function openDialog(element) {
     var dialogMessages = $('#dialog-messages');
     dialogMessages.empty();
     recipient = $(element).attr('recipient');
-    recipientRole = $(element).attr('recipient-role');
-    recipientId = $(element).attr('recipient-id');
+    recipientRole = $(element).attr('recipient_role');
+    recipientId = $(element).attr('recipient_id');
 
-    $('#dialog-recipient').text($(element).attr('recipient-name'));
+    $('#dialog-recipient').text($(element).attr('recipient_name'));
 
     updateMessages();
     $('.dialog-content').show();
@@ -40,14 +40,14 @@ function addMessage(message) {
     var now = new Date();
     var dateString = messageDate.getHours().toString().padStart(2, '0') + ':' + messageDate.getMinutes().toString().padStart(2, '0');
     var todayMessage = now.getDate() == messageDate.getDate()
-                           && now.getMonth() == messageDate.getMonth();
+        && now.getMonth() == messageDate.getMonth();
     var todayYear = now.getFullYear() == messageDate.getFullYear();
     if (!todayMessage) {
         if (todayYear) {
             dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'}) + ' ' + dateString;
         } else {
             dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'}) + ' '
-                            + messageDate.getFullYear() + ' ' + dateString;
+                + messageDate.getFullYear() + ' ' + dateString;
         }
     }
     $('<span/>', {
@@ -66,15 +66,16 @@ function addMessage(message) {
 }
 
 function updateMessages() {
+    updateDialogs();
     if (recipient === null)
         return;
 
     //$('#dialog-messages').empty();
 
-    var messages = $.ajax('messages/' + recipient).done(function(messages) {
+    var messages = $.ajax('messages/' + recipient).done(function (messages) {
         for (var i in messages) {
             if (!$('#dialog-messages').children().toArray().some(
-                    (element, _, __) => $(element).attr('message_id') == messages[i].id)
+                (element, _, __) => $(element).attr('message_id') == messages[i].id)
             ) addMessage(messages[i]);
         }
     });
@@ -99,6 +100,38 @@ function sendMessage() {
     $('#message-text').val('');
 
     updateMessages();
+}
+
+function updateDialogs() {
+    var dialogs = $.ajax("dialogs").done(function (dialogs) {
+        $("#dialogs>a.hidden-link").detach();
+        for (var d in dialogs) {
+            var link = $("<a/>", {
+                href: "#",
+                class: "hidden-link",
+                recipient: d,
+                recipient_role: dialogs[d]["partner"]["role"],
+                recipient_id: dialogs[d]["partner"]["id"],
+                recipient_name: dialogs[d]["partner"]["name"],
+                onclick: "openDialog(this)"
+            });
+            var dialog = $("<div/>", {
+                class: "dialog-btn container py-2 px-3 border-bottom"
+            });
+            var name = $("<h5/>", {
+                text: dialogs[d]["partner"]["name"]
+            });
+            if ()
+            var last_message = $("<small/>", {
+                class: "text-muted",
+                text: dialogs[d]["text"]
+            });
+            name.appendTo(dialog);
+            last_message.appendTo(dialog);
+            dialog.appendTo(link);
+            link.appendTo($("#dialogs"));
+        }
+    });
 }
 
 setInterval(updateMessages, 1000);
