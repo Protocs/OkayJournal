@@ -18,5 +18,5 @@
 }
 
 .card:hover {
-    transform: scale(1.01);
+    transform: translateX(10px);
 }
