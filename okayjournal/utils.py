@@ -3,8 +3,8 @@ from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
 from .local_settings import EMAIL_PASSWORD
 
 from random import choice
-from string import ascii_lowercase as lowercase, ascii_uppercase as uppercase, \
-    digits
+from string import ascii_lowercase as lowercase, \
+    ascii_uppercase as uppercase, digits
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -16,20 +16,39 @@ LOGIN_PREFIXES = {Student.__name__: "stud", Parent.__name__: "par",
 SYMBOLS = list(filter(lambda char: char not in ['l', 'I', '1', 'o', 'O', '0'],
                       list(uppercase) + list(lowercase) + list(digits)))
 
-REGISTRATION_LETTER_TEXT = "Добро пожаловать в OkayJournal, {}!\nВаши данные" \
-                           " для входа в систему:\nЛогин: {}\nПароль: {}\nОбр" \
-                           "атите внимание, что данный пароль сгенерирован на" \
-                           "ми и его нужно будет изменить при первом входе в " \
-                           "систему.\nС уважением,\nАдминистрация OkayJournal"
-APPROVAL_LETTER_TEXT = "Здравствуйте, {}.\nВаша заявка была рассмотрена и о" \
-                       "добрена. Для Вас был сгенерирован логин:\n{}. \nДл" \
-                       "я входа в систему можете использовать его или электр" \
-                       "онную почту, а также пароль, который указывали при " \
-                       "регистрации.\nС уважением,\nАдминистрация OkayJournal"
-REJECTION_LETTER_TEXT = "Здравствуйте, {}.\nВаша заявка была рассмотрена и о" \
-                        "тклонена. Проверьте корректность введенных данных и " \
-                        "попробуйте ещё раз.\nС уважением,\nАдминистрация Ok" \
-                        "ayJournal"
+REGISTRATION_LETTER_TEXT = """Добро пожаловать в OkayJournal, {}!
+
+Ваши данные для входа в систему:
+
+Логин: {}
+Пароль: {}
+
+Обратите внимание, что данный пароль сгенерирован нами 
+и его нужно будет изменить при первом входе в систему.
+
+С уважением,
+Администрация OkayJournal"""
+
+APPROVAL_LETTER_TEXT = """Здравствуйте, {}.
+
+Ваша заявка была рассмотрена и одобрена.
+
+Для Вас был сгенерирован логин:
+{}
+
+Для входа в систему можете использовать его или электронную почту, 
+а также пароль, который указывали при регистрации.
+
+С уважением,
+Администрация OkayJournal"""
+
+REJECTION_LETTER_TEXT = """Здравствуйте, {}.
+
+Ваша заявка была рассмотрена и отклонена. 
+Проверьте корректность введенных данных и попробуйте ещё раз.
+
+С уважением,
+Администрация OkayJournal"""
 
 
 def generate_unique_login(user_status):
