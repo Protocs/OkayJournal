@@ -212,8 +212,8 @@ def users():
     add_student_form = AddStudentForm(prefix='add-student')
     add_parent_form = AddParentForm(prefix='add-parent')
 
-    if request.method == "POST":
-        if not validate_email(request.form["email"]):
+    if add_teacher_form.validate_on_submit():
+        if not validate_email(request.form["add-teacher-email"]):
             return render_template('journal/users.html', session=session,
                                    unread=get_count_unread_dialogs(
                                        user_id=session["user"]["id"],
@@ -226,10 +226,10 @@ def users():
         print(login, password)
         # noinspection PyArgumentList
         teacher = Teacher(school_id=session["user"]["school_id"],
-                          name=request.form["name"],
-                          surname=request.form["surname"],
-                          patronymic=request.form["patronymic"],
-                          email=request.form["email"],
+                          name=request.form["add-teacher-name"],
+                          surname=request.form["add-teacher-surname"],
+                          patronymic=request.form["add-teacher-patronymic"],
+                          email=request.form["add-teacher-email"],
                           login=login,
                           password_hash=
                           generate_password_hash(password))
@@ -291,23 +291,30 @@ def school_settings():
                            school=school)
 
 
-@app.route('/classes')
+@app.route('/classes', methods=["GET", "POST"])
 @school_admin_only
 @need_to_change_password
 def classes():
-    grades = Grade.query.filter_by(school_id=session['user']['school_id'])\
-        .all()
-    grades_structured = {}
-    for n in range(1, 12):
-        grades_structured[n] = list(sorted(
-                filter(lambda g: g.number == n, grades),
-                key=lambda g: g.letter))
-
+    if request.method == "POST":
+        grade_number = int(request.form["grade"].split()[0])
+        grade_letter = request.form["grade"].split()[1][1]
+        teacher = find_user_by_role(int(request.form["homeroom_teacher"]),
+                                    "Teacher")
+        grade = Grade(
+            number=grade_number,
+            letter=grade_letter,
+            school_id=session["user"]["school_id"]
+        )
+        db.session.add(grade)
+        db.session.commit()
+        teacher.homeroom_grade_id = grade.id
+        db.session.commit()
+    free_teachers = Teacher.query.filter_by(homeroom_grade_id=None).all()
     return render_template('journal/classes.html', session=session,
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
-                           grades=grades_structured)
+                           free_teachers=free_teachers)
 
 
 @app.route('/subjects', methods=["GET", "POST"])

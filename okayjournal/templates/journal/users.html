@@ -74,6 +74,7 @@ border-bottom-right-radius: 0.25rem;
 <!-- Диалог добавления учителя -->
 <div class="modal fade" tabindex="-1" role="dialog" id="add-teacher">
     <form method="post" id="add-teacher-form">
+        {{ add_teacher_form.csrf_token }}
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -98,7 +99,8 @@ border-bottom-right-radius: 0.25rem;
                             </div>
                         </div>
                         <div class="form-group">
-                            {{ add_teacher_form.email.label(style='position: relative; top: 2px;') }}
+                            {{ add_teacher_form.email.label(style='position:
+                            relative; top: 2px;') }}
                             {{ add_teacher_form.email(class_='form-control',
                             placeholder="Электронная почта") }}
                         </div>
@@ -106,11 +108,16 @@ border-bottom-right-radius: 0.25rem;
                     <div class="w-50 ml-3">
                         <label for="subjectSelect1">Предметы</label>
                         <div class="composed-text-inputs">
-                            <select class="custom-select" name="subjectSelect1" id="subjectSelect1" required></select>
-                            <select class="custom-select" name="subjectSelect2" id="subjectSelect2"></select>
-                            <select class="custom-select" name="subjectSelect3" id="subjectSelect3"></select>
-                            <select class="custom-select" name="subjectSelect4" id="subjectSelect4"></select>
-                            <select class="custom-select" name="subjectSelect5" id="subjectSelect5"></select>
+                            <select class="custom-select" name="subjectSelect1"
+                                    id="subjectSelect1" required></select>
+                            <select class="custom-select" name="subjectSelect2"
+                                    id="subjectSelect2"></select>
+                            <select class="custom-select" name="subjectSelect3"
+                                    id="subjectSelect3"></select>
+                            <select class="custom-select" name="subjectSelect4"
+                                    id="subjectSelect4"></select>
+                            <select class="custom-select" name="subjectSelect5"
+                                    id="subjectSelect5"></select>
                         </div>
                     </div>
                 </div>
@@ -143,26 +150,38 @@ border-bottom-right-radius: 0.25rem;
                         <div class="form-group mb-1">
                             <label for="add-student-surname">ФИО</label>
                             <div class="composed-text-inputs">
-                                {{ add_student_form.surname(class_='form-control', placeholder="Фамилия") }}
-                                {{ add_student_form.name(class_='form-control', placeholder="Имя") }}
-                                {{ add_student_form.patronymic(class_='form-control', placeholder="Отчество") }}
+                                {{
+                                add_student_form.surname(class_='form-control',
+                                placeholder="Фамилия") }}
+                                {{ add_student_form.name(class_='form-control',
+                                placeholder="Имя") }}
+                                {{
+                                add_student_form.patronymic(class_='form-control',
+                                placeholder="Отчество") }}
                             </div>
                         </div>
                         <div class="form-group">
-                            {{ add_student_form.email.label(style='position: relative; top: 2px;') }}
-                            {{ add_student_form.email(class_='form-control', placeholder="Электронная почта") }}
+                            {{ add_student_form.email.label(style='position:
+                            relative; top: 2px;') }}
+                            {{ add_student_form.email(class_='form-control',
+                            placeholder="Электронная почта") }}
                         </div>
                     </div>
                     <div class="w-50 ml-3">
                         <label for="add-student-grade-number">Класс</label>
-                        {{ add_student_form.grade_number(class_='form-control') }}
-                        {{ add_student_form.grade_letter(class_='form-control') }}
+                        {{ add_student_form.grade_number(class_='form-control')
+                        }}
+                        {{ add_student_form.grade_letter(class_='form-control')
+                        }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Отменить
+                    </button>
                     <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
-                    {{ add_student_form.submit(class_='btn btn-primary', form='add-student-form') }}
+                    {{ add_student_form.submit(class_='btn btn-primary',
+                    form='add-student-form') }}
                 </div>
             </div>
         </div>
@@ -185,14 +204,21 @@ border-bottom-right-radius: 0.25rem;
                         <div class="form-group mb-1">
                             <label for="add-parent-surname">ФИО</label>
                             <div class="composed-text-inputs">
-                                {{ add_parent_form.surname(class_='form-control', placeholder="Фамилия") }}
-                                {{ add_parent_form.name(class_='form-control', placeholder="Имя") }}
-                                {{ add_parent_form.patronymic(class_='form-control', placeholder="Отчество") }}
+                                {{
+                                add_parent_form.surname(class_='form-control',
+                                placeholder="Фамилия") }}
+                                {{ add_parent_form.name(class_='form-control',
+                                placeholder="Имя") }}
+                                {{
+                                add_parent_form.patronymic(class_='form-control',
+                                placeholder="Отчество") }}
                             </div>
                         </div>
                         <div class="form-group">
-                            {{ add_parent_form.email.label(style='position: relative; top: 2px;') }}
-                            {{ add_parent_form.email(class_='form-control', placeholder="Электронная почта") }}
+                            {{ add_parent_form.email.label(style='position:
+                            relative; top: 2px;') }}
+                            {{ add_parent_form.email(class_='form-control',
+                            placeholder="Электронная почта") }}
                         </div>
                     </div>
                     <div class="w-50 ml-3">
@@ -200,9 +226,12 @@ border-bottom-right-radius: 0.25rem;
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Отменить
+                    </button>
                     <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
-                    {{ add_parent_form.submit(class_='btn btn-primary', form='add-parent-form') }}
+                    {{ add_parent_form.submit(class_='btn btn-primary',
+                    form='add-parent-form') }}
                 </div>
             </div>
         </div>
@@ -224,7 +253,9 @@ border-bottom-right-radius: 0.25rem;
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             {% for teacher in teachers %}
-            <li class="list-group-item">{{ teacher.surname }} {{ teacher.name }} {{ teacher.patronymic }}</li>
+            <li class="list-group-item">{{ teacher.surname }} {{ teacher.name
+                }} {{ teacher.patronymic }}
+            </li>
             {% endfor %}
         </ul>
     </div>
@@ -236,7 +267,9 @@ border-bottom-right-radius: 0.25rem;
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             {% for student in students %}
-            <li class="list-group-item">{{ student.surname }} {{ student.name }} {{ student.patronymic }}</li>
+            <li class="list-group-item">{{ student.surname }} {{ student.name
+                }} {{ student.patronymic }}
+            </li>
             {% endfor %}
         </ul>
     </div>
@@ -248,7 +281,9 @@ border-bottom-right-radius: 0.25rem;
                 <li class="add text-center list-group-item text-muted">+</li>
             </a>
             {% for parent in parents %}
-            <li class="list-group-item">{{ parent.surname }} {{ parent.name }} {{ parent.patronymic }}</li>
+            <li class="list-group-item">{{ parent.surname }} {{ parent.name }}
+                {{ parent.patronymic }}
+            </li>
             {% endfor %}
         </ul>
     </div>

@@ -135,3 +135,16 @@ def send_message():
                            text=request.json['text']))
     db.session.commit()
     return jsonify({'success': 'OK'})
+
+
+@app.route("/get_classes")
+@school_admin_only
+def get_classes():
+    grades = Grade.query.filter_by(school_id=session['user']['school_id']) \
+        .all()
+    grades_structured = {}
+    for n in range(1, 12):
+        grades_structured[n] = list(g.letter for g in sorted(
+            filter(lambda g: g.number == n, grades),
+            key=lambda g: g.letter))
+    return jsonify(grades_structured)

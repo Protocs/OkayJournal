@@ -4,21 +4,64 @@
 {{ super() }}
 
 <div class="row py-3 mx-auto w-75">
-    {% for i in range(11) %}
+    {% for i in range(1, 12) %}
     <div class="card p-3 m-2">
-        <h3 class="card-title">{{ i + 1 }} классы</h3>
-        <div class="card-text">
-            {% for grade in grades[i + 1] %}
-            <button type="button" class="btn btn-primary">{{ grade.letter }}</button>
-            {% endfor %}
-            <button type="button" class="btn btn-light" onclick="">+</button>
-        </div>
+        <h3 class="card-title">{{ i }} классы</h3>
+        <div class="card-text" id="card{{ i }}"></div>
     </div>
     {% endfor %}
 </div>
 
-<script>
+<div class="modal fade" id="addClass" tabindex="-1" role="dialog"
+     aria-labelledby="addClassLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addClassLabel">Новый класс</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="grade_input_readonly"
+                               class="col-sm-2 col-form-label">Новый
+                            класс</label>
+                        <div class="col-sm-10" id="grade">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="homeroom_teacher"
+                               class="col-sm-2 col-form-label">Классный
+                            руководитель</label>
+                        <div class="col-sm-10">
+                            <select id="homeroom_teacher" class="custom-select"
+                                    name="homeroom_teacher" required>
+                                {% for teacher in free_teachers %}
+                                <option value="{{ teacher.id }}">{{
+                                    teacher.surname
+                                    }} {{ teacher.name }} {{ teacher.patronymic
+                                    }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Отменить
+                        </button>
+                        <button type="submit" class="btn btn-primary">Создать
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-</script>
+<script src="{{ url_for('static', filename='js/add_class.js') }}"></script>
 
 {% endblock %}
