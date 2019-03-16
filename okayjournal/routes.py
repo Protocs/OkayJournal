@@ -280,10 +280,19 @@ def school_settings():
 @school_admin_only
 @need_to_change_password
 def classes():
+    grades = Grade.query.filter_by(school_id=session['user']['school_id'])\
+        .all()
+    grades_structured = {}
+    for n in range(1, 12):
+        grades_structured[n] = list(sorted(
+                filter(lambda g: g.number == n, grades),
+                key=lambda g: g.letter))
+
     return render_template('journal/classes.html', session=session,
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           grades=grades_structured)
 
 
 @app.route('/subjects', methods=["GET", "POST"])
@@ -333,8 +342,8 @@ def settings():
         return render_template('journal/settings.html', session=session,
                                form=form, password_change_success=True,
                                unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                                   user_id=session["user"]["id"],
+                                   user_role=session["role"]))
 
     return render_template('journal/settings.html', session=session, form=form,
                            unread=get_count_unread_dialogs(
