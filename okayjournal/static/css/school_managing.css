@@ -12,3 +12,11 @@
     padding-bottom: 7px;
     margin-right: 5px;
 }
+
+.card {
+    transition: 0.5s all;
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
