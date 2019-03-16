@@ -1,7 +1,6 @@
 from itertools import cycle
-import email.utils
 
-from flask import render_template, request, redirect, session, jsonify
+from flask import render_template, request
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from validate_email import validate_email
@@ -209,7 +208,10 @@ def school_managing():
 @school_admin_only
 @need_to_change_password
 def users():
-    add_teacher_form = AddTeacherForm()
+    add_teacher_form = AddTeacherForm(prefix='add-teacher')
+    add_student_form = AddStudentForm(prefix='add-student')
+    add_parent_form = AddParentForm(prefix='add-parent')
+
     if request.method == "POST":
         if not validate_email(request.form["email"]):
             return render_template('journal/users.html', session=session,
@@ -240,11 +242,24 @@ def users():
                                  teacher.name)
         db.session.add(teacher)
         db.session.commit()
+
+    teachers = Teacher.query \
+        .filter_by(school_id=session['user']['school_id']).all()
+    students = Student.query \
+        .filter_by(school_id=session['user']['school_id']).all()
+    parents = Parent.query.filter_by(school_id=session['user']['school_id']) \
+        .all()
+
     return render_template('journal/users.html', session=session,
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]),
-                           add_teacher_form=add_teacher_form)
+                           add_teacher_form=add_teacher_form,
+                           add_student_form=add_student_form,
+                           add_parent_form=add_parent_form,
+                           teachers=teachers,
+                           students=students,
+                           parents=parents)
 
 
 @app.route('/school_settings', methods=['GET', 'POST'])
