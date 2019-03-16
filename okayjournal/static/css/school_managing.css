@@ -1,0 +1,14 @@
+.hidden-link {
+    color: inherit;
+}
+
+.hidden-link:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.icon {
+    width: 20px;
+    padding-bottom: 7px;
+    margin-right: 5px;
+}
