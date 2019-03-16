@@ -11,13 +11,12 @@
 <div class="d-flex flex-column" style="height: 100vh;">
     {{ super() }}
 
-    <div class="modal fade" id="addRecipient" tabindex="-1" role="dialog"
-         aria-labelledby="addRecipientLabel" aria-hidden="true">
+    <div class="modal fade" id="newMessage" tabindex="-1" role="dialog"
+         aria-labelledby="newMessageLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addRecipientLabel">Добавить
-                        получателя</h5>
+                    <h5 class="modal-title" id="newMessageLabel">Новое сообщение</h5>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -102,7 +101,7 @@
 
     <div class="messenger">
         <div class="dialogs-drawer" id="dialogs">
-            <a href="#" data-toggle="modal" data-target="#addRecipient">
+            <a href="#" data-toggle="modal" data-target="#newMessage" id="addRecipientLink">
                 <div class="dialog-btn container py-1 px-3 border-bottom" id="div-new-dialog">
                     <h1 class="text-muted text-center m-0">+</h1>
                 </div>

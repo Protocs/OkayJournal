@@ -109,7 +109,7 @@ function updateDialogs() {
             var link = $("<a/>", {
                 href: "#",
                 class: "hidden-link",
-                recipient: d,
+                recipient: dialogs[d]["partner"]["login"],
                 recipient_role: dialogs[d]["partner"]["role"],
                 recipient_id: dialogs[d]["partner"]["id"],
                 recipient_name: dialogs[d]["partner"]["name"],
@@ -128,7 +128,7 @@ function updateDialogs() {
             name.appendTo(dialog);
             last_message.appendTo(dialog);
             dialog.appendTo(link);
-            link.appendTo($("#dialogs"));
+            link.insertAfter($("#addRecipientLink"));
         }
     });
 }

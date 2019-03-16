@@ -96,14 +96,15 @@ def get_dialogs():
         else:
             partner = recipient
         # Если диалог с этим человеком уже есть в словаре, то пойдем дальше
-        if partner.login in dialogs:
+        if any(partner.login == dialogs[k]["partner"]["login"]
+               for k in dialogs):
             continue
         if (message.sender_id, message.sender_role) == (session["user"]["id"],
                                                         session["role"]):
             last_message_text = "Вы: " + message.text
         else:
             last_message_text = message.text
-        dialogs.update({partner.login: {
+        dialogs.update({str(message.date.timestamp()): {
             "text": last_message_text,
             "sender": {
                 "id": message.sender_id,
@@ -113,7 +114,8 @@ def get_dialogs():
                 "id": partner.id,
                 "role": partner.__class__.__name__,
                 "name": " ".join([partner.surname, partner.name,
-                                  partner.patronymic])
+                                  partner.patronymic]),
+                "login": partner.login
             },
             "unread": get_count_unread_messages((session["user"]["id"],
                                                  session["role"]),
