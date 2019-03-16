@@ -116,18 +116,25 @@ def admin():
                             city=register_request.city,
                             school=register_request.school)
             db.session.add(school)
+            login = generate_unique_login("SchoolAdmin")
             # noinspection PyArgumentList
             school_admin = SchoolAdmin(
                 name=register_request.name,
                 surname=register_request.surname,
                 patronymic=register_request.patronymic,
                 email=register_request.email,
-                login=generate_unique_login("SchoolAdmin"),
+                login=login,
                 school_id=school.id,
                 password_hash=register_request.password_hash,
                 throwaway_password=False)
             db.session.add(school_admin)
             db.session.commit()
+            send_approval_letter(school_admin.email,
+                                 school_admin.login,
+                                 school_admin.name)
+        else:
+            send_rejection_letter(register_request.email,
+                                  register_request.name)
         db.session.delete(register_request)
         db.session.commit()
 
@@ -332,6 +339,8 @@ def users():
                 if request.form[k] != "none":
                     subj = Subject.query.filter_by(id=int(request.form[k]))
                     teacher.subjects.append(subj.first())
+        send_registration_letter(teacher.email, teacher.login, password,
+                                 teacher.name)
         db.session.add(teacher)
         db.session.commit()
     return render_template('journal/users.html', session=session,
@@ -450,6 +459,7 @@ def settings():
 @need_to_change_password
 def journal():
     return render_template('journal.html')
+
 
 @app.route('/timetable')
 @login_required

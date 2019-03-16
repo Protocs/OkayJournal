@@ -1,15 +1,35 @@
 from flask import session, redirect, make_response
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
+from .local_settings import EMAIL_PASSWORD
 
 from random import choice
 from string import ascii_lowercase as lowercase, ascii_uppercase as uppercase, \
     digits
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 LOGIN_PREFIXES = {Student.__name__: "stud", Parent.__name__: "par",
                   SchoolAdmin.__name__: "admin", Teacher.__name__: "teach"}
 
-SYMBOLS = list(filter(lambda chr: chr not in ['l', 'I', '1', 'o', 'O', '0'],
+SYMBOLS = list(filter(lambda char: char not in ['l', 'I', '1', 'o', 'O', '0'],
                       list(uppercase) + list(lowercase) + list(digits)))
+
+REGISTRATION_LETTER_TEXT = "Добро пожаловать в OkayJournal, {}!\nВаши данные" \
+                           " для входа в систему:\nЛогин: {}\nПароль: {}\nОбр" \
+                           "атите внимание, что данный пароль сгенерирован на" \
+                           "ми и его нужно будет изменить при первом входе в " \
+                           "систему.\nС уважением,\nАдминистрация OkayJournal"
+APPROVAL_LETTER_TEXT = "Здравствуйте, {}.\nВаша заявка была рассмотрена и о" \
+                       "добрена. Для Вас был сгенерирован логин:\n{}. \nДл" \
+                       "я входа в систему можете использовать его или электр" \
+                       "онную почту, а также пароль, который указывали при " \
+                       "регистрации.\nС уважением,\nАдминистрация OkayJournal"
+REJECTION_LETTER_TEXT = "Здравствуйте, {}.\nВаша заявка была рассмотрена и о" \
+                        "тклонена. Проверьте корректность введенных данных и "\
+                        "попробуйте ещё раз.\nС уважением,\nАдминистрация Ok" \
+                        "ayJournal"
 
 
 def generate_unique_login(user_status):
@@ -79,3 +99,48 @@ def user_equal(user1, user2):
     else:
         user2_data = (user2.id, user2.__class__.__name__)
     return user1_data == user2_data
+
+
+def send_registration_letter(email, login, password, name):
+    message = MIMEMultipart()
+    message['From'] = "admin@okayjournal.ru"
+    message['To'] = email
+    message['Subject'] = 'Регистрация в OkayJournal'
+    text = REGISTRATION_LETTER_TEXT.format(name, login, password)
+    message.attach(MIMEText(text, 'plain'))
+
+    server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+    server.login("admin@okayjournal.ru", EMAIL_PASSWORD)
+    server.send_message(message)
+    server.quit()
+    return True
+
+
+def send_approval_letter(email, login, name):
+    message = MIMEMultipart()
+    message['From'] = "admin@okayjournal.ru"
+    message['To'] = email
+    message['Subject'] = 'Регистрация в OkayJournal'
+    text = APPROVAL_LETTER_TEXT.format(name, login)
+    message.attach(MIMEText(text, 'plain'))
+
+    server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+    server.login("admin@okayjournal.ru", EMAIL_PASSWORD)
+    server.send_message(message)
+    server.quit()
+    return True
+
+
+def send_rejection_letter(email, name):
+    message = MIMEMultipart()
+    message['From'] = "admin@okayjournal.ru"
+    message['To'] = email
+    message['Subject'] = 'Регистрация в OkayJournal'
+    text = REJECTION_LETTER_TEXT.format(name)
+    message.attach(MIMEText(text, 'plain'))
+
+    server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+    server.login("admin@okayjournal.ru", EMAIL_PASSWORD)
+    server.send_message(message)
+    server.quit()
+    return True
