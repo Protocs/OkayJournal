@@ -139,6 +139,7 @@ def send_message():
 
 @app.route("/get_classes")
 @school_admin_only
+@need_to_change_password
 def get_classes():
     grades = Grade.query.filter_by(
         school_id=session['user']['school_id']).all()
@@ -152,6 +153,7 @@ def get_classes():
 
 @app.route("/get_parents")
 @school_admin_only
+@need_to_change_password
 def get_parents():
     parents = Parent.query.filter_by(
         school_id=session["user"]["school_id"]).all()
@@ -159,4 +161,26 @@ def get_parents():
     for parent in parents:
         response.update({parent.id: " ".join(
             [parent.surname, parent.name, parent.patronymic])})
+    return jsonify(response)
+
+
+@app.route("/get_class/<int:number>/<letter>")
+@school_admin_only
+@need_to_change_password
+def get_class(number, letter):
+    grade = Grade.query.filter_by(
+        number=number,
+        letter=letter, school_id=session["user"]["school_id"]).first()
+    homeroom_teacher = Teacher.query.filter_by(
+        school_id=session["user"]["school_id"],
+        homeroom_grade_id=grade.id).first()
+    response = {"id": grade.id, "homeroom_teacher": {
+        "id": homeroom_teacher.id,
+        "name": " ".join([homeroom_teacher.surname, homeroom_teacher.name,
+                          homeroom_teacher.patronymic])
+    }, "students": []}
+    for student in sorted(grade.students,
+                          key=lambda s: (s.surname, s.name, s.patronymic)):
+        response["students"].append(" ".join([student.surname, student.name,
+                                              student.patronymic]))
     return jsonify(response)

@@ -9,7 +9,11 @@ var classes = $.ajax("get_classes").done(function (classes) {
             var grade_button = $("<button/>", {
                 type: "button",
                 class: "btn btn-primary",
-                text: grade
+                text: grade,
+                "data-toggle": "modal",
+                "data-target": "#gradeInfo",
+                grade_number: i,
+                grade_letter: grade
             });
             grade_button.appendTo(card);
         });
@@ -41,5 +45,25 @@ var classes = $.ajax("get_classes").done(function (classes) {
         });
         grade.appendTo($("#grade"));
     });
+
+    $("#gradeInfo").on("show.bs.modal", function (e) {
+        $("#students_info").empty();
+        $("#homeroom_teacher_info").empty();
+        var grade_number = e.relatedTarget.getAttribute("grade_number");
+        var grade_letter = e.relatedTarget.getAttribute("grade_letter");
+        $("#gradeInfoLabel").text(grade_number.toString() + grade_letter);
+        $.ajax("get_class/" + grade_number.toString() + "/" + grade_letter).done(function (grade) {
+            var homeroom_teacher = $("<p/>", {
+                text: grade["homeroom_teacher"]["name"]
+            });
+            for (var s in grade["students"]) {
+                var student = $("<p/>", {
+                    text: grade["students"][s]
+                });
+                student.appendTo($("#students_info"));
+            }
+            homeroom_teacher.appendTo($("#homeroom_teacher_info"));
+        });
+    })
 });
 
