@@ -11,6 +11,13 @@ var recipient = null;
 var recipientRole = null;
 var recipientId = null;
 
+const ROLES = {
+    "SchoolAdmin": "школьный администратор",
+    "Teacher": "учитель",
+    "Student": "ученик",
+    "Parent": "родитель"
+};
+
 function openDialog(element) {
     var dialogMessages = $('#dialog-messages');
     dialogMessages.empty();
@@ -18,7 +25,8 @@ function openDialog(element) {
     recipientRole = $(element).attr('recipient_role');
     recipientId = $(element).attr('recipient_id');
 
-    $('#dialog-recipient').text($(element).attr('recipient_name'));
+    var recipientRoleText = ROLES[recipientRole];
+    $('#dialog-recipient').text(recipientRoleText + " " + $(element).attr('recipient_name'));
 
     // Пометим сообщения как прочитанные
     $.ajax("messages/" + recipient, {
@@ -32,8 +40,7 @@ function openDialog(element) {
     var unread_dialogs = $("#unread_dialogs");
     if (unread_dialogs.text() - 1 > 0) {
         unread_dialogs.text(unread_dialogs.text() - 1);
-    }
-    else {
+    } else {
         unread_dialogs.remove();
     }
 
