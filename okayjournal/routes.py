@@ -108,7 +108,7 @@ def logout():
 
 
 @app.route("/admin", methods=["GET", "POST"])
-@login_required
+@restricted_access(["SystemAdmin"])
 def admin():
     if session["role"] != "SystemAdmin":
         return redirect("/index")
@@ -150,7 +150,7 @@ def admin():
 # journal routes
 
 @app.route('/diary')
-@login_required
+@restricted_access(["Student", "Parent"])
 @need_to_change_password
 def diary():
     week_days = cycle(['Понедельник',
@@ -201,7 +201,7 @@ def messages():
 
 
 @app.route('/school_managing')
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def school_managing():
     return render_template('journal/school_managing.html', session=session,
@@ -211,7 +211,7 @@ def school_managing():
 
 
 @app.route('/users', methods=["GET", "POST"])
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def users():
     add_teacher_form = AddTeacherForm(prefix='add-teacher')
@@ -324,7 +324,7 @@ def users():
 
 
 @app.route('/school_settings', methods=['GET', 'POST'])
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def school_settings():
     school = School.query.filter_by(id=session['user']['school_id']).first()
@@ -353,7 +353,7 @@ def school_settings():
 
 
 @app.route('/classes', methods=["GET", "POST"])
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def classes():
     if request.method == "POST":
@@ -379,7 +379,7 @@ def classes():
 
 
 @app.route('/subjects', methods=["GET", "POST"])
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def subjects():
     if request.method == "POST":
@@ -435,14 +435,16 @@ def settings():
 
 
 @app.route('/journal')
-@login_required
+@restricted_access(["Teacher"])
 @need_to_change_password
 def journal():
-    return render_template('journal.html')
+    return render_template('journal.html', unread=get_count_unread_dialogs(
+        user_id=session["user"]["id"],
+        user_role=session["role"]))
 
 
 @app.route('/timetable')
-@login_required
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def timetable():
     week_days = cycle(['Понедельник',

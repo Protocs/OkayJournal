@@ -8,9 +8,12 @@ transform: translate(-5%, 0);
 
 {% block body %}
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-    <a href="/main_page"><img class="mr-5" src="../static/img/logo.png" width="30" height="25" alt="OkayJournal"></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a href="/main_page"><img class="mr-5" src="../static/img/logo.png"
+                              width="30" height="25" alt="OkayJournal"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -24,17 +27,32 @@ transform: translate(-5%, 0);
             </li>
             {% if session["role"] == "SchoolAdmin" %}
             <li class="nav-item active">
-                <a class="nav-link" href="/school_managing">Управление школой</a>
+                <a class="nav-link" href="/school_managing">Управление
+                    школой</a>
+            </li>
+            {% endif %}
+            {% if session["role"] == "Teacher" %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/journal">Журнал</a>
+            </li>
+            {% endif %}
+            {% if session["role"] == "Student" or session["role"] == "Parent"
+            %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/diary">Дневник</a>
             </li>
             {% endif %}
         </ul>
         <span class="navbar-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink"
+            <a class="nav-link dropdown-toggle text-white" href="#"
+               id="navbarDropdownMenuLink"
                role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               data-toggle="dropdown" aria-haspopup="true"
+               aria-expanded="false">
                 {{ session['user']["surname"] }} {{ session['user']["name"][0] }}. {{ session['user']["patronymic"][0] }}.
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <div class="dropdown-menu"
+                 aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="/settings">Настройки</a>
                 <a class="dropdown-item" href="/logout">Выйти</a>
             </div>

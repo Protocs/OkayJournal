@@ -87,14 +87,17 @@ def login_required(func):
     return decorated
 
 
-def school_admin_only(func):
-    @login_required
-    def decorated(*args, **kwargs):
-        if session['role'] != 'SchoolAdmin':
-            return make_response("Вы не являетесь школьным администратором.")
-        return func(*args, **kwargs)
+def restricted_access(allowed_users):
+    def decorated(func):
+        @login_required
+        def wrapped(*args, **kwargs):
+            if session["role"] not in allowed_users:
+                return make_response("Not found")
+            return func(*args, **kwargs)
 
-    decorated.__name__ = func.__name__
+        wrapped.__name__ = func.__name__
+        return wrapped
+
     return decorated
 
 

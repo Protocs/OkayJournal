@@ -7,7 +7,7 @@ import email.utils
 
 
 @app.route("/get_subjects")
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def get_subjects():
     subject_list = Subject.query.filter_by(
@@ -144,7 +144,7 @@ def send_message():
 
 
 @app.route("/get_classes")
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def get_classes():
     grades = Grade.query.filter_by(
@@ -158,7 +158,7 @@ def get_classes():
 
 
 @app.route("/get_parents")
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def get_parents():
     parents = Parent.query.filter_by(
@@ -171,7 +171,7 @@ def get_parents():
 
 
 @app.route("/get_class/<int:number>/<letter>")
-@school_admin_only
+@restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def get_class(number, letter):
     grade = Grade.query.filter_by(
