@@ -36,16 +36,22 @@ def login_route():
 
         # Запоминание пользователя
         session.permanent = form.remember.data
+        return redirect("/main_page")
 
-        if session["role"] == "Student":
-            return redirect("/diary")
-        elif session["role"] == "Teacher":
-            return redirect("/journal")
-        elif session['role'] == 'SystemAdmin':
-            return redirect('/admin')
-        elif session["role"] == "SchoolAdmin":
-            return redirect("/school_managing")
     return render_template("login.html", form=form, title="Авторизация")
+
+
+@app.route("/main_page")
+@login_required
+def main_page():
+    if session["role"] == "Student" or session["role"] == "Parent":
+        return redirect("/diary")
+    elif session["role"] == "Teacher":
+        return redirect("/journal")
+    elif session['role'] == 'SystemAdmin':
+        return redirect('/admin')
+    elif session["role"] == "SchoolAdmin":
+        return redirect("/school_managing")
 
 
 @app.route("/register", methods=["GET", "POST"])
