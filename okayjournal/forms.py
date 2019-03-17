@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    SelectField, IntegerField
-from wtforms.validators import DataRequired, EqualTo, NumberRange, Length
+    SelectField
+from wtforms.validators import DataRequired, EqualTo
 
 
 class LoginForm(FlaskForm):
@@ -59,11 +59,6 @@ class AddStudentForm(FlaskForm):
     name = StringField("Имя", validators=[DataRequired()])
     patronymic = StringField("Отчество", validators=[DataRequired()])
     email = StringField("Электронная почта", validators=[DataRequired()])
-    grade_number = IntegerField("Номер класса",
-                                validators=[DataRequired(),
-                                            NumberRange(1, 11)])
-    grade_letter = StringField("Буква класса", validators=[DataRequired(),
-                                                           Length(1, 1)])
     submit = SubmitField("Добавить")
 
 

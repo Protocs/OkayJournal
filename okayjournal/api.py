@@ -140,11 +140,23 @@ def send_message():
 @app.route("/get_classes")
 @school_admin_only
 def get_classes():
-    grades = Grade.query.filter_by(school_id=session['user']['school_id']) \
-        .all()
+    grades = Grade.query.filter_by(
+        school_id=session['user']['school_id']).all()
     grades_structured = {}
     for n in range(1, 12):
         grades_structured[n] = list(g.letter for g in sorted(
             filter(lambda g: g.number == n, grades),
             key=lambda g: g.letter))
     return jsonify(grades_structured)
+
+
+@app.route("/get_parents")
+@school_admin_only
+def get_parents():
+    parents = Parent.query.filter_by(
+        school_id=session["user"]["school_id"]).all()
+    response = {}
+    for parent in parents:
+        response.update({parent.id: " ".join(
+            [parent.surname, parent.name, parent.patronymic])})
+    return jsonify(response)

@@ -212,13 +212,23 @@ def users():
     add_student_form = AddStudentForm(prefix='add-student')
     add_parent_form = AddParentForm(prefix='add-parent')
 
+    kwargs = {"session": session,
+              "unread": get_count_unread_dialogs(
+                  user_id=session["user"]["id"],
+                  user_role=session["role"]),
+              "add_teacher_form": add_teacher_form,
+              "add_student_form": add_student_form,
+              "add_parent_form": add_parent_form,
+              "teachers": Teacher.query.filter_by(
+                  school_id=session['user']['school_id']).all(),
+              "parents": Parent.query.filter_by(
+                  school_id=session['user']['school_id']).all(),
+              "students": Student.query.filter_by(
+                  school_id=session['user']['school_id']).all()}
+
     if add_teacher_form.validate_on_submit():
         if not validate_email(request.form["add-teacher-email"]):
-            return render_template('journal/users.html', session=session,
-                                   unread=get_count_unread_dialogs(
-                                       user_id=session["user"]["id"],
-                                       user_role=session["role"]),
-                                   add_teacher_form=add_teacher_form,
+            return render_template('journal/users.html', **kwargs,
                                    error="Некорректный адрес электронной "
                                          "почты")
         password = generate_throwaway_password()
@@ -242,24 +252,69 @@ def users():
                                  teacher.name)
         db.session.add(teacher)
         db.session.commit()
+        kwargs["teachers"] = Teacher.query.filter_by(
+            school_id=session['user']['school_id']).all()
 
-    teachers = Teacher.query \
-        .filter_by(school_id=session['user']['school_id']).all()
-    students = Student.query \
-        .filter_by(school_id=session['user']['school_id']).all()
-    parents = Parent.query.filter_by(school_id=session['user']['school_id']) \
-        .all()
+    if add_student_form.validate_on_submit():
+        if not validate_email(request.form["add-student-email"]):
+            return render_template('journal/users.html', **kwargs,
+                                   error="Некорректный адрес электронной "
+                                         "почты")
+        password = generate_throwaway_password()
+        login = generate_unique_login("Student")
+        print(login, password)
 
-    return render_template('journal/users.html', session=session,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           add_teacher_form=add_teacher_form,
-                           add_student_form=add_student_form,
-                           add_parent_form=add_parent_form,
-                           teachers=teachers,
-                           students=students,
-                           parents=parents)
+        grade = Grade.query.filter_by(school_id=session["user"]["school_id"],
+                                      number=int(request.form["grade_number"]),
+                                      letter=request.form["grade_letter"])
+        # noinspection PyArgumentList
+        student = Student(school_id=session["user"]["school_id"],
+                          name=request.form["add-student-name"],
+                          surname=request.form["add-student-surname"],
+                          patronymic=request.form["add-student-patronymic"],
+                          email=request.form["add-student-email"],
+                          login=login,
+                          password_hash=
+                          generate_password_hash(password),
+                          grade_id=grade.first().id,
+                          parent_id=int(request.form["parent"]))
+        db.session.add(student)
+        db.session.commit()
+
+        send_registration_letter(student.email, student.login, password,
+                                 student.name)
+
+        kwargs["students"] = Student.query.filter_by(
+            school_id=session['user']['school_id']).all()
+
+    if add_parent_form.validate_on_submit():
+        if not validate_email(request.form["add-parent-email"]):
+            return render_template('journal/users.html', **kwargs,
+                                   error="Некорректный адрес электронной "
+                                         "почты")
+        password = generate_throwaway_password()
+        login = generate_unique_login("Parent")
+        print(login, password)
+
+        # noinspection PyArgumentList
+        parent = Parent(school_id=session["user"]["school_id"],
+                        name=request.form["add-parent-name"],
+                        surname=request.form["add-parent-surname"],
+                        patronymic=request.form["add-parent-patronymic"],
+                        email=request.form["add-parent-email"],
+                        login=login,
+                        password_hash=
+                        generate_password_hash(password))
+        db.session.add(parent)
+        db.session.commit()
+
+        send_registration_letter(parent.email, parent.login, password,
+                                 parent.name)
+
+        kwargs["parents"] = Parent.query.filter_by(
+            school_id=session['user']['school_id']).all()
+
+    return render_template('journal/users.html', **kwargs)
 
 
 @app.route('/school_settings', methods=['GET', 'POST'])

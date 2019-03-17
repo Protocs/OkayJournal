@@ -136,7 +136,8 @@ border-bottom-right-radius: 0.25rem;
 
 <!-- Диалог добавления ученика -->
 <div class="modal fade" tabindex="-1" role="dialog" id="add-student">
-    <form method="post" id="add-student-form">
+    <form method="post" id="add-student-form" action="/users">
+        {{ add_student_form.csrf_token }}
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -168,11 +169,19 @@ border-bottom-right-radius: 0.25rem;
                         </div>
                     </div>
                     <div class="w-50 ml-3">
-                        <label for="add-student-grade-number">Класс</label>
-                        {{ add_student_form.grade_number(class_='form-control')
-                        }}
-                        {{ add_student_form.grade_letter(class_='form-control')
-                        }}
+                        <div class="form-group">
+                            <label for="grade_number_select">Класс</label>
+                            <select id="grade_number_select"
+                                    name="grade_number"
+                                    class="form-control"></select>
+                            <select name="grade_letter" class="form-control"
+                                    id="grade_letter_select"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="parent_select">Родитель</label>
+                            <select id="parent_select" class="form-control"
+                                    name="parent"></select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -191,6 +200,7 @@ border-bottom-right-radius: 0.25rem;
 <!-- Диалог добавления родителя -->
 <div class="modal fade" tabindex="-1" role="dialog" id="add-parent">
     <form method="post" id="add-parent-form">
+        {{ add_parent_form.csrf_token }}
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -200,7 +210,7 @@ border-bottom-right-radius: 0.25rem;
                     </button>
                 </div>
                 <div class="modal-body d-flex">
-                    <div class="w-50">
+                    <div class="w-100">
                         <div class="form-group mb-1">
                             <label for="add-parent-surname">ФИО</label>
                             <div class="composed-text-inputs">
@@ -220,9 +230,6 @@ border-bottom-right-radius: 0.25rem;
                             {{ add_parent_form.email(class_='form-control',
                             placeholder="Электронная почта") }}
                         </div>
-                    </div>
-                    <div class="w-50 ml-3">
-                        <!-- TODO: Дети -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -290,5 +297,6 @@ border-bottom-right-radius: 0.25rem;
 </div>
 
 <script src="{{ url_for('static', filename='js/teacher_add.js') }}"></script>
+<script src="{{ url_for('static', filename='js/student_add.js') }}"></script>
 
 {% endblock %}
