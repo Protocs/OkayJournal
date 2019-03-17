@@ -5,7 +5,7 @@ $('.dialog-content').hide();
 $('#message-text').on('keypress', function (e) {
     if (e.key == 'Enter')
         sendMessage();
-})
+});
 
 var recipient = null;
 var recipientRole = null;
@@ -20,6 +20,23 @@ function openDialog(element) {
 
     $('#dialog-recipient').text($(element).attr('recipient_name'));
 
+    // Пометим сообщения как прочитанные
+    $.ajax("messages/" + recipient, {
+        type: "POST",
+        data: JSON.stringify({
+            mark_as_read: true
+        }),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'
+    });
+    var unread_dialogs = $("#unread_dialogs");
+    if (unread_dialogs.text() - 1 > 0) {
+        unread_dialogs.text(unread_dialogs.text() - 1);
+    }
+    else {
+        unread_dialogs.remove();
+    }
+
     updateMessages();
     $('.dialog-content').show();
 }
@@ -30,10 +47,6 @@ function addMessage(message) {
         text: message.text,
         message_id: message.id
     });
-
-    // Переносим сообщение влево, если оно от собеседника
-    if ($('user').attr('user-id') == message.recipient.id && $('user').attr('user-role') == message.recipient.role)
-        messageBody.addClass('align-self-start');
 
     // Метка времени
     var messageDate = new Date(message.date);
@@ -56,11 +69,18 @@ function addMessage(message) {
         text: dateString
     }).appendTo(messageBody);
 
-    // Метка прочтения
-    $('<span/>', {
-        style: 'position: relative; top: 0.25rem; font-size: 100%; color: #6db4ff; letter-spacing: -0.5em;',
-        text: '✓✓'
-    }).appendTo(messageBody);
+    // Переносим сообщение влево, если оно от собеседника
+    if ($('user').attr('user-id') == message.recipient.id && $('user').attr('user-role') == message.recipient.role) {
+        messageBody.addClass('align-self-start');
+    }
+    // Если сообщение не от собеседника, добавляем метку прочтения
+    else {
+        $('<span/>', {
+            style: 'position: relative; top: 0.25rem; font-size: 100%; color: #6db4ff; letter-spacing: -0.5em;',
+            text: message.read ? "✓✓" : "✓"
+        }).appendTo(messageBody);
+    }
+
 
     $('#dialog-messages').append(messageBody);
 }
@@ -95,7 +115,7 @@ function sendMessage() {
         }),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-    })
+    });
 
     $('#message-text').val('');
 
@@ -125,6 +145,14 @@ function updateDialogs() {
                 class: "text-muted",
                 text: dialogs[d]["text"]
             });
+            if (dialogs[d]["unread"] !== 0) {
+                var unread = $("<span/>", {
+                    class: "badge badge-secondary",
+                    text: dialogs[d]["unread"],
+                    style: "margin-left: 5px;"
+                });
+                unread.appendTo(last_message);
+            }
             name.appendTo(dialog);
             last_message.appendTo(dialog);
             dialog.appendTo(link);

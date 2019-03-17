@@ -21,7 +21,7 @@ def get_subjects():
     return jsonify(response)
 
 
-@app.route("/messages/<login>")
+@app.route("/messages/<login>", methods=["GET", "POST"])
 @login_required
 @need_to_change_password
 def get_dialog(login):
@@ -29,17 +29,23 @@ def get_dialog(login):
     recipient = find_user_by_login(login)
     if not recipient:
         return jsonify({"error": "Recipient not found"})
-    messages_from_sender = Message.query.filter_by(
-        sender_id=session["user"]["id"],
-        sender_role=session["role"],
-        recipient_id=recipient.id,
-        recipient_role=recipient.__class__.__name__
-    )
     messages_from_recipient = Message.query.filter_by(
         sender_id=recipient.id,
         sender_role=recipient.__class__.__name__,
         recipient_id=session["user"]["id"],
         recipient_role=session["role"]
+    )
+    if request.method == "POST":
+        if request.json.get("mark_as_read"):
+            for message in messages_from_recipient.all():
+                message.read = True
+            db.session.commit()
+            return jsonify({"success": "ok"})
+    messages_from_sender = Message.query.filter_by(
+        sender_id=session["user"]["id"],
+        sender_role=session["role"],
+        recipient_id=recipient.id,
+        recipient_role=recipient.__class__.__name__
     )
     all_messages = messages_from_sender.union(messages_from_recipient)
     response = {}

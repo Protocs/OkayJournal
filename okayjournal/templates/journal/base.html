@@ -18,7 +18,7 @@ transform: translate(-5%, 0);
             <li class="nav-item active">
                 <a class="nav-link" href="/messages">Мои сообщения
                     {% if unread %}
-                    <span class="badge badge-light">{{ unread }}</span>
+                    <span class="badge badge-light" id="unread_dialogs">{{ unread }}</span>
                     {% endif %}
                 </a>
             </li>
