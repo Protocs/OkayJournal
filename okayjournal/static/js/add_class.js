@@ -51,7 +51,7 @@ var classes = $.ajax("get_classes").done(function (classes) {
         $("#homeroom_teacher_info").empty();
         var grade_number = e.relatedTarget.getAttribute("grade_number");
         var grade_letter = e.relatedTarget.getAttribute("grade_letter");
-        $("#gradeInfoLabel").text(grade_number.toString() + grade_letter);
+        $("#gradeInfoLabel").text(grade_number.toString() + ' «' + grade_letter + '»');
         $.ajax("get_class/" + grade_number.toString() + "/" + grade_letter).done(function (grade) {
             var homeroom_teacher = $("<p/>", {
                 text: grade["homeroom_teacher"]["name"]
