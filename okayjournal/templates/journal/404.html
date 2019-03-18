@@ -8,8 +8,12 @@
 
 p {
 text-align: center;
+font-family: 'Titillium Web';
+}
+
+.error_text {
 font-size: 50px;
-font-family: 'Titillium Web', cursive;
+opacity: 0.75;
 }
 
 .error_number {
@@ -24,6 +28,6 @@ font-size: 72px;
 {{ super() }}
 
 <p class="error_number">404</p>
-<p>Страница не найдена</p>
+<p class="error_text">Страница не найдена</p>
 
 {% endblock %}
