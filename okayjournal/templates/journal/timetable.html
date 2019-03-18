@@ -1,42 +1,56 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/timetable.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
 {% endblock %}
 
 {% block style %}
-tr:first-child * {
-border-top: 0;
-}
 {% endblock %}
 
 {% block body %}
 {{ super() }}
 
-<div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 overflow-hidden">
-    <p class="lead">Класс: 9 "Б"</p>
-    <p class="lead">Четверть: 4</p>
+<div class="mx-5 my-3">
+    <p class="lead mb-1">Класс: <b>9 "Б"</b></p>
+    <p class="lead">Четверть: <b>4</b></p>
 </div>
 
 <div class="mx-5 mt-3">
-{% for i in range(2) %}
+    {% for i in range(2) %}
     <div class="row justify-content-around flex-nowrap align-items-stretch">
         {% for j in range(3) %}
-        <div class="day d-flex flex-column p-3">
+        <div class="day">
             <h3>{{ next(week_days) }}</h3>
-            <table class="table table-hover table-dark">
+            <table class="table table-hover table-dark mb-0">
+                <thead>
+                    <tr><th></th><th>Предмет</th><th>Учитель</th></tr>
+                </thead>
                 {% for k in range(6) %}
                 <tr>
                     <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
-                    <td class="align-middle"><b>Мотьематика</b></td>
+                    <td class="align-middle">
+                        <select>
+                            <option selected>Мотьематика</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </td>
+                    <td class="align-middle">
+                        <select>
+                            <option selected>Трипл В</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
+        {% endfor %}
+    </div>
     {% endfor %}
-</div>
-{% endfor %}
 </div>
 
 {% endblock %}

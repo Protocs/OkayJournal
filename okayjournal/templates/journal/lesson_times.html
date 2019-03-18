@@ -1,0 +1,82 @@
+{% extends 'journal/base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+{% endblock %}
+
+{% block style %}
+
+input {
+display: block;
+width: 100%;
+height: 2.25rem;
+background-color: transparent;
+border: 0;
+color: inherit;
+padding-left: 0.5rem;
+text-align: center;
+
+transition: background-color 0.2s ease-in-out 0s;
+}
+
+input:hover, #add-lesson:hover, input:focus {
+background-color: rgba(255, 255, 255, 0.075);
+}
+
+td {
+padding: 0 !important;
+}
+
+td, th {
+user-select: none;
+}
+
+#add-lesson {
+font-size: 250%;
+line-height: 125%;
+cursor: pointer;
+
+transition: background-color 0.2s ease-in-out 0s;
+}
+
+td:not(:last-child) {
+border-right: 1px solid #32383e;
+}
+
+tr:hover {
+background-color: inherit !important;
+}
+
+table {
+table-layout: fixed;
+}
+
+{% endblock %}
+
+{% block body %}
+{{ super() }}
+
+<div class="mt-4 w-50 mx-auto">
+    <table class="table table-hover table-dark mb-0">
+        <col style="width: 2rem;">
+        <thead>
+        <tr><th></th><th>Начинается в</th><th>Заканчивается в</th></tr>
+        </thead>
+        {% for k in range(6) %}
+        <tr>
+            <td class="lesson-number text-muted border-right align-middle text-center">{{ k + 1 }}</td>
+            <td class="align-middle">
+                <input type="time">
+            </td>
+            <td class="align-middle">
+                <input type="time">
+            </td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td id="add-lesson" colspan="2" class="text-center text-muted p-0" onclick="">+</td></tr>
+    </table>
+
+    <button class="btn btn-primary w-25 mt-3">Сохранить</button>
+</div>
+{% endblock %}

@@ -460,3 +460,10 @@ def timetable():
                                user_id=session["user"]["id"],
                                user_role=session["role"]
                            ))
+
+
+@app.route('/lesson_times')
+@restricted_access(['SchoolAdmin'])
+@need_to_change_password
+def lesson_times():
+    return render_template('journal/lesson_times.html')
