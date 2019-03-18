@@ -462,6 +462,41 @@ def timetable():
                            ))
 
 
+@app.route("/announcements", methods=["GET", "POST"])
+@login_required
+@need_to_change_password
+def announcements():
+    if request.method == "POST":
+        db.session.add(Announcement(
+            school_id=session["user"]["school_id"],
+            author_id=session["user"]["id"],
+            author_role=session["role"],
+            header=request.form.get("announcementHeader"),
+            text=request.form.get("announcement")
+        ))
+        db.session.commit()
+    announcements = {}
+    for announcement in Announcement.query.filter_by(
+            school_id=session["user"]["school_id"]).order_by(
+        Announcement.date).all():
+        author = find_user_by_role(announcement.author_id,
+                                   announcement.author_role)
+        announcements.update({announcement.id: {
+            "author": {
+                "name": " ".join([author.surname, author.name,
+                                  author.patronymic])
+            },
+            "header": announcement.header,
+            "text": announcement.text,
+            "date": announcement.date
+        }})
+    return render_template("journal/announcements.html",
+                           announcements=announcements,
+                           unread=get_count_unread_dialogs(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
+
+
 @app.route('/lesson_times')
 @restricted_access(['SchoolAdmin'])
 @need_to_change_password

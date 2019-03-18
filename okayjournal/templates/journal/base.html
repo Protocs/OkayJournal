@@ -21,9 +21,14 @@ transform: translate(-5%, 0);
             <li class="nav-item active">
                 <a class="nav-link" href="/messages">Мои сообщения
                     {% if unread %}
-                    <span class="badge badge-light" id="unread_dialogs">{{ unread }}</span>
+                    <span class="badge badge-light" id="unread_dialogs">
+                        {{ unread }}
+                    </span>
                     {% endif %}
                 </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/announcements">Доска объявлений</a>
             </li>
             {% if session["role"] == "SchoolAdmin" %}
             <li class="nav-item active">

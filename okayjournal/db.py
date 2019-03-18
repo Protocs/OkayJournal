@@ -161,6 +161,18 @@ class Message(db.Model):
     read = db.Column(db.Boolean, nullable=False, default=False)
 
 
+class Announcement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+    author_id = db.Column(db.Integer, nullable=False, unique=False)
+    author_role = db.Column(db.String(11), nullable=False, unique=False)
+    header = db.Column(db.String(80), nullable=False, unique=False)
+    text = db.Column(db.Text, unique=False, nullable=False)
+    date = db.Column(db.DateTime, nullable=False,
+                     default=lambda: datetime.now())
+
+
 USER_CLASSES = [Student, Parent, SchoolAdmin, Teacher]
 POSSIBLE_ATTRIBUTES = ["id", "name", "surname", "patronymic",
                        "password_hash", "login", "email", "school_id",
