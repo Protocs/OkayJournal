@@ -1,4 +1,4 @@
-from flask import session, redirect, make_response
+from flask import session, redirect, abort
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
 from .local_settings import EMAIL_PASSWORD
 
@@ -92,7 +92,7 @@ def restricted_access(allowed_users):
         @login_required
         def wrapped(*args, **kwargs):
             if session["role"] not in allowed_users:
-                return make_response("Not found")
+                return abort(404)
             return func(*args, **kwargs)
 
         wrapped.__name__ = func.__name__

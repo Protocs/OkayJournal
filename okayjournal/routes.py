@@ -534,3 +534,14 @@ def lesson_times():
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    if logged_in():
+        return render_template("journal/404.html",
+                               unread=get_count_unread_dialogs(
+                                   user_id=session["user"]["id"],
+                                   user_role=session["role"]))
+    else:
+        return redirect("/")

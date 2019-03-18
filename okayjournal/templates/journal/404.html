@@ -1,0 +1,29 @@
+{% extends "journal/base.html" %}
+
+{% block style %}
+
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+
+{{ super() }}
+
+p {
+text-align: center;
+font-size: 50px;
+font-family: 'Titillium Web', cursive;
+}
+
+.error_number {
+margin-top: 100px;
+font-size: 72px;
+}
+
+{% endblock %}
+
+{% block body %}
+
+{{ super() }}
+
+<p class="error_number">404</p>
+<p>Страница не найдена</p>
+
+{% endblock %}
