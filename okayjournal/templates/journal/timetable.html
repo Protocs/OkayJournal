@@ -5,13 +5,54 @@
 {% endblock %}
 
 {% block style %}
+
+.class-select {
+width: initial;
+height: initial;
+line-height: 1.3;
+}
+
+.class-select:focus {
+position: relative;
+z-index: 1;
+}
+
+#class-number-select {
+border-top-right-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+#class-letter-select {
+border-top-left-radius: 0;
+border-bottom-left-radius: 0;
+
+position: relative;
+left: -0.4em;
+}
+
+option {
+font-size: initial;
+}
+
 {% endblock %}
 
 {% block body %}
 {{ super() }}
 
 <div class="mx-5 my-3">
-    <p class="lead mb-1">Класс: <b>9 "Б"</b></p>
+    <p class="lead mb-1"><span class="align-middle">Класс</span>
+        <select class="custom-select class-select" id="class-number-select">
+            {% for i in range(1, 12) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+        <select class="custom-select class-select" id="class-letter-select">
+            <option value="1">F</option>
+            <option value="1">F</option>
+            <option value="1">F</option>
+            <option value="1">F</option>
+        </select>
+    </p>
     <p class="lead">Четверть: <b>4</b></p>
 </div>
 
@@ -23,13 +64,17 @@
             <h3>{{ next(week_days) }}</h3>
             <table class="table table-hover table-dark mb-0">
                 <thead>
-                    <tr><th></th><th>Предмет</th><th>Учитель</th></tr>
+                <tr>
+                    <th></th>
+                    <th>Предмет</th>
+                    <th>Учитель</th>
+                </tr>
                 </thead>
                 {% for k in range(6) %}
                 <tr>
                     <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
                     <td class="align-middle">
-                        <select>
+                        <select class="subject">
                             <option selected>Мотьематика</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
@@ -37,7 +82,7 @@
                         </select>
                     </td>
                     <td class="align-middle">
-                        <select>
+                        <select class="teacher">
                             <option selected>Трипл В</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>

@@ -25,7 +25,7 @@ tr:first-child * {
     border-top: 0;
 }
 
-select {
+select.subject, select.teacher {
     background-color: transparent;
     color: inherit;
     border: 0;
