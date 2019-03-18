@@ -1,39 +1,39 @@
 {% extends "journal/base.html" %}
 
-{% block body %}
+{% block style %}
 
+small {
+display: block;
+font-size: 60%;
+line-height: 175%;
+}
+
+{% endblock %}
+
+{% block body %}
 {{ super() }}
 
 <div class="m-3">
-
     {% if session["role"] in ["Teacher", "SchoolAdmin"] %}
-    <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-            data-target="#addAnnouncement">
+    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addAnnouncement">
         Новое объявление
     </button>
     {% endif %}
 
-    <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog"
-         aria-labelledby="addAnnouncementLabel" aria-hidden="true">
+    <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addAnnouncementLabel">Новое
-                        объявление</h5>
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title" id="addAnnouncementLabel">Новое объявление</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <form method="post" name="addAnnouncementForm">
                     <div class="modal-body">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"
-                                       for="announcementHeader">Заголовок</label>
+                                <label class="input-group-text" for="announcementHeader">Заголовок</label>
                             </div>
-                            <input type="text" name="announcementHeader"
-                                   id="announcementHeader" class="form-control"
+                            <input type="text" name="announcementHeader" id="announcementHeader" class="form-control"
                                    required>
                         </div>
 
@@ -41,9 +41,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Объявление</span>
                             </div>
-                            <textarea class="form-control"
-                                      aria-label="Введите текст объявления"
-                                      name="announcement"
+                            <textarea class="form-control" aria-label="Введите текст объявления" name="announcement"
                                       required></textarea>
                         </div>
                     </div>
@@ -59,13 +57,17 @@
         </div>
     </div>
 
-    {% for k, v in announcements.items() %}
+    {% for k, v in reversed(list(announcements.items())) %}
     <div class="card" style="margin-top: 10px;">
-        <h5 class="card-header">{{ v["header"] }}</h5>
+        <h5 class="card-header">
+            {{ v["header"] }}
+            <div style="position: absolute; top: 0.25rem; right: 0.25rem; text-align: right;">
+                <span class="text-muted">{{ v["author"]["name"] }}</span>
+                <small class="text-muted">{{ v["date"] }}</small>
+            </div>
+        </h5>
         <div class="card-body">
             <p class="card-text">{{ v["text"] }}</p>
-            <p>АВТОР: {{ v["author"]["name"] }}</p>
-            <p>ДАТА: {{ v["date"] }}</p>
         </div>
     </div>
     {% endfor %}

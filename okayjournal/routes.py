@@ -494,7 +494,9 @@ def announcements():
                            announcements=announcements,
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
-                               user_role=session["role"]))
+                               user_role=session["role"]),
+                           reversed=reversed,
+                           list=list)
 
 
 @app.route('/lesson_times', methods=["GET", "POST"])
