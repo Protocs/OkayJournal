@@ -497,8 +497,40 @@ def announcements():
                                user_role=session["role"]))
 
 
-@app.route('/lesson_times')
+@app.route('/lesson_times', methods=["GET", "POST"])
 @restricted_access(['SchoolAdmin'])
 @need_to_change_password
 def lesson_times():
-    return render_template('journal/lesson_times.html')
+    if request.method == "POST":
+        for i in range(1, len(request.form) // 2 + 1):
+            start = request.form["start" + str(i)]
+            end = request.form["end" + str(i)]
+            if start and end:
+                schedule = CallSchedule.query.filter_by(
+                    school_id=session["user"]["school_id"],
+                    subject_number=i).first()
+                if schedule:
+                    schedule.start = start
+                    schedule.end = end
+                else:
+                    db.session.add(CallSchedule(
+                        school_id=session["user"]["school_id"],
+                        subject_number=i,
+                        start=start,
+                        end=end
+                    ))
+                db.session.commit()
+
+    schedule = {}
+    for subject in CallSchedule.query.filter_by(
+            school_id=session["user"]["school_id"]).all():
+        schedule[subject.subject_number] = {
+            "start": subject.start,
+            "end": subject.end
+        }
+
+    return render_template('journal/lesson_times.html',
+                           schedule=schedule,
+                           unread=get_count_unread_dialogs(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))

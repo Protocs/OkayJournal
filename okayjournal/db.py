@@ -97,9 +97,6 @@ class Schedule(db.Model):
                               lazy=True)
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
     grade = db.relationship("Grade", backref="subjects", lazy=True)
-    start = db.Column(db.String(5), nullable=False, unique=False)
-    end = db.Column(db.String(5), nullable=False, unique=False)
-    recess = db.Column(db.Integer, unique=False, nullable=True)
 
 
 class SubjectDescription(db.Model):
@@ -171,6 +168,15 @@ class Announcement(db.Model):
     text = db.Column(db.Text, unique=False, nullable=False)
     date = db.Column(db.DateTime, nullable=False,
                      default=lambda: datetime.now())
+
+
+class CallSchedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_id = db.Column(db.Integer, db.ForeignKey("school.id"),
+                          nullable=False)
+    subject_number = db.Column(db.Integer, nullable=False, unique=False)
+    start = db.Column(db.String(5), nullable=False, unique=False)
+    end = db.Column(db.String(5), nullable=False, unique=False)
 
 
 USER_CLASSES = [Student, Parent, SchoolAdmin, Teacher]
