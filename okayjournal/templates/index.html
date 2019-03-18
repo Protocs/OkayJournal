@@ -92,11 +92,29 @@ background-size: cover;
 
 {% endif %}
 
+<div class="modal fade" tabindex="-1" role="dialog" id="support">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Поддержка</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Для поддержки обращайтесь по адресу admin@okayjournal.ru</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <nav class="site-header sticky-top py-1">
     <div class="container d-flex flex-column flex-md-row justify-content-between">
         <a class="py-2 d-none d-md-inline-block" href="#features">Возможности</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Поддержка</a>
+        <a class="py-2 d-none d-md-inline-block" href="#" data-toggle="modal" data-target="#support">Поддержка</a>
         <a class="h-75 mt-2 px-2 d-none d-md-inline-block" href="/login">Войти</a>
     </div>
 </nav>
