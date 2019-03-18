@@ -11,23 +11,18 @@
 <div class="d-flex flex-column" style="height: 100vh;">
     {{ super() }}
 
-    <div class="modal fade" id="newMessage" tabindex="-1" role="dialog"
-         aria-labelledby="newMessageLabel" aria-hidden="true">
+    <div class="modal fade" id="newMessage" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newMessageLabel">Новое сообщение</h5>
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <form method="post" name="addRecipientForm">
                     <div class="modal-body">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"
-                                       for="role-select">Роль получателя</label>
+                                <label class="input-group-text" for="role-select">Роль получателя</label>
                             </div>
                             <select class="custom-select" id="role-select" name="role-select" required>
                                 <option value="Teacher" selected>Учитель</option>
@@ -51,20 +46,15 @@
                                 {% endfor %}
                             </select>
                         </div>
-
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Сообщение</span>
                             </div>
-                            <textarea class="form-control" aria-label="Введите сообщение" name="message"
-                                      required></textarea>
+                            <textarea class="form-control" aria-label="Введите сообщение" name="message" required></textarea>
                         </div>
-
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal">Отменить
-                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
                         <button type="submit" class="btn btn-primary">Добавить</button>
                     </div>
                 </form>
@@ -108,51 +98,16 @@
             </a>
         </div>
 
-        <div class="flex-grow-1 w-100 border" id="dialog"
-             style="border-top-right-radius: 0.5rem;border-bottom-right-radius: 0.5rem;">
+        <div class="flex-grow-1 w-100 border" id="dialog">
             <div class="dialog-content">
-                <div class="py-3 pl-4 border-bottom align-middle" style="font-size: 150%;" id="dialog-header">
-                    <span id="dialog-recipient" style="position: relative; bottom: 0.25em;">Зубенко М. П.</span>
+                <div class="py-3 pl-4 border-bottom align-middle" id="dialog-header">
+                    <span id="dialog-recipient"></span>
                 </div>
-                <div id="dialog-messages">
-                    <div class="message card align-items-end">
-                        На краю дороги стоял дуб. Вероятно, в десять раз старше берез, составлявших лес, он был в десять
-                        раз толще, и в два раза выше каждой березы. Это был огромный, в два обхвата дуб, с обломанными,
-                        давно, видно, суками и с обломанной корой, заросшей старыми болячками. С огромными своими
-                        неуклюже, несимметрично растопыренными корявыми руками и пальцами, он старым, сердитым и
-                        презрительным уродом стоял между улыбающимися березами. Только он один не хотел подчиняться
-                        обаянию весны и не хотел видеть ни весны, ни солнца.
-
-                        «Весна, и любовь, и счастие! — как будто говорил этот дуб. — И как не надоест вам все один и тот
-                        же глупый бессмысленный обман! Все одно и то же, и все обман! Нет ни весны, ни солнца, ни
-                        счастья. Вон смотрите, сидят задавленные мертвые ели, всегда одинакие, и вон и я растопырил свои
-                        обломанные, ободранные пальцы, где ни выросли они — из спины, из боков. Как выросли — так и
-                        стою, и не верю вашим надеждам и обманам» .
-
-                        Князь Андрей несколько раз оглянулся на этот дуб, проезжая по лесу, как будто он чего-то ждал от
-                        него. Цветы и трава были и под дубом, но он все так же, хмурясь, неподвижно, уродливо и упорно,
-                        стоял посреди их.
-
-                        «Да, он прав, тысячу раз прав этот дуб, — думал князь Андрей, — пускай другие, молодые, вновь
-                        поддаются на этот обман, а мы знаем жизнь, — наша жизнь кончена! » Целый новый ряд мыслей
-                        безнадежных, но грустно-приятных в связи с этим дубом возник в душе князя Андрея. Во время этого
-                        путешествия он как будто вновь обдумал всю свою жизнь и пришел к тому же прежнему,
-                        успокоительному и безнадежному, заключению, что ему начинать ничего было не надо, что он должен
-                        доживать свою жизнь, не делая зла, не тревожась и ничего не желая.
-                        <span class="ml-3 mr-1"
-                              style="font-size: 70%; color: #a2a2a2; position: relative; bottom: 1px;">23:59</span>
-                        <span class="mr-1"
-                              style="position: relative; top: 0.25rem; font-size: 100%; color: #6db4ff; letter-spacing: -0.5em;">✓✓</span>
-                    </div>
-                    <div class="message card align-items-end align-self-start">
-                        ауе
-                        <span class="ml-3 mr-1" style="font-size: 70%; color: #a2a2a2;">23:59</span>
-                    </div>
-                </div>
+                <div id="dialog-messages"></div>
                 <div class="d-flex m-2">
                     <input class="form-control p-2 flex-grow-1 w-100" id="message-text">
-                    <button class="btn btn-light" id="message-send" style="border-color: rgb(206, 212, 218)" onclick="sendMessage()">
-                        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <button class="btn btn-light" id="message-send" onclick="sendMessage()">
+                        <svg style="width:24px; height:24px" viewBox="0 0 24 24">
                             <path fill="#000000" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
                         </svg>
                     </button>

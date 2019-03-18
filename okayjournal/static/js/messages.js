@@ -71,8 +71,7 @@ function addMessage(message) {
         }
     }
     $('<span/>', {
-        'class': 'ml-3 mr-1',
-        style: 'font-size: 70%; color: #a2a2a2; position: relative; bottom: 1px;',
+        'class': 'time-mark',
         text: dateString
     }).appendTo(messageBody);
 
@@ -83,7 +82,7 @@ function addMessage(message) {
     // Если сообщение не от собеседника, добавляем метку прочтения
     else {
         $('<span/>', {
-            style: 'position: relative; top: 0.25rem; font-size: 100%; color: #6db4ff; letter-spacing: -0.5em;',
+            'class': 'read-mark',
             text: message.read ? "✓✓" : "✓"
         }).appendTo(messageBody);
     }
@@ -149,7 +148,8 @@ function updateDialogs() {
                 text: dialogs[d]["partner"]["name"]
             });
             var last_message = $("<small/>", {
-                class: "text-muted",
+                class: "text-muted text-truncate",
+                style: 'display: block; max-width: 100%;',
                 text: dialogs[d]["text"]
             });
             if (dialogs[d]["unread"] !== 0) {
