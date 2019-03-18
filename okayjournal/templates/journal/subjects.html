@@ -1,8 +1,8 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
 {% endblock %}
 
 {% block style %}
@@ -62,7 +62,7 @@ margin-bottom: -1px !important;
         <ul class="list-group">
             <a href="#" class="hidden-link" data-toggle="modal"
                data-target="#add-subject">
-                <li class="add text-center list-group-item text-muted">+</li>
+                <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for subject in subjects %}
             <li class="list-group-item">{{ subject.name }}</li>

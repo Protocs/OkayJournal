@@ -3,6 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -92,7 +93,7 @@
     <div class="messenger">
         <div class="dialogs-drawer" id="dialogs">
             <a href="#" data-toggle="modal" data-target="#newMessage" id="addRecipientLink">
-                <div class="dialog-btn container py-1 px-3 border-bottom" id="div-new-dialog">
+                <div class="dialog-btn container py-1 px-3 border-bottom add-button" id="div-new-dialog">
                     <h1 class="text-muted text-center m-0">+</h1>
                 </div>
             </a>

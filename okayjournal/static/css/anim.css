@@ -1,0 +1,7 @@
+.add-button {
+    transition: box-shadow 0.2s ease-out 0s;
+}
+
+.add-button:hover {
+    box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
+}

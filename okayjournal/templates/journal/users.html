@@ -1,8 +1,8 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
 {% endblock %}
 
 {% block style %}
@@ -231,7 +231,7 @@ border-bottom-right-radius: 0.25rem;
         <ul class="list-group">
             <a href="#" class="hidden-link" data-toggle="modal"
                data-target="#add-teacher">
-                <li class="add text-center list-group-item text-muted">+</li>
+                <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for teacher in teachers %}
             <li class="list-group-item">{{ teacher.surname }} {{ teacher.name
@@ -245,7 +245,7 @@ border-bottom-right-radius: 0.25rem;
         <ul class="list-group">
             <a href="#" class="hidden-link" data-toggle="modal"
                data-target="#add-student">
-                <li class="add text-center list-group-item text-muted">+</li>
+                <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for student in students %}
             <li class="list-group-item">{{ student.surname }} {{ student.name
@@ -259,7 +259,7 @@ border-bottom-right-radius: 0.25rem;
         <ul class="list-group">
             <a href="#" class="hidden-link" data-toggle="modal"
                data-target="#add-parent">
-                <li class="add text-center list-group-item text-muted">+</li>
+                <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for parent in parents %}
             <li class="list-group-item">{{ parent.surname }} {{ parent.name }}

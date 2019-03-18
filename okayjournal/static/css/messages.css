@@ -22,12 +22,21 @@ a:hover {
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
 
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
 #dialog {
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
+}
+
+.dialog-option {
+    transition: transform 0.2s ease 0s;
+}
+
+.dialog-option:hover {
+    transform: scale(1.01, 1.01);
 }
 
 .dialog-content {
@@ -88,6 +97,7 @@ a:hover {
     flex-shrink: 0;
     max-width: 65%;
     word-break: break-all;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .time-mark {

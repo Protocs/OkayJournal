@@ -26,7 +26,8 @@ function openDialog(element) {
     recipientId = $(element).attr('recipient_id');
 
     var recipientRoleText = ROLES[recipientRole];
-    $('#dialog-recipient').text(recipientRoleText + " " + $(element).attr('recipient_name'));
+    $('#dialog-recipient').html($(element).attr('recipient_name')
+                                + ' <span style="color: #bfbfbf">' + recipientRoleText + '</span>');
 
     // Пометим сообщения как прочитанные
     $.ajax("messages/" + recipient, {
@@ -142,7 +143,7 @@ function updateDialogs() {
                 onclick: "openDialog(this)"
             });
             var dialog = $("<div/>", {
-                class: "dialog-btn container py-2 px-3 border-bottom"
+                class: "dialog-btn container py-2 px-3 border-bottom dialog-option"
             });
             var name = $("<h5/>", {
                 text: dialogs[d]["partner"]["name"]
