@@ -440,7 +440,8 @@ def settings():
 def journal():
     return render_template('journal.html', unread=get_count_unread_dialogs(
         user_id=session["user"]["id"],
-        user_role=session["role"]))
+        user_role=session["role"]),
+                           str=str)
 
 
 @app.route('/timetable')
@@ -533,6 +534,16 @@ def lesson_times():
 
     return render_template('journal/lesson_times.html',
                            schedule=schedule,
+                           unread=get_count_unread_dialogs(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]))
+
+
+@app.route('/grading', methods=["GET", "POST"])
+@restricted_access(['Teacher'])
+@need_to_change_password
+def grading():
+    return render_template('journal/grading.html',
                            unread=get_count_unread_dialogs(
                                user_id=session["user"]["id"],
                                user_role=session["role"]))

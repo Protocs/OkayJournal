@@ -1,0 +1,95 @@
+{% extends 'journal/base.html' %}
+
+{% block style %}
+
+table {
+border-radius: 0.35rem;
+}
+
+td:first-child, th:first-child {
+border-left: 0;
+}
+
+th {
+border-top: 0 !important;
+padding-top: 0.25rem !important;
+padding-bottom: 0.25rem !important;
+}
+
+td {
+padding-top: 0.25rem !important;
+padding-bottom: 0.25rem !important;
+}
+
+td:last-child, th:last-child {
+border-right: 0;
+}
+
+select {
+background-color: transparent;
+border: 0;
+color: inherit;
+width: 100%;
+}
+
+option {
+color: initial;
+}
+
+{% endblock %}
+
+{% block body %}
+{{ super() }}
+
+<div class="m-3 w-50 mx-auto">
+    <form method="post">
+        <input type="submit" class="btn btn-success mb-4 w-100" style="height: 3rem;" value="Сохранить">
+
+        <div class="form-group mb-3">
+            <label for="lesson-topic">Тема урока</label>
+            <input type="text" class="form-control" id="lesson-topic">
+        </div>
+
+        <div class="form-group mb-5">
+            <label for="homework">Домашнее задание</label>
+            <textarea class="form-control"></textarea>
+        </div>
+
+        <table class="table table-bordered table-dark w-50 mx-auto">
+            <thead>
+            <tr>
+                <th>Ученики</th>
+                <th>Посещаемость</th>
+                <th>Оценка</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in range(20) %}
+            <tr>
+                <td>Дятлов А.</td>
+                <td>
+                    <select>
+                        <option></option>
+                        <option>Уважительная причина</option>
+                        <option>Отсутствует</option>
+                        <option>Болеет</option>
+                        <option>Опоздал</option>
+                    </select>
+                </td>
+                <td>
+                    <select>
+                        <option value=""></option>
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+
+{% endblock %}
