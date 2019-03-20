@@ -151,9 +151,9 @@ def get_classes():
         school_id=session['user']['school_id']).all()
     grades_structured = {}
     for n in range(1, 12):
-        grades_structured[n] = list(g.letter for g in sorted(
+        grades_structured[n] = {g.id: g.letter for g in sorted(
             filter(lambda g: g.number == n, grades),
-            key=lambda g: g.letter))
+            key=lambda g: g.letter)}
     return jsonify(grades_structured)
 
 
@@ -170,13 +170,11 @@ def get_parents():
     return jsonify(response)
 
 
-@app.route("/get_class/<int:number>/<letter>")
+@app.route("/get_class/<int:grade_id>")
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
-def get_class(number, letter):
-    grade = Grade.query.filter_by(
-        number=number,
-        letter=letter, school_id=session["user"]["school_id"]).first()
+def get_class(grade_id):
+    grade = Grade.query.filter_by(id=grade_id).first()
     homeroom_teacher = Teacher.query.filter_by(
         school_id=session["user"]["school_id"],
         homeroom_grade_id=grade.id).first()

@@ -13,13 +13,13 @@ var classes = $.ajax("get_classes").done(function (classes) {
 
     function fillLetterSelect(grade_number) {
         grade_letter_select.empty();
-        classes[grade_number].forEach(function (item, i, arr) {
+        for (var g in classes[grade_number]) {
             var option = $("<option/>", {
-                value: item,
-                text: item
+                value: classes[grade_number][g],
+                text: classes[grade_number][g]
             });
             option.appendTo(grade_letter_select);
-        });
+        }
     }
 
     grade_number_select.change(function () {

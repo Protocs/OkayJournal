@@ -5,18 +5,19 @@ const LETTERS = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "Й", "К
 var classes = $.ajax("get_classes").done(function (classes) {
     for (var i = 1; i <= 11; i++) {
         var card = $("#card" + i.toString());
-        classes[i].forEach(function (grade, j, arr) {
+        for (var g in classes[i]) {
             var grade_button = $("<button/>", {
                 type: "button",
                 class: "btn btn-primary",
-                text: grade,
+                text: classes[i][g],
                 "data-toggle": "modal",
                 "data-target": "#gradeInfo",
+                id: g,
                 grade_number: i,
-                grade_letter: grade
+                grade_letter: classes[i][g]
             });
             grade_button.appendTo(card);
-        });
+        }
 
         var add_grade_button = $("<button/>", {
             type: "button",
@@ -33,8 +34,8 @@ var classes = $.ajax("get_classes").done(function (classes) {
     $("#addClass").on("show.bs.modal", function (e) {
         $("#grade :first-child").detach();
         var grade_number = e.relatedTarget.id;
-        var last_letter = classes[grade_number][classes[grade_number].length - 1];
-        var next_letter = LETTERS[classes[grade_number].indexOf(last_letter) + 1];
+        var last_letter = $("#card" + grade_number.toString()).find($("[data-target='#gradeInfo']")).last().text();
+        var next_letter = LETTERS[LETTERS.indexOf(last_letter) + 1];
         var grade = $("<input/>", {
             type: "text",
             class: "form-control",
@@ -52,7 +53,7 @@ var classes = $.ajax("get_classes").done(function (classes) {
         var grade_number = e.relatedTarget.getAttribute("grade_number");
         var grade_letter = e.relatedTarget.getAttribute("grade_letter");
         $("#gradeInfoLabel").text(grade_number.toString() + ' «' + grade_letter + '»');
-        $.ajax("get_class/" + grade_number.toString() + "/" + grade_letter).done(function (grade) {
+        $.ajax("get_class/" + e.relatedTarget.id.toString()).done(function (grade) {
             var homeroom_teacher = $("<p/>", {
                 text: grade["homeroom_teacher"]["name"]
             });
