@@ -1,8 +1,14 @@
 from werkzeug.security import check_password_hash
 from flask import session
 
-from okayjournal.db import (Student, Parent, SchoolAdmin, Teacher,
-                            SystemAdmin, user_to_dict)
+from okayjournal.db import (
+    Student,
+    Parent,
+    SchoolAdmin,
+    Teacher,
+    SystemAdmin,
+    user_to_dict,
+)
 
 
 def login(username, password):
@@ -14,7 +20,7 @@ def login(username, password):
         if user:
             if not check_password_hash(user.password_hash, password):
                 return False
-            session['user'] = user_to_dict(user)
-            session['role'] = user_class.__name__
+            session["user"] = user_to_dict(user)
+            session["role"] = user_class.__name__
             return True
     return False
