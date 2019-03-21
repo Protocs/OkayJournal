@@ -1,3 +1,5 @@
+from functools import partial
+
 from flask import render_template, request
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -8,6 +10,17 @@ from okayjournal.forms import *
 from okayjournal.db import *
 from okayjournal.login import login
 from okayjournal.utils import *
+
+
+# Как render_template, только сразу добавляет session и unread в параметры вызова.
+def journal_render(*args, **kwargs):
+    return partial(
+        render_template,
+        session=session,
+        unread=get_count_unread_dialogs(
+            user_id=session["user"]["id"], user_role=session["role"]
+        ),
+    )(*args, **kwargs)
 
 
 @app.route("/")
@@ -151,11 +164,7 @@ def admin():
 @restricted_access(["Student", "Parent"])
 @need_to_change_password
 def diary():
-    return render_template('journal/diary.html', session=session,
-                           week_days=week_days, next=next,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+    return journal_render("journal/diary.html", week_days=week_days, next=next)
 
 
 @app.route("/messages", methods=["POST", "GET"])
@@ -183,22 +192,14 @@ def messages():
                                    user_class.patronymic):
             if not user_equal(user, session):
                 users[user_class.__name__].append(user)
-    return render_template("journal/messages.html", session=session,
-                           users=users,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           type=type)
+    return journal_render("journal/messages.html", users=users, type=type)
 
 
 @app.route('/school_managing')
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def school_managing():
-    return render_template('journal/school_managing.html', session=session,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+    return journal_render("journal/school_managing.html")
 
 
 @app.route('/users', methods=["GET", "POST"])
@@ -209,25 +210,26 @@ def users():
     add_student_form = AddStudentForm(prefix='add-student')
     add_parent_form = AddParentForm(prefix='add-parent')
 
-    kwargs = {"session": session,
-              "unread": get_count_unread_dialogs(
-                  user_id=session["user"]["id"],
-                  user_role=session["role"]),
-              "add_teacher_form": add_teacher_form,
-              "add_student_form": add_student_form,
-              "add_parent_form": add_parent_form,
-              "teachers": Teacher.query.filter_by(
-                  school_id=session['user']['school_id']).all(),
-              "parents": Parent.query.filter_by(
-                  school_id=session['user']['school_id']).all(),
-              "students": Student.query.filter_by(
-                  school_id=session['user']['school_id']).all()}
+    kwargs = {
+        "add_teacher_form": add_teacher_form,
+        "add_student_form": add_student_form,
+        "add_parent_form": add_parent_form,
+        "teachers": Teacher.query.filter_by(
+            school_id=session["user"]["school_id"]
+        ).all(),
+        "parents": Parent.query.filter_by(school_id=session["user"]["school_id"]).all(),
+        "students": Student.query.filter_by(
+            school_id=session["user"]["school_id"]
+        ).all(),
+    }
 
     if add_teacher_form.validate_on_submit():
         if not validate_email(request.form["add-teacher-email"]):
-            return render_template('journal/users.html', **kwargs,
-                                   error="Некорректный адрес электронной "
-                                         "почты")
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Некорректный адрес электронной " "почты"
+            )
         password = generate_throwaway_password()
         login = generate_unique_login("Teacher")
         print(login, password)
@@ -254,9 +256,11 @@ def users():
 
     if add_student_form.validate_on_submit():
         if not validate_email(request.form["add-student-email"]):
-            return render_template('journal/users.html', **kwargs,
-                                   error="Некорректный адрес электронной "
-                                         "почты")
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Некорректный адрес электронной почты"
+            )
         password = generate_throwaway_password()
         login = generate_unique_login("Student")
         print(login, password)
@@ -286,9 +290,11 @@ def users():
 
     if add_parent_form.validate_on_submit():
         if not validate_email(request.form["add-parent-email"]):
-            return render_template('journal/users.html', **kwargs,
-                                   error="Некорректный адрес электронной "
-                                         "почты")
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Некорректный адрес электронной почты"
+            )
         password = generate_throwaway_password()
         login = generate_unique_login("Parent")
         print(login, password)
@@ -311,7 +317,7 @@ def users():
         kwargs["parents"] = Parent.query.filter_by(
             school_id=session['user']['school_id']).all()
 
-    return render_template('journal/users.html', **kwargs)
+    return journal_render("journal/users.html", **kwargs)
 
 
 @app.route('/school_settings', methods=['GET', 'POST'])
@@ -327,20 +333,11 @@ def school_settings():
         school.school = form.school.data
         db.session.commit()
 
-        return render_template('journal/school_settings.html', session=session,
-                               form=form,
-                               unread=get_count_unread_dialogs(
-                                   user_id=session["user"]["id"],
-                                   user_role=session["role"]),
-                               school=school,
-                               success=True)
+        return journal_render(
+            "journal/school_settings.html", form=form, school=school, success=True
+        )
 
-    return render_template('journal/school_settings.html', session=session,
-                           form=form,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           school=school)
+    return journal_render("journal/school_settings.html", form=form, school=school)
 
 
 @app.route('/classes', methods=["GET", "POST"])
@@ -362,11 +359,7 @@ def classes():
         teacher.homeroom_grade_id = grade.id
         db.session.commit()
     free_teachers = Teacher.query.filter_by(homeroom_grade_id=None).all()
-    return render_template('journal/classes.html', session=session,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           free_teachers=free_teachers)
+    return journal_render("journal/classes.html", free_teachers=free_teachers)
 
 
 @app.route('/subjects', methods=["GET", "POST"])
@@ -382,12 +375,7 @@ def subjects():
     subject_list = Subject.query.filter_by(
         school_id=session["user"]["school_id"]).all()
     form = AddSubjectForm()
-    return render_template('journal/subjects.html', session=session,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           subjects=subject_list,
-                           form=form)
+    return journal_render("journal/subjects.html", subjects=subject_list, form=form)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -413,26 +401,20 @@ def settings():
         id, role = session["user"]["id"], session["role"]
         del session["user"]
         session["user"] = user_to_dict(find_user_by_role(id, role))
-        return render_template('journal/settings.html', session=session,
-                               form=form, password_change_success=True,
-                               unread=get_count_unread_dialogs(
-                                   user_id=session["user"]["id"],
-                                   user_role=session["role"]))
+        return journal_render(
+            "journal/settings.html", form=form, password_change_success=True
+        )
 
-    return render_template('journal/settings.html', session=session, form=form,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+    return journal_render("journal/settings.html", form=form)
 
 
 @app.route('/journal')
 @restricted_access(["Teacher"])
 @need_to_change_password
 def journal():
-    return render_template('journal.html', unread=get_count_unread_dialogs(
-        user_id=session["user"]["id"],
-        user_role=session["role"]),
-                           str=str)
+    if session['role'] == "SystemAdmin":
+        return redirect("/admin")
+    return journal_render("journal.html", str=str)
 
 
 @app.route('/timetable', methods=["GET", "POST"])
@@ -445,12 +427,7 @@ def timetable_index():
                                       school_id=session["user"]["school_id"])
         return redirect("/timetable/" + str(grade.first().id))
 
-    return render_template('journal/timetable.html', session=session,
-                           week_days=week_days, next=next,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]
-                           ))
+    return journal_render("journal/timetable.html", week_days=week_days, next=next)
 
 
 @app.route("/timetable/<int:grade_id>", methods=["GET", "POST"])
@@ -524,14 +501,12 @@ def timetable(grade_id):
                         selectors[i][j].update({"teachers": {}})
                     for teacher_id, teacher in subject["teachers"].items():
                         if teacher_id != selected_teacher["id"]:
-                            selectors[i][j]["teachers"].update({
-                                teacher_id: teacher["name"]
-                            })
-    return render_template('journal/timetable.html', session=session,
-                           week_days=week_days, next=next,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]), selectors=selectors)
+                            selectors[i][j]["teachers"].update(
+                                {teacher_id: teacher["name"]}
+                            )
+    return journal_render(
+        "journal/timetable.html", week_days=week_days, next=next, selectors=selectors
+    )
 
 
 @app.route("/announcements", methods=["GET", "POST"])
@@ -548,27 +523,32 @@ def announcements():
         ))
         db.session.commit()
     announcements = {}
-    for announcement in Announcement.query.filter_by(
-            school_id=session["user"]["school_id"]).order_by(
-        Announcement.date).all():
-        author = find_user_by_role(announcement.author_id,
-                                   announcement.author_role)
-        announcements.update({announcement.id: {
-            "author": {
-                "name": " ".join([author.surname, author.name,
-                                  author.patronymic])
-            },
-            "header": announcement.header,
-            "text": announcement.text,
-            "date": announcement.date
-        }})
-    return render_template("journal/announcements.html",
-                           announcements=announcements,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]),
-                           reversed=reversed,
-                           list=list)
+    for announcement in (
+        Announcement.query.filter_by(school_id=session["user"]["school_id"])
+        .order_by(Announcement.date)
+        .all()
+    ):
+        author = find_user_by_role(announcement.author_id, announcement.author_role)
+        announcements.update(
+            {
+                announcement.id: {
+                    "author": {
+                        "name": " ".join(
+                            [author.surname, author.name, author.patronymic]
+                        )
+                    },
+                    "header": announcement.header,
+                    "text": announcement.text,
+                    "date": announcement.date,
+                }
+            }
+        )
+    return journal_render(
+        "journal/announcements.html",
+        announcements=announcements,
+        reversed=reversed,
+        list=list,
+    )
 
 
 @app.route('/lesson_times', methods=["GET", "POST"])
@@ -603,29 +583,19 @@ def lesson_times():
             "end": subject.end
         }
 
-    return render_template('journal/lesson_times.html',
-                           schedule=schedule,
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+    return journal_render("journal/lesson_times.html", schedule=schedule)
 
 
 @app.route('/grading', methods=["GET", "POST"])
 @restricted_access(['Teacher'])
 @need_to_change_password
 def grading():
-    return render_template('journal/grading.html',
-                           unread=get_count_unread_dialogs(
-                               user_id=session["user"]["id"],
-                               user_role=session["role"]))
+    return journal_render("journal/grading.html")
 
 
 @app.errorhandler(404)
 def not_found_error(error):
     if logged_in():
-        return render_template("journal/404.html",
-                               unread=get_count_unread_dialogs(
-                                   user_id=session["user"]["id"],
-                                   user_role=session["role"]))
-    else:
-        return redirect("/")
+        return journal_render("journal/404.html")
+
+    return redirect("/")
