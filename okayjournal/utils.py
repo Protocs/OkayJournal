@@ -1,3 +1,5 @@
+from itertools import cycle
+
 from flask import session, redirect, abort
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
 from .local_settings import EMAIL_PASSWORD
@@ -49,6 +51,13 @@ REJECTION_LETTER_TEXT = """Здравствуйте, {}.
 
 С уважением,
 Администрация OkayJournal"""
+
+week_days = cycle(['Понедельник',
+                   'Вторник',
+                   'Среда',
+                   'Четверг',
+                   'Пятница',
+                   'Суббота'])
 
 
 def generate_unique_login(user_status):
@@ -172,3 +181,8 @@ def send_rejection_letter(email, name):
     server.send_message(message)
     server.quit()
     return True
+
+
+def get_fullname(user):
+    """Возвращает ФИО пользователя"""
+    return " ".join([user.surname, user.name, user.patronymic])

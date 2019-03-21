@@ -1,5 +1,3 @@
-from itertools import cycle
-
 from flask import render_template, request
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -153,13 +151,6 @@ def admin():
 @restricted_access(["Student", "Parent"])
 @need_to_change_password
 def diary():
-    week_days = cycle(['Понедельник',
-                       'Вторник',
-                       'Среда',
-                       'Четверг',
-                       'Пятница',
-                       'Суббота'])
-
     return render_template('journal/diary.html', session=session,
                            week_days=week_days, next=next,
                            unread=get_count_unread_dialogs(
@@ -444,16 +435,15 @@ def journal():
                            str=str)
 
 
-@app.route('/timetable')
+@app.route('/timetable', methods=["GET", "POST"])
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
-def timetable():
-    week_days = cycle(['Понедельник',
-                       'Вторник',
-                       'Среда',
-                       'Четверг',
-                       'Пятница',
-                       'Суббота'])
+def timetable_index():
+    if request.method == "POST":
+        grade = Grade.query.filter_by(number=int(request.form["number"]),
+                                      letter=request.form["letter"],
+                                      school_id=session["user"]["school_id"])
+        return redirect("/timetable/" + str(grade.first().id))
 
     return render_template('journal/timetable.html', session=session,
                            week_days=week_days, next=next,
@@ -461,6 +451,87 @@ def timetable():
                                user_id=session["user"]["id"],
                                user_role=session["role"]
                            ))
+
+
+@app.route("/timetable/<int:grade_id>", methods=["GET", "POST"])
+@restricted_access(["SchoolAdmin"])
+@need_to_change_password
+def timetable(grade_id):
+    if request.method == "POST":
+        for i in range(1, 7):
+            for j in range(1, 7):
+                subject = request.form["subject" + str(i) + str(j)]
+                teacher = request.form.get("teacher" + str(i) + str(j), None)
+                if subject != "none" and teacher is not None:
+                    schedule = Schedule.query.filter_by(
+                        school_id=session["user"]["school_id"],
+                        day=i,
+                        subject_number=j,
+                        grade_id=grade_id).first()
+                    if schedule is None:
+                        db.session.add(Schedule(
+                            day=i,
+                            subject_number=j,
+                            subject_id=int(subject),
+                            school_id=session["user"]["school_id"],
+                            teacher_id=int(teacher),
+                            grade_id=grade_id))
+                    else:
+                        schedule.subject_id = int(subject)
+                        schedule.teacher_id = int(teacher)
+                    db.session.commit()
+    schedule = get_grade_schedule(grade_id, session["user"]["school_id"])
+    teachers_subjects = get_teachers_subjects(session["user"]["school_id"])
+    selectors = {}
+    # TODO: рефакторинг
+    for i in range(1, 7):
+        # Заполним расписание для i-го дня
+        selectors.update({i: {}})
+        for j in range(1, 7):
+            # Для j-го урока
+            selectors[i].update({j: {}})
+            # Если в полученном расписании есть данный день и данный урок,
+            # то сделаем его выбранным
+            if schedule.get(i) and schedule.get(i).get(j):
+                selected_subject = schedule.get(i).get(j)["subject"]
+                selected_teacher = schedule.get(i).get(j)["teacher"]
+            else:
+                id = list(teachers_subjects.keys())[0]
+                selected_subject = {"id": id,
+                                    "name": list(
+                                        teachers_subjects.values())[0]["name"]}
+                teachers = teachers_subjects[id]["teachers"]
+                if teachers:
+                    selected_teacher = {"id": list(teachers.keys())[0],
+                                        "name": list(
+                                            teachers.values())[0]["name"]}
+                else:
+                    selected_teacher = None
+            selectors[i][j].update({"subjects": {
+                selected_subject["id"]: selected_subject["name"]
+            }})
+            # Заполним остальные возможные варианты уроков и учителей
+            for id, subject in teachers_subjects.items():
+                if id != selected_subject["id"]:
+                    selectors[i][j]["subjects"].update({
+                        id: subject["name"]})
+                else:
+                    if selected_teacher:
+                        selectors[i][j].update({"teachers": {
+                            selected_teacher["id"]: selected_teacher["name"]
+                        }})
+                    else:
+                        selectors[i][j].update({"teachers": {}})
+                    for teacher_id, teacher in subject["teachers"].items():
+                        if teacher_id != selected_teacher["id"]:
+                            selectors[i][j]["teachers"].update({
+                                teacher_id: teacher["name"]
+                            })
+    return render_template('journal/timetable.html', session=session,
+                           week_days=week_days, next=next,
+                           unread=get_count_unread_dialogs(
+                               user_id=session["user"]["id"],
+                               user_role=session["role"]), selectors=selectors)
 
 
 @app.route("/announcements", methods=["GET", "POST"])

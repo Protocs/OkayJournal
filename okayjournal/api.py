@@ -119,8 +119,7 @@ def get_dialogs():
             "partner": {
                 "id": partner.id,
                 "role": partner.__class__.__name__,
-                "name": " ".join([partner.surname, partner.name,
-                                  partner.patronymic]),
+                "name": get_fullname(partner),
                 "login": partner.login
             },
             "unread": get_count_unread_messages((session["user"]["id"],
@@ -165,8 +164,7 @@ def get_parents():
         school_id=session["user"]["school_id"]).all()
     response = {}
     for parent in parents:
-        response.update({parent.id: " ".join(
-            [parent.surname, parent.name, parent.patronymic])})
+        response.update({parent.id: get_fullname(parent)})
     return jsonify(response)
 
 
@@ -180,11 +178,16 @@ def get_class(grade_id):
         homeroom_grade_id=grade.id).first()
     response = {"id": grade.id, "homeroom_teacher": {
         "id": homeroom_teacher.id,
-        "name": " ".join([homeroom_teacher.surname, homeroom_teacher.name,
-                          homeroom_teacher.patronymic])
-    }, "students": []}
+        "name": get_fullname(homeroom_teacher)
+    }, "students": [], "number": grade.number, "letter": grade.letter}
     for student in sorted(grade.students,
                           key=lambda s: (s.surname, s.name, s.patronymic)):
-        response["students"].append(" ".join([student.surname, student.name,
-                                              student.patronymic]))
+        response["students"].append(get_fullname(student))
     return jsonify(response)
+
+
+@app.route("/get_teachers_subjects")
+@restricted_access(["SchoolAdmin"])
+@need_to_change_password
+def get_teachers_subjects_route():
+    return jsonify(get_teachers_subjects(session["user"]["school_id"]))

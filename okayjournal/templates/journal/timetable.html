@@ -39,27 +39,29 @@ font-size: initial;
 {% block body %}
 {{ super() }}
 
+
 <div class="mx-5 my-3">
     <p class="lead mb-1"><span class="align-middle">Класс</span>
-        <select class="custom-select class-select" id="class-number-select">
-            {% for i in range(1, 12) %}
-            <option value="{{ i }}">{{ i }}</option>
-            {% endfor %}
+        <form method="post" action="/timetable">
+        <select class="custom-select class-select" id="grade_number_select" name="number">
         </select>
-        <select class="custom-select class-select" id="class-letter-select">
-            <option value="1">F</option>
-            <option value="1">F</option>
-            <option value="1">F</option>
-            <option value="1">F</option>
+        <select class="custom-select class-select" id="grade_letter_select" name="letter">
         </select>
+        <button class="btn btn-primary" type="submit">Загрузить</button>
+        </form>
+        {% if selectors %}
+        <button type="submit" class="btn btn-success" form="configureSchedule">Сохранить</button>
+        {% endif %}
     </p>
-    <p class="lead">Четверть: <b>4</b></p>
 </div>
 
-<div class="mx-5 mt-3">
+{% if selectors %}
+
+<div class="mx-5 mt-3" id="#scheduleContent">
+    <form method="post" id="configureSchedule">
     {% for i in range(2) %}
     <div class="row justify-content-around flex-nowrap align-items-stretch">
-        {% for j in range(3) %}
+        {% for j in range(1, 4) %}
         <div class="day">
             <h3>{{ next(week_days) }}</h3>
             <table class="table table-hover table-dark mb-0">
@@ -74,19 +76,18 @@ font-size: initial;
                 <tr>
                     <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
                     <td class="align-middle">
-                        <select class="subject">
-                            <option selected>Мотьематика</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}" id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
+                            {% for id, name in selectors[3 * i + j][k + 1]["subjects"].items() %}
+                            <option value="{{ id }}">{{ name }}</option>
+                            {% endfor %}
+                            <option value="none">-</option>
                         </select>
                     </td>
                     <td class="align-middle">
-                        <select class="teacher">
-                            <option selected>Трипл В</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}" id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
+                            {% for id, name in selectors[3 * i + j][k + 1]["teachers"].items() %}
+                            <option value="{{ id }}">{{ name }}</option>
+                            {% endfor %}
                         </select>
                     </td>
                 </tr>
@@ -96,6 +97,11 @@ font-size: initial;
         {% endfor %}
     </div>
     {% endfor %}
+    </form>
 </div>
+
+{% endif %}
+<script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
+
 
 {% endblock %}

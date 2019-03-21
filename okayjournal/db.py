@@ -84,7 +84,7 @@ class Subject(db.Model):
 
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    day = db.Column(db.String(15), unique=False, nullable=False)
+    day = db.Column(db.Integer, unique=False, nullable=False)
     subject_number = db.Column(db.Integer, unique=False, nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"),
                            nullable=False)
@@ -227,6 +227,40 @@ def get_count_unread_messages(recipient, sender):
                                        sender_role=sender[1],
                                        read=False)
     return len(messages.all())
+
+
+def get_grade_schedule(grade_id, school_id):
+    from .utils import get_fullname
+    schedule = Schedule.query.filter_by(grade_id=grade_id,
+                                        school_id=school_id).all()
+    response = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}}
+    for subject in schedule:
+        response[subject.day].update({subject.subject_number: {
+            "subject": {
+                "id": subject.subject.id,
+                "name": subject.subject.name
+            },
+            "teacher": {
+                "id": subject.teacher.id,
+                "name": get_fullname(subject.teacher)
+            }
+        }})
+    return response
+
+
+def get_teachers_subjects(school_id):
+    from .utils import get_fullname
+    subjects = Subject.query.filter_by(
+        school_id=school_id).all()
+    response = {}
+    for subject in subjects:
+        response.update({subject.id: {
+            "name": subject.name,
+            "teachers": {teacher.id: {
+                "name": get_fullname(teacher)
+            } for teacher in subject.teachers}
+        }})
+    return response
 
 
 if not isfile("okayjournal/okayjournal.db"):
