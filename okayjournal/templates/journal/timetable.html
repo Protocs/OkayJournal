@@ -49,12 +49,12 @@ font-size: initial;
         </select>
         <button class="btn btn-primary" type="submit">Загрузить</button>
     </form>
-    {% if selectors %}
+    {% if teachers_subjects %}
     <button type="submit" class="btn btn-success mt-3" form="configureSchedule">Сохранить</button>
     {% endif %}
 </div>
 
-{% if selectors %}
+{% if teachers_subjects %}
 
 <div class="mx-5 mt-3 mb-5" id="#scheduleContent">
     <form method="post" id="configureSchedule">
@@ -77,18 +77,44 @@ font-size: initial;
                         <td class="align-middle">
                             <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
                                     id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% for id, name in selectors[3 * i + j][k + 1]["subjects"].items() %}
-                                <option value="{{ id }}">{{ name }}</option>
+                                {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
+                                <option selected value="{{ schedule[3*i+j][k+1]['subject']['id'] }}">
+                                    {{ schedule[3*i+j][k+1]["subject"]["name"] }}
+                                </option>
+                                {% for id, subject in teachers_subjects.items() %}
+
+                                {% if id != schedule[3*i+j][k+1]['subject']['id'] %}
+                                <option value="{{ id }}">
+                                    {{ subject["name"] }}
+                                </option>
+                                {% endif %}
+
                                 {% endfor %}
-                                <option value="none">-</option>
+
+                                {% else %}
+                                <option selected value="none">
+                                    -
+                                </option>
+
+                                {% for id, subject in teachers_subjects.items() %}
+
+                                <option value="{{ id }}">
+                                    {{ subject["name"] }}
+                                </option>
+
+                                {% endfor %}
+
+                                {% endif %}
                             </select>
                         </td>
                         <td class="align-middle">
                             <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
                                     id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% for id, name in selectors[3 * i + j][k + 1]["teachers"].items() %}
-                                <option value="{{ id }}">{{ name }}</option>
-                                {% endfor %}
+                                {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
+                                <option selected value="{{ schedule[3*i+j][k+1]['teacher']['id'] }}">
+                                    {{ schedule[3*i+j][k+1]["teacher"]["name"] }}
+                                </option>
+                                {% endif %}
                             </select>
                         </td>
                     </tr>

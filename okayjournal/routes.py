@@ -198,7 +198,7 @@ def messages():
         users[user_class.__name__] = []
         query = user_class.query.filter_by(school_id=session["user"]["school_id"])
         for user in query.order_by(
-            user_class.surname, user_class.name, user_class.patronymic
+                user_class.surname, user_class.name, user_class.patronymic
         ):
             if not user_equal(user, session):
                 users[user_class.__name__].append(user)
@@ -475,58 +475,9 @@ def timetable(grade_id):
                     db.session.commit()
     schedule = get_grade_schedule(grade_id, session["user"]["school_id"])
     teachers_subjects = get_teachers_subjects(session["user"]["school_id"])
-    selectors = {}
-    # TODO: рефакторинг
-    for i in range(1, 7):
-        # Заполним расписание для i-го дня
-        selectors.update({i: {}})
-        for j in range(1, 7):
-            # Для j-го урока
-            selectors[i].update({j: {}})
-            # Если в полученном расписании есть данный день и данный урок,
-            # то сделаем его выбранным
-            if schedule.get(i) and schedule.get(i).get(j):
-                selected_subject = schedule.get(i).get(j)["subject"]
-                selected_teacher = schedule.get(i).get(j)["teacher"]
-            else:
-                id = list(teachers_subjects.keys())[0]
-                selected_subject = {
-                    "id": id,
-                    "name": list(teachers_subjects.values())[0]["name"],
-                }
-                teachers = teachers_subjects[id]["teachers"]
-                if teachers:
-                    selected_teacher = {
-                        "id": list(teachers.keys())[0],
-                        "name": list(teachers.values())[0]["name"],
-                    }
-                else:
-                    selected_teacher = None
-            selectors[i][j].update(
-                {"subjects": {selected_subject["id"]: selected_subject["name"]}}
-            )
-            # Заполним остальные возможные варианты уроков и учителей
-            for id, subject in teachers_subjects.items():
-                if id != selected_subject["id"]:
-                    selectors[i][j]["subjects"].update({id: subject["name"]})
-                else:
-                    if selected_teacher:
-                        selectors[i][j].update(
-                            {
-                                "teachers": {
-                                    selected_teacher["id"]: selected_teacher["name"]
-                                }
-                            }
-                        )
-                    else:
-                        selectors[i][j].update({"teachers": {}})
-                    for teacher_id, teacher in subject["teachers"].items():
-                        if teacher_id != selected_teacher["id"]:
-                            selectors[i][j]["teachers"].update(
-                                {teacher_id: teacher["name"]}
-                            )
     return journal_render(
-        "journal/timetable.html", week_days=week_days, next=next, selectors=selectors
+        "journal/timetable.html", week_days=week_days, next=next,
+        schedule=schedule, teachers_subjects=teachers_subjects
     )
 
 
@@ -547,18 +498,16 @@ def announcements():
         db.session.commit()
     announcements = {}
     for announcement in (
-        Announcement.query.filter_by(school_id=session["user"]["school_id"])
-        .order_by(Announcement.date)
-        .all()
+            Announcement.query.filter_by(school_id=session["user"]["school_id"])
+                    .order_by(Announcement.date)
+                    .all()
     ):
         author = find_user_by_role(announcement.author_id, announcement.author_role)
         announcements.update(
             {
                 announcement.id: {
                     "author": {
-                        "name": " ".join(
-                            [author.surname, author.name, author.patronymic]
-                        )
+                        "name": get_fullname(author)
                     },
                     "header": announcement.header,
                     "text": announcement.text,
@@ -602,7 +551,7 @@ def lesson_times():
 
     schedule = {}
     for subject in CallSchedule.query.filter_by(
-        school_id=session["user"]["school_id"]
+            school_id=session["user"]["school_id"]
     ).all():
         schedule[subject.subject_number] = {"start": subject.start, "end": subject.end}
 
