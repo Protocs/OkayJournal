@@ -54,7 +54,9 @@ transform: translate(-5%, 0);
                role="button"
                data-toggle="dropdown" aria-haspopup="true"
                aria-expanded="false">
-                {{ session['user']["surname"] }} {{ session['user']["name"][0] }}. {{ session['user']["patronymic"][0] }}.
+                {{ session['user']["surname"] }}
+                {{ session['user']["name"][0] }}.
+                {{ session['user']["patronymic"][0] }}.
             </a>
             <div class="dropdown-menu"
                  aria-labelledby="navbarDropdownMenuLink">

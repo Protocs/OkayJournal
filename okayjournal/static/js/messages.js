@@ -59,16 +59,18 @@ function addMessage(message) {
     // Метка времени
     var messageDate = new Date(message.date);
     var now = new Date();
-    var dateString = messageDate.getHours().toString().padStart(2, '0') + ':' + messageDate.getMinutes().toString().padStart(2, '0');
+    var dateString = messageDate.getHours().toString().padStart(2, '0')
+        + ':' + messageDate.getMinutes().toString().padStart(2, '0');
     var todayMessage = now.getDate() == messageDate.getDate()
         && now.getMonth() == messageDate.getMonth();
     var todayYear = now.getFullYear() == messageDate.getFullYear();
     if (!todayMessage) {
         if (todayYear) {
-            dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'}) + ' ' + dateString;
+            dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'})
+                + ' ' + dateString;
         } else {
-            dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'}) + ' '
-                + messageDate.getFullYear() + ' ' + dateString;
+            dateString = messageDate.getDate().toString() + ' ' + messageDate.toLocaleString('ru-ru', {month: 'long'})
+                + ' ' + messageDate.getFullYear() + ' ' + dateString;
         }
     }
     $('<span/>', {
