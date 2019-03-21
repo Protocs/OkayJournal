@@ -41,67 +41,67 @@ font-size: initial;
 
 
 <div class="mx-5 my-3">
-    <p class="lead mb-1"><span class="align-middle">Класс</span>
-        <form method="post" action="/timetable">
+    <p class="lead mb-1"><span class="align-middle">Класс</span></p>
+    <form method="post" action="/timetable">
         <select class="custom-select class-select" id="grade_number_select" name="number">
         </select>
         <select class="custom-select class-select" id="grade_letter_select" name="letter">
         </select>
         <button class="btn btn-primary" type="submit">Загрузить</button>
-        </form>
-        {% if selectors %}
-        <button type="submit" class="btn btn-success" form="configureSchedule">Сохранить</button>
-        {% endif %}
-    </p>
+    </form>
+    {% if selectors %}
+    <button type="submit" class="btn btn-success mt-3" form="configureSchedule">Сохранить</button>
+    {% endif %}
 </div>
 
 {% if selectors %}
 
-<div class="mx-5 mt-3" id="#scheduleContent">
+<div class="mx-5 mt-3 mb-5" id="#scheduleContent">
     <form method="post" id="configureSchedule">
-    {% for i in range(2) %}
-    <div class="row justify-content-around flex-nowrap align-items-stretch">
-        {% for j in range(1, 4) %}
-        <div class="day">
-            <h3>{{ next(week_days) }}</h3>
-            <table class="table table-hover table-dark mb-0">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Предмет</th>
-                    <th>Учитель</th>
-                </tr>
-                </thead>
-                {% for k in range(6) %}
-                <tr>
-                    <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
-                    <td class="align-middle">
-                        <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}" id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                            {% for id, name in selectors[3 * i + j][k + 1]["subjects"].items() %}
-                            <option value="{{ id }}">{{ name }}</option>
-                            {% endfor %}
-                            <option value="none">-</option>
-                        </select>
-                    </td>
-                    <td class="align-middle">
-                        <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}" id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                            {% for id, name in selectors[3 * i + j][k + 1]["teachers"].items() %}
-                            <option value="{{ id }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+        {% for i in range(2) %}
+        <div class="row justify-content-around flex-nowrap align-items-stretch">
+            {% for j in range(1, 4) %}
+            <div class="day">
+                <h3>{{ next(week_days) }}</h3>
+                <table class="table table-hover table-dark mb-0">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Предмет</th>
+                        <th>Учитель</th>
+                    </tr>
+                    </thead>
+                    {% for k in range(6) %}
+                    <tr>
+                        <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
+                        <td class="align-middle">
+                            <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
+                                    id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
+                                {% for id, name in selectors[3 * i + j][k + 1]["subjects"].items() %}
+                                <option value="{{ id }}">{{ name }}</option>
+                                {% endfor %}
+                                <option value="none">-</option>
+                            </select>
+                        </td>
+                        <td class="align-middle">
+                            <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
+                                    id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
+                                {% for id, name in selectors[3 * i + j][k + 1]["teachers"].items() %}
+                                <option value="{{ id }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
         </div>
         {% endfor %}
-    </div>
-    {% endfor %}
     </form>
 </div>
-
 {% endif %}
-<script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
 
 {% endblock %}
