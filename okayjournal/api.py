@@ -1,6 +1,6 @@
 import email.utils
 
-from flask import jsonify, request
+from flask import request
 
 from okayjournal.app import app
 from okayjournal.utils import *
@@ -9,7 +9,6 @@ from okayjournal.db import *
 
 @app.route("/get_subjects")
 @restricted_access(["SchoolAdmin"])
-@need_to_change_password
 def get_subjects():
     subject_list = Subject.query.filter_by(school_id=session["user"]["school_id"]).all()
     response = {}
@@ -19,31 +18,35 @@ def get_subjects():
 
 
 @app.route("/messages/<login>", methods=["GET", "POST"])
-@login_required
-@need_to_change_password
+@login_required_rest
 def get_dialog(login):
-    """Возвращает JSON-объект сообщений"""
+    """Возвращает JSON-объект сообщений."""
+
     recipient = find_user_by_login(login)
     if not recipient:
         return jsonify({"error": "Recipient not found"})
+
     messages_from_recipient = Message.query.filter_by(
         sender_id=recipient.id,
         sender_role=recipient.__class__.__name__,
         recipient_id=session["user"]["id"],
         recipient_role=session["role"],
     )
+
     if request.method == "POST":
         if request.json.get("mark_as_read"):
             for message in messages_from_recipient.all():
                 message.read = True
             db.session.commit()
             return jsonify({"success": "ok"})
+
     messages_from_sender = Message.query.filter_by(
         sender_id=session["user"]["id"],
         sender_role=session["role"],
         recipient_id=recipient.id,
         recipient_role=recipient.__class__.__name__,
     )
+
     all_messages = messages_from_sender.union(messages_from_recipient)
     response = {}
     for message in all_messages.order_by(Message.date).all():
@@ -67,22 +70,22 @@ def get_dialog(login):
 
 
 @app.route("/dialogs")
-@login_required
-@need_to_change_password
+@login_required_rest
 def get_dialogs():
     dialogs = {}
     # Вытащим все сообщения, которые были отправлены текущим пользователем
-    # И сгруппируем их по получателю
+    # и сгруппируем их по получателю
     messages_from_cur_user = Message.query.filter_by(
         sender_id=session["user"]["id"], sender_role=session["role"]
     ).group_by(Message.recipient_id, Message.recipient_role)
     # Вытащим все сообщения, которые были отправлены текущему пользователю
-    # И сгруппируем их по отправителю
+    # и сгруппируем их по отправителю
     messages_for_cur_user = Message.query.filter_by(
         recipient_id=session["user"]["id"], recipient_role=session["role"]
     ).group_by(Message.sender_id, Message.sender_role)
     # Объединим полученные сообщения в один объект BaseQuery
     all_messages = messages_for_cur_user.union(messages_from_cur_user)
+
     # Пройдемся по каждому сообщению, чтобы составить список диалогов
     for message in reversed(all_messages.order_by(Message.date).all()):
         # Вытащим получателя и отправителя сообщения
@@ -92,8 +95,7 @@ def get_dialogs():
         # то текущий диалог с отправителем
         if user_equal(recipient, session):
             partner = sender
-        # Если же нет, то текущий диалог с получателем
-        else:
+        else:  # Если же нет, то текущий диалог с получателем
             partner = recipient
         # Если диалог с этим человеком уже есть в словаре, то пойдем дальше
         if any(partner.login == dialogs[k]["partner"]["login"] for k in dialogs):
@@ -126,8 +128,7 @@ def get_dialogs():
 
 
 @app.route("/send_message", methods=["POST"])
-@login_required
-@need_to_change_password
+@login_required_rest
 def send_message():
     db.session.add(
         Message(
@@ -144,7 +145,6 @@ def send_message():
 
 @app.route("/get_classes")
 @restricted_access(["SchoolAdmin"])
-@need_to_change_password
 def get_classes():
     grades = Grade.query.filter_by(school_id=session["user"]["school_id"]).all()
     grades_structured = {}
@@ -160,7 +160,6 @@ def get_classes():
 
 @app.route("/get_parents")
 @restricted_access(["SchoolAdmin"])
-@need_to_change_password
 def get_parents():
     parents = Parent.query.filter_by(school_id=session["user"]["school_id"]).all()
     response = {}
@@ -171,7 +170,6 @@ def get_parents():
 
 @app.route("/get_class/<int:grade_id>")
 @restricted_access(["SchoolAdmin"])
-@need_to_change_password
 def get_class(grade_id):
     grade = Grade.query.filter_by(id=grade_id).first()
     homeroom_teacher = Teacher.query.filter_by(
@@ -196,6 +194,5 @@ def get_class(grade_id):
 
 @app.route("/get_teachers_subjects")
 @restricted_access(["SchoolAdmin"])
-@need_to_change_password
 def get_teachers_subjects_route():
     return jsonify(get_teachers_subjects(session["user"]["school_id"]))

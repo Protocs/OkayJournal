@@ -1,6 +1,6 @@
 from itertools import cycle
 
-from flask import session, redirect, abort
+from flask import session, redirect, abort, jsonify
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
 from .local_settings import EMAIL_PASSWORD
 
@@ -92,6 +92,18 @@ def login_required(func):
     def decorated(*args, **kwargs):
         if not logged_in():
             return redirect("/login")
+        return func(*args, **kwargs)
+
+    decorated.__name__ = func.__name__
+    return decorated
+
+
+def login_required_rest(func):
+    """Возвращает JSON, сообщающий об ошибке, если не залогинен."""
+
+    def decorated(*args, **kwargs):
+        if not logged_in():
+            return jsonify({"error": "Not logged in"})
         return func(*args, **kwargs)
 
     decorated.__name__ = func.__name__
