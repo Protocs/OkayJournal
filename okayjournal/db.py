@@ -1,5 +1,4 @@
 from okayjournal.app import db
-from os.path import isfile
 from datetime import datetime
 from werkzeug.security import generate_password_hash
 
@@ -256,14 +255,19 @@ def get_teachers_subjects(school_id):
     return response
 
 
-if not isfile("okayjournal/okayjournal.db"):
-    db.create_all()
-    # Добавим администратора
+db.create_all()
+
+# Добавим администратора
+if not SystemAdmin.query.all():
     # noinspection PyArgumentList
-    db.session.add(SystemAdmin(name="admin",
-                               surname="admin",
-                               patronymic="admin",
-                               email="None",
-                               login="admin",
-                               password_hash=generate_password_hash("admin")))
+    db.session.add(
+        SystemAdmin(
+            name="admin",
+            surname="admin",
+            patronymic="admin",
+            email="None",
+            login="admin",
+            password_hash=generate_password_hash("admin"),
+        )
+    )
     db.session.commit()
