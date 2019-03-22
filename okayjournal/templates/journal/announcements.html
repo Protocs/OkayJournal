@@ -29,7 +29,7 @@ line-height: 175%;
                 </div>
                 <form method="post" name="addAnnouncementForm">
                     <div class="modal-body">
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-1">
                             <div class="input-group-prepend">
                                 <label class="input-group-text" for="announcementHeader">Заголовок</label>
                             </div>
@@ -37,40 +37,40 @@ line-height: 175%;
                                    required>
                         </div>
 
-                        <div class="input-group">
+                        <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Объявление</span>
                             </div>
                             <textarea class="form-control" aria-label="Введите текст объявления" name="announcement"
                                       required></textarea>
                         </div>
-
+                        <!-- TODO: Исправить чекбоксы -->
                         <h6>Объявление для</h6>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="Teacher" id="teacherCheckbox" checked>
-                            <label class="form-check-label" for="teacherCheckbox">
-                            Учителей
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="form-check-input custom-control-input" name="Teacher"
+                                   id="teacherCheckbox" checked>
+                            <label class="form-check-label custom-control-label" for="teacherCheckbox">
+                                Учителей
                             </label>
                         </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="Parent" id="parentCheckbox" checked>
-                            <label class="form-check-label" for="parentCheckbox">
-                            Родителей
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="form-check-input custom-control-input"
+                                   name="Parent" id="parentCheckbox" checked>
+                            <label class="form-check-label custom-control-label" for="parentCheckbox">
+                                Родителей
                             </label>
                         </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="Student" id="studentCheckbox" checked>
-                            <label class="form-check-label" for="studentCheckbox">
-                            Учеников
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="form-check-input custom-control-input" name="Student"
+                                   id="studentCheckbox" checked>
+                            <label class="form-check-label custom-control-label" for="studentCheckbox">
+                                Учеников
                             </label>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal">Отменить
-                        </button>
-                        <button type="submit" class="btn btn-primary">Добавить
-                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
                     </div>
                 </form>
             </div>
@@ -78,7 +78,8 @@ line-height: 175%;
     </div>
 
     {% for k, v in reversed(list(announcements.items())) %}
-    {% if session["role"] in v["for_users"].split() or (session["user"]["id"], session["role"]) == (v["author"]["id"], v["author"]["role"]) %}
+    {% if session["role"] in v["for_users"].split() or (session["user"]["id"], session["role"]) == (v["author"]["id"],
+    v["author"]["role"]) %}
     <div class="card" style="margin-top: 10px;">
         <h5 class="card-header">
             {{ v["header"] }}
