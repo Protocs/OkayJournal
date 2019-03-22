@@ -13,6 +13,27 @@ border-top: 0;
 {% block body %}
 {{ super() }}
 
+{% if parent %}
+
+<div class="m-3">
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Дети
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      {% for child in parent.children %}
+    <a class="dropdown-item" href="/diary/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
+      {% endfor %}
+  </div>
+</div>
+{% if student %}
+    <p class="lead">{{ student.surname }} {{ student.name }}</p>
+{% endif %}
+    </div>
+{% endif %}
+
+
+{% if schedule %}
 <div class="mx-5 mt-3">
     {% for i in range(2) %}
     <div class="row justify-content-around flex-nowrap align-items-stretch">
@@ -42,5 +63,6 @@ border-top: 0;
     </div>
     {% endfor %}
 </div>
+{% endif %}
 
 {% endblock %}
