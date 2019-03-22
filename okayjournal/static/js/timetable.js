@@ -13,7 +13,7 @@ var grade = $.ajax("/get_class/" + pathname[pathname.length - 1]).done(function 
     }
     grade_letter_select.empty();
     var classes = $.ajax("/get_classes").done(function (classes) {
-        fillLetterSelect(1);
+        fillLetterSelect(grade_number_select.val());
 
         function fillLetterSelect(grade_number) {
             grade_letter_select.empty();
