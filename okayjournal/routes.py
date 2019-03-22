@@ -82,8 +82,13 @@ def register():
                 "register_request.html",
                 form=form,
                 title="Запрос на регистрацию",
-                error="Некорректный адрес электронной " "почты",
+                error="Некорректный адрес электронной почты",
             )
+        if email_exists(request.form["email"]):
+            return render_template("register_request.html", session=session,
+                                   error="Пользователь с такой электронной почтой "
+                                         "уже существует", form=form,
+                                   title="Запрос на регистрацию")
         if password_first == password_second:
             password_hash = generate_password_hash(password_first)
             db.session.add(
@@ -238,7 +243,13 @@ def users():
             return journal_render(
                 "journal/users.html",
                 **kwargs,
-                error="Некорректный адрес электронной " "почты"
+                error="Некорректный адрес электронной почты"
+            )
+        if email_exists(request.form["add-teacher-email"]):
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Пользователь с такой электронной почтой уже существует"
             )
         password = generate_throwaway_password()
         login = generate_unique_login("Teacher")
@@ -271,6 +282,12 @@ def users():
                 "journal/users.html",
                 **kwargs,
                 error="Некорректный адрес электронной почты"
+            )
+        if email_exists(request.form["add-student-email"]):
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Пользователь с такой электронной почтой уже существует"
             )
         password = generate_throwaway_password()
         login = generate_unique_login("Student")
@@ -308,6 +325,12 @@ def users():
                 "journal/users.html",
                 **kwargs,
                 error="Некорректный адрес электронной почты"
+            )
+        if email_exists(request.form["add-parent-email"]):
+            return journal_render(
+                "journal/users.html",
+                **kwargs,
+                error="Пользователь с такой электронной почтой уже существует"
             )
         password = generate_throwaway_password()
         login = generate_unique_login("Parent")

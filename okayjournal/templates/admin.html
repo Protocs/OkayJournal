@@ -23,6 +23,11 @@
 </nav>
 
 <div class="m-3">
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
     <h2>Запросы на регистрацию школы</h2>
 
     {% for request in requests %}

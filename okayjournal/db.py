@@ -110,14 +110,14 @@ class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     region = db.Column(db.String(50), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
-    school = db.Column(db.String(80), unique=True, nullable=False)
+    school = db.Column(db.String(80), unique=False, nullable=False)
 
 
 class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     region = db.Column(db.String(50), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
-    school = db.Column(db.String(80), unique=True, nullable=False)
+    school = db.Column(db.String(80), unique=False, nullable=False)
     name = db.Column(db.String(30), unique=False, nullable=False)
     surname = db.Column(db.String(30), unique=False, nullable=False)
     patronymic = db.Column(db.String(30), unique=False, nullable=False)
@@ -253,6 +253,14 @@ def get_teachers_subjects(school_id):
             }
         )
     return response
+
+
+def email_exists(email):
+    """Проверяет, существует ли пользователь с такой электронной почтой"""
+    for user_class in USER_CLASSES:
+        if user_class.query.filter_by(email=email).first():
+            return True
+    return False
 
 
 db.create_all()
