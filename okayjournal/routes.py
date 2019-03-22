@@ -23,11 +23,10 @@ def journal_render(*args, **kwargs):
     )(*args, **kwargs)
 
 
-@app.route("/")
 @app.route("/index")
 def index():
     if logged_in():
-        return redirect("/journal")
+        return redirect("/main_page")
 
     return render_template(
         "index.html",
@@ -58,9 +57,11 @@ def login_route():
     return render_template("login.html", form=form, title="Авторизация")
 
 
+@app.route("/")
 @app.route("/main_page")
-@login_required
 def main_page():
+    if not logged_in():
+        return redirect("/index")
     if session["role"] in ("Student", "Parent"):
         return redirect("/diary")
     if session["role"] == "Teacher":
