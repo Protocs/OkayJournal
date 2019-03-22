@@ -143,6 +143,7 @@ class Announcement(db.Model):
     author_role = db.Column(db.String(11), nullable=False, unique=False)
     header = db.Column(db.String(80), nullable=False, unique=False)
     text = db.Column(db.Text, unique=False, nullable=False)
+    for_users = db.Column(db.String(34), unique=False, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now())
 
 

@@ -509,6 +509,8 @@ def timetable(grade_id):
 @need_to_change_password
 def announcements():
     if request.method == "POST":
+        for_users = " ".join([elem[0] for elem in request.form.items()
+                              if elem[1] == "on"] + ["SchoolAdmin"])
         db.session.add(
             Announcement(
                 school_id=session["user"]["school_id"],
@@ -516,6 +518,7 @@ def announcements():
                 author_role=session["role"],
                 header=request.form.get("announcementHeader"),
                 text=request.form.get("announcement"),
+                for_users=for_users
             )
         )
         db.session.commit()
@@ -530,11 +533,14 @@ def announcements():
             {
                 announcement.id: {
                     "author": {
-                        "name": get_fullname(author)
+                        "name": get_fullname(author),
+                        "id": author.id,
+                        "role": author.__class__.__name__
                     },
                     "header": announcement.header,
                     "text": announcement.text,
                     "date": announcement.date,
+                    "for_users": announcement.for_users
                 }
             }
         )
