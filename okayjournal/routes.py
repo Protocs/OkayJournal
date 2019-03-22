@@ -446,9 +446,8 @@ def settings():
 @restricted_access(["Teacher"])
 @need_to_change_password
 def journal():
-    if session['role'] == "SystemAdmin":
-        return redirect("/admin")
-    return journal_render("journal.html", str=str)
+    subjects = Subject.query.filter_by(school_id=session["user"]["school_id"]).all()
+    return journal_render("journal.html", str=str, subjects=subjects)
 
 
 @app.route("/timetable", methods=["GET", "POST"])
