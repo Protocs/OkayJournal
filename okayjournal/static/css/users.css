@@ -1,0 +1,57 @@
+.add {
+    font-size: 250%;
+    line-height: 75%;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: -1px !important;
+}
+
+.modal-xl {
+    max-width: 1140px;
+}
+
+input {
+    position: relative;
+}
+
+input:focus {
+    z-index: 1;
+}
+
+select {
+    position: relative;
+}
+
+select:focus {
+    z-index: 1;
+}
+
+.composed-text-inputs input:first-child {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.composed-text-inputs select:first-child {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.composed-text-inputs input {
+    margin-top: -1px;
+    border-radius: 0;
+}
+
+.composed-text-inputs select {
+    margin-top: -1px;
+    border-radius: 0;
+}
+
+.composed-text-inputs input:last-child {
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.composed-text-inputs select:last-child {
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}

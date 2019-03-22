@@ -1,0 +1,18 @@
+#old_password {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+#new_password_again {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.form-control {
+    position: relative;
+    margin-bottom: -1px;
+}
+
+.form-control:focus {
+    z-index: 2;
+}

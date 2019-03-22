@@ -1,0 +1,16 @@
+small {
+    display: block;
+    font-size: 60%;
+    line-height: 175%;
+}
+
+.card {
+    margin-top: 10px;
+}
+
+.announcement-info {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    text-align: right;
+}

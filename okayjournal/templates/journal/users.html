@@ -3,69 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
-{% endblock %}
-
-{% block style %}
-{{ super() }}
-
-.add {
-font-size: 250%;
-line-height: 75%;
-border-bottom-left-radius: 0 !important;
-border-bottom-right-radius: 0 !important;
-margin-bottom: -1px !important;
-}
-
-.modal-xl {
-max-width: 1140px;
-}
-
-input {
-position: relative;
-}
-
-input:focus {
-z-index: 1;
-}
-
-select {
-position: relative;
-}
-
-select:focus {
-z-index: 1;
-}
-
-.composed-text-inputs input:first-child {
-border-top-left-radius: 0.25rem;
-border-top-right-radius: 0.25rem;
-}
-
-.composed-text-inputs select:first-child {
-border-top-left-radius: 0.25rem;
-border-top-right-radius: 0.25rem;
-}
-
-.composed-text-inputs input {
-margin-top: -1px;
-border-radius: 0;
-}
-
-.composed-text-inputs select {
-margin-top: -1px;
-border-radius: 0;
-}
-
-.composed-text-inputs input:last-child {
-border-bottom-left-radius: 0.25rem;
-border-bottom-right-radius: 0.25rem;
-}
-
-.composed-text-inputs select:last-child {
-border-bottom-left-radius: 0.25rem;
-border-bottom-right-radius: 0.25rem;
-}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -79,55 +17,37 @@ border-bottom-right-radius: 0.25rem;
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Добавить учителя</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        &times;
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body d-flex">
                     <div class="w-50">
                         <div class="form-group mb-1">
                             <label for="add-teacher-surname">ФИО</label>
                             <div class="composed-text-inputs">
-                                {{
-                                add_teacher_form.surname(class_='form-control',
-                                placeholder="Фамилия") }}
-                                {{ add_teacher_form.name(class_='form-control',
-                                placeholder="Имя") }}
-                                {{
-                                add_teacher_form.patronymic(class_='form-control',
-                                placeholder="Отчество") }}
+                                {{ add_teacher_form.surname(class_='form-control', placeholder="Фамилия") }}
+                                {{ add_teacher_form.name(class_='form-control', placeholder="Имя") }}
+                                {{ add_teacher_form.patronymic(class_='form-control', placeholder="Отчество") }}
                             </div>
                         </div>
                         <div class="form-group">
-                            {{ add_teacher_form.email.label(style='position:
-                            relative; top: 2px;') }}
-                            {{ add_teacher_form.email(class_='form-control',
-                            placeholder="Электронная почта") }}
+                            {{ add_teacher_form.email.label(style='position: relative; top: 2px;') }}
+                            {{ add_teacher_form.email(class_='form-control', placeholder="Электронная почта") }}
                         </div>
                     </div>
                     <div class="w-50 ml-3">
                         <label for="subjectSelect1">Предметы</label>
                         <div class="composed-text-inputs">
-                            <select class="custom-select" name="subjectSelect1"
-                                    id="subjectSelect1" required></select>
-                            <select class="custom-select" name="subjectSelect2"
-                                    id="subjectSelect2"></select>
-                            <select class="custom-select" name="subjectSelect3"
-                                    id="subjectSelect3"></select>
-                            <select class="custom-select" name="subjectSelect4"
-                                    id="subjectSelect4"></select>
-                            <select class="custom-select" name="subjectSelect5"
-                                    id="subjectSelect5"></select>
+                            <select class="custom-select" name="subjectSelect1" id="subjectSelect1" required></select>
+                            <select class="custom-select" name="subjectSelect2" id="subjectSelect2"></select>
+                            <select class="custom-select" name="subjectSelect3" id="subjectSelect3"></select>
+                            <select class="custom-select" name="subjectSelect4" id="subjectSelect4"></select>
+                            <select class="custom-select" name="subjectSelect5" id="subjectSelect5"></select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">Отменить
-                    </button>
-                    <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
-                    {{ add_teacher_form.submit(class_='btn btn-primary',
-                    form='add-teacher-form') }}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    {{ add_teacher_form.submit(class_='btn btn-primary', form='add-teacher-form') }}
                 </div>
             </div>
         </div>
@@ -177,7 +97,6 @@ border-bottom-right-radius: 0.25rem;
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
                     {{ add_student_form.submit(class_='btn btn-primary', form='add-student-form') }}
                 </div>
             </div>
@@ -213,7 +132,6 @@ border-bottom-right-radius: 0.25rem;
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    <!--<button type="submit" class="btn btn-primary" form="add-teacher">Добавить</button>-->
                     {{ add_parent_form.submit(class_='btn btn-primary', form='add-parent-form') }}
                 </div>
             </div>
@@ -231,8 +149,7 @@ border-bottom-right-radius: 0.25rem;
     <div class="col">
         <h3 class="text-center">Учителя</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal"
-               data-target="#add-teacher">
+            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-teacher">
                 <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for teacher in teachers %}
@@ -245,8 +162,7 @@ border-bottom-right-radius: 0.25rem;
     <div class="col">
         <h3 class="text-center">Ученики</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal"
-               data-target="#add-student">
+            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-student">
                 <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for student in students %}
@@ -259,8 +175,7 @@ border-bottom-right-radius: 0.25rem;
     <div class="col">
         <h3 class="text-center">Родители</h3>
         <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal"
-               data-target="#add-parent">
+            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-parent">
                 <li class="add text-center list-group-item text-muted add-button">+</li>
             </a>
             {% for parent in parents %}

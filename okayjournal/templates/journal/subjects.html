@@ -3,19 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
-{% endblock %}
-
-{% block style %}
-{{ super() }}
-
-.add {
-font-size: 250%;
-line-height: 75%;
-border-bottom-left-radius: 0 !important;
-border-bottom-right-radius: 0 !important;
-margin-bottom: -1px !important;
-}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subjects.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -27,9 +15,7 @@ margin-bottom: -1px !important;
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Добавить предмет</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    &times;
-                </button>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div>
@@ -37,20 +23,15 @@ margin-bottom: -1px !important;
                         <div class="form-group">
                             <label for="subject">Предмет</label>
                             <div class="composed-text-inputs" id="subject">
-                                {{
-                                form.name(class_='form-control',
-                                placeholder="Введите название предмета") }}
+                                {{ form.name(class_='form-control', placeholder="Введите название предмета") }}
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Отменить
-                </button>
-                {{ form.submit(class_='btn btn-primary',
-                form='add-subject-form') }}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                {{ form.submit(class_='btn btn-primary', form='add-subject-form') }}
             </div>
         </div>
     </div>

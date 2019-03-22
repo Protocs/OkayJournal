@@ -1,61 +1,7 @@
 {% extends "base.html" %}
 
-{% block style %}
-
-.bd-placeholder-img {
-font-size: 1.125rem;
-text-anchor: middle;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-}
-
-@media (min-width: 768px) {
-.bd-placeholder-img-lg {
-font-size: 3.5rem;
-}
-}
-
-.container {
-max-width: 960px;
-}
-
-.site-header {
-background-color: rgba(0, 0, 0, .85);
--webkit-backdrop-filter: saturate(180%) blur(20px);
-backdrop-filter: saturate(180%) blur(20px);
-}
-.site-header a {
-color: #999;
-transition: ease-in-out color .15s;
-}
-.site-header a:hover {
-color: #fff;
-text-decoration: none;
-}
-
-
-.flex-equal > * {
--ms-flex: 1;
-flex: 1;
-}
-@media (min-width: 768px) {
-.flex-md-equal > * {
--ms-flex: 1;
-flex: 1;
-}
-}
-
-.overflow-hidden { overflow: hidden; }
-
-#billboard {
-background-image: url('{{ url_for('static', filename='img/index_billboard.png') }}');
-background-position: center;
-background-repeat: no-repeat;
-background-size: cover;
-}
-
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -158,53 +104,6 @@ background-size: cover;
                 Управление классами и школой в целом. Создание расписания школьных и классных мероприятий
             </p>
         </div>
-
     </div>
 </div>
-
-<!--<footer class="container py-5">-->
-    <!--<div class="row">-->
-        <!--<div class="col-12 col-md">-->
-            <!--<small class="d-block mb-3 text-muted">&copy; 2019</small>-->
-        <!--</div>-->
-        <!--<div class="col-6 col-md">-->
-            <!--<h5>Features</h5>-->
-            <!--<ul class="list-unstyled text-small">-->
-                <!--<li><a class="text-muted" href="#">Cool stuff</a></li>-->
-                <!--<li><a class="text-muted" href="#">Random feature</a></li>-->
-                <!--<li><a class="text-muted" href="#">Team feature</a></li>-->
-                <!--<li><a class="text-muted" href="#">Stuff for developers</a></li>-->
-                <!--<li><a class="text-muted" href="#">Another one</a></li>-->
-                <!--<li><a class="text-muted" href="#">Last time</a></li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <!--<div class="col-6 col-md">-->
-            <!--<h5>Resources</h5>-->
-            <!--<ul class="list-unstyled text-small">-->
-                <!--<li><a class="text-muted" href="#">Resource</a></li>-->
-                <!--<li><a class="text-muted" href="#">Resource name</a></li>-->
-                <!--<li><a class="text-muted" href="#">Another resource</a></li>-->
-                <!--<li><a class="text-muted" href="#">Final resource</a></li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <!--<div class="col-6 col-md">-->
-            <!--<h5>Resources</h5>-->
-            <!--<ul class="list-unstyled text-small">-->
-                <!--<li><a class="text-muted" href="#">Business</a></li>-->
-                <!--<li><a class="text-muted" href="#">Education</a></li>-->
-                <!--<li><a class="text-muted" href="#">Government</a></li>-->
-                <!--<li><a class="text-muted" href="#">Gaming</a></li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <!--<div class="col-6 col-md">-->
-            <!--<h5>About</h5>-->
-            <!--<ul class="list-unstyled text-small">-->
-                <!--<li><a class="text-muted" href="#">Team</a></li>-->
-                <!--<li><a class="text-muted" href="#">Locations</a></li>-->
-                <!--<li><a class="text-muted" href="#">Privacy</a></li>-->
-                <!--<li><a class="text-muted" href="#">Terms</a></li>-->
-            <!--</ul>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</footer>-->
 {% endblock %}

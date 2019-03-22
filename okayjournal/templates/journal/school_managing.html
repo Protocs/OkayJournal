@@ -10,37 +10,55 @@
 <div class="d-flex flex-column m-3">
     <a href="/users" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title mt-1"><img class="icon" src="../../static/img/icons/users.png">Пользователи школы</h4>
+            <h4 class="card-title mt-1">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/users.png') }}">
+                Пользователи школы
+            </h4>
             <p class="card-text">Добавить, изменить или удалить учителей, учеников или их родителей</p>
         </div>
     </a>
     <a href="/school_settings" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title"><img class="icon" src="../../static/img/icons/settings.png">Настроить школу</h4>
+            <h4 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/users.png') }}">
+                Настроить школу
+            </h4>
             <p class="card-text">Изменить название, местоположение школы</p>
         </div>
     </a>
     <a href="/classes" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title"><img class="icon" src="../../static/img/icons/class.png">Классы</h4>
+            <h4 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/users.png') }}">
+                Классы
+            </h4>
             <p class="card-text">Добавить, изменить или удалить классы</p>
         </div>
     </a>
     <a href="/subjects" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title"><img class="icon" src="../../static/img/icons/subjects.png">Предметы</h4>
+            <h4 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/users.png') }}">
+                Предметы
+            </h4>
             <p class="card-text">Добавить, изменить или удалить предметы</p>
         </div>
     </a>
     <a href="/timetable" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title"><img class="icon" src="../../static/img/icons/timetable.png">Расписание</h4>
+            <h4 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/users.png') }}">
+                Расписание
+            </h4>
             <p class="card-text">Добавить, изменить или удалить расписание</p>
         </div>
     </a>
     <a href="/lesson_times" class="hidden-link">
         <div class="card p-3 mb-3 mx-5">
-            <h4 class="card-title"><img class="icon" src="../../static/img/icons/call_timetable.png">Расписание звонков</h4>
+            <h4 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='img/icons/call_timetable.png') }}">
+                Расписание звонков
+            </h4>
             <p class="card-text">Изменить количество уроков, время их начала и конца</p>
         </div>
     </a>

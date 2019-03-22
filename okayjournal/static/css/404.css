@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+
+p {
+    text-align: center;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.error_text {
+    font-size: 50px;
+    opacity: 0.75;
+}
+
+.error_number {
+    margin-top: 100px;
+    font-size: 72px;
+}

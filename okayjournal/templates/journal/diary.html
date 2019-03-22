@@ -4,34 +4,27 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}">
 {% endblock %}
 
-{% block style %}
-tr:first-child * {
-border-top: 0;
-}
-{% endblock %}
-
 {% block body %}
 {{ super() }}
 
 {% if parent %}
 
 <div class="m-3">
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Дети
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      {% for child in parent.children %}
-    <a class="dropdown-item" href="/diary/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
-      {% endfor %}
-  </div>
-</div>
-{% if student %}
-    <p class="lead">{{ student.surname }} {{ student.name }}</p>
-{% endif %}
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+            Дети
+        </button>
+        <div class="dropdown-menu">
+            {% for child in parent.children %}
+            <a class="dropdown-item" href="/diary/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
+            {% endfor %}
+        </div>
     </div>
+    {% if student %}
+    <p class="lead">{{ student.surname }} {{ student.name }}</p>
+    {% endif %}
+</div>
 {% endif %}
-
 
 {% if schedule %}
 <div class="mx-5 mt-3">
@@ -46,11 +39,9 @@ border-top: 0;
                     <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
                     <td class="align-middle">
                         <b>
-                            {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
-                            {{ schedule[3*i+j][k+1]["subject"]["name"] }}
-                            {% else %}
-                            -
-                            {% endif %}
+                            {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                            {{ schedule[3 * i + j][k + 1]["subject"]["name"] }}
+                            {% else %} - {% endif %}
                         </b>
                     </td>
                     <td class="homework align-middle text-left p-0"><div class="text-truncate"></div></td>

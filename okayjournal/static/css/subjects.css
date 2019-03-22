@@ -1,0 +1,7 @@
+.add {
+    font-size: 250%;
+    line-height: 75%;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: -1px !important;
+}

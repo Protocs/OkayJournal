@@ -4,41 +4,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
 {% endblock %}
 
-{% block style %}
-
-.class-select {
-width: initial;
-height: initial;
-line-height: 1.3;
-}
-
-.class-select:focus {
-position: relative;
-z-index: 1;
-}
-
-#class-number-select {
-border-top-right-radius: 0;
-border-bottom-right-radius: 0;
-}
-
-#class-letter-select {
-border-top-left-radius: 0;
-border-bottom-left-radius: 0;
-
-position: relative;
-left: -0.4em;
-}
-
-option {
-font-size: initial;
-}
-
-{% endblock %}
-
 {% block body %}
 {{ super() }}
-
 
 <div class="mx-5 my-3">
     <p class="lead mb-1"><span class="align-middle">Класс</span></p>
@@ -77,31 +44,25 @@ font-size: initial;
                         <td class="align-middle">
                             <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
                                     id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
-                                <option selected value="{{ schedule[3*i+j][k+1]['subject']['id'] }}">
-                                    {{ schedule[3*i+j][k+1]["subject"]["name"] }}
+                                {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                                <option selected value="{{ schedule[3 * i + j][k + 1]['subject']['id'] }}">
+                                    {{ schedule[3 * i + j][k + 1]["subject"]["name"] }}
                                 </option>
                                 {% for id, subject in teachers_subjects.items() %}
-
-                                {% if id != schedule[3*i+j][k+1]['subject']['id'] %}
+                                {% if id != schedule[3 * i + j][k + 1]['subject']['id'] %}
                                 <option value="{{ id }}">
                                     {{ subject["name"] }}
                                 </option>
                                 {% endif %}
-
                                 {% endfor %}
 
                                 {% else %}
-                                <option selected value="none">
-                                    -
-                                </option>
+                                <option selected value="none">-</option>
 
                                 {% for id, subject in teachers_subjects.items() %}
-
                                 <option value="{{ id }}">
                                     {{ subject["name"] }}
                                 </option>
-
                                 {% endfor %}
 
                                 {% endif %}
@@ -110,9 +71,9 @@ font-size: initial;
                         <td class="align-middle">
                             <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
                                     id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
-                                <option selected value="{{ schedule[3*i+j][k+1]['teacher']['id'] }}">
-                                    {{ schedule[3*i+j][k+1]["teacher"]["name"] }}
+                                {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                                <option selected value="{{ schedule[3 * i + j][k + 1]['teacher']['id'] }}">
+                                    {{ schedule[3 * i + j][k + 1]["teacher"]["name"] }}
                                 </option>
                                 {% endif %}
                             </select>

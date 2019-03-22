@@ -9,7 +9,7 @@
 {% block body %}
 <user user-id="{{ session['user']['id'] }}" user-role="{{ session['role'] }}"></user>
 
-<div class="d-flex flex-column" style="height: 100vh;">
+<div class="root d-flex flex-column">
     {{ super() }}
 
     <div class="modal fade" id="newMessage" tabindex="-1" role="dialog">
@@ -66,29 +66,26 @@
 
     <!-- TODO: Изыди -->
     <script type="text/javascript">
-    $("#role-select").change(function() {
-        $("#user-select").empty();
-        if ($("#role-select").val()==="SchoolAdmin") {
-            {% for user in users["SchoolAdmin"] %}
+        $("#role-select").change(function () {
+            $("#user-select").empty();
+            if ($("#role-select").val() === "SchoolAdmin") {
+                {% for user in users["SchoolAdmin"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-            {% endfor %}
-        }
-        else if ($("#role-select").val()==="Teacher") {
-            {% for user in users["Teacher"] %}
+                {% endfor %}
+            } else if ($("#role-select").val() === "Teacher") {
+                {% for user in users["Teacher"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-            {% endfor %}
-        }
-        else if ($("#role-select").val()==="Parent") {
-            {% for user in users["Parent"] %}
+                {% endfor %}
+            } else if ($("#role-select").val() === "Parent") {
+                {% for user in users["Parent"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-            {% endfor %}
-        }
-        else if ($("#role-select").val()==="Student") {
-            {% for user in users["Student"] %}
+                {% endfor %}
+            } else if ($("#role-select").val() === "Student") {
+                {% for user in users["Student"] %}
                 $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-            {% endfor %}
-        }
-    });
+                {% endfor %}
+            }
+        });
 
     </script>
 
@@ -111,7 +108,7 @@
                     <input class="form-control p-2 flex-grow-1 w-100" id="message-text">
                     <button class="btn btn-light" id="message-send" onclick="sendMessage()">
                         <svg style="width:24px; height:24px" viewBox="0 0 24 24">
-                            <path fill="#000000" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+                            <path fill="#000000" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
                         </svg>
                     </button>
                 </div>

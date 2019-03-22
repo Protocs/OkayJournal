@@ -2,54 +2,8 @@
 
 {% block body_params %} class="text-center" {% endblock %}
 
-{% block style %}
-body {
-display: flex;
-position: absolute;
-/*
-top: 80%;
-left: 50%;
-transform: translate(-50%, -50%);
-*/
-width: 100%;
-align-items: center;
-}
-
-.form-register {
-width: 100%;
-max-width: 330px;
-padding: 15px;
-margin: auto;
-}
-
-.form-register .form-control {
-position: relative;
-box-sizing: border-box;
-height: auto;
-padding: 10px;
-font-size: 16px;
-color: black;
-}
-
-.form-register .form-control:focus {
-z-index: 2;
-}
-
-/* Без скругления углов сверху */
-.no-corner-rounding-up {
-border-top-left-radius: 0;
-border-top-right-radius: 0;
-}
-
-.no-corner-rounding-bottom {
-border-bottom-left-radius: 0;
-border-bottom-right-radius: 0;
-}
-
-.no-corner-rounding {
-border-radius: 0;
-}
-
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register_request.css') }}">
 {% endblock %}
 
 {% block body %}

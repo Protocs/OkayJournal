@@ -35,10 +35,35 @@ select.subject, select.teacher {
 
 option {
     color: black;
+    font-size: initial;
 }
 
 th {
     padding-top: 0.25rem !important;
     padding-bottom: 0.25rem !important;
     color: #6c757d !important;
+}
+
+.class-select {
+    width: initial;
+    height: initial;
+    line-height: 1.3;
+}
+
+.class-select:focus {
+    position: relative;
+    z-index: 1;
+}
+
+#class-number-select {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#class-letter-select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    position: relative;
+    left: -0.4em;
 }

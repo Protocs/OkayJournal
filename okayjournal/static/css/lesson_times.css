@@ -1,0 +1,48 @@
+input {
+    display: block;
+    width: 100%;
+    height: 2.25rem;
+    background-color: transparent;
+    border: 0;
+    color: inherit;
+    padding-left: 0.5rem;
+    text-align: center;
+
+    transition: background-color 0.2s ease-in-out 0s;
+}
+
+input:hover, #add-lesson:hover, input:focus {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+td {
+    padding: 0 !important;
+}
+
+td, th {
+    user-select: none;
+}
+
+#add-lesson {
+    font-size: 250%;
+    line-height: 125%;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease-in-out 0s;
+}
+
+td:not(:last-child) {
+    border-right: 1px solid #32383e;
+}
+
+tr:hover {
+    background-color: inherit !important;
+}
+
+table {
+    table-layout: fixed;
+}
+
+col {
+    width: 2rem;
+}
