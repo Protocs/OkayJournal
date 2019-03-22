@@ -8,7 +8,7 @@ from validate_email import validate_email
 from okayjournal.app import app
 from okayjournal.forms import *
 from okayjournal.db import *
-from okayjournal.login import login
+from okayjournal.login import login as do_login
 from okayjournal.utils import *
 
 
@@ -40,7 +40,7 @@ def index():
 def login_route():
     form = LoginForm()
     if form.validate_on_submit():
-        login_successful = login(form.login.data, form.password.data)
+        login_successful = do_login(form.login.data, form.password.data)
         if not login_successful:
             return render_template(
                 "login.html",
@@ -201,12 +201,12 @@ def messages():
     users = {}
     for user_class in USER_CLASSES:
         users[user_class.__name__] = []
-        query = user_class.query.filter_by(school_id=session["user"]["school_id"])
-        for user in query.order_by(
-                user_class.surname, user_class.name, user_class.patronymic
-        ):
-            if not user_equal(user, session):
-                users[user_class.__name__].append(user)
+        query = user_class.query.filter_by(
+            school_id=session["user"]["school_id"]
+        ).order_by(user_class.surname, user_class.name, user_class.patronymic)
+        for u in query:
+            if not user_equal(u, session):
+                users[user_class.__name__].append(u)
     return journal_render("journal/messages.html", users=users, type=type)
 
 
@@ -220,7 +220,7 @@ def school_managing():
 @app.route("/users", methods=["GET", "POST"])
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
-def users():
+def users_route():
     add_teacher_form = AddTeacherForm(prefix="add-teacher")
     add_student_form = AddStudentForm(prefix="add-student")
     add_parent_form = AddParentForm(prefix="add-parent")
@@ -402,7 +402,7 @@ def classes():
 @app.route("/subjects", methods=["GET", "POST"])
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
-def subjects():
+def subjects_route():
     if request.method == "POST":
         db.session.add(
             Subject(name=request.form["name"], school_id=session["user"]["school_id"])
@@ -427,13 +427,13 @@ def settings():
                 "journal/settings.html", form=form, password_change_error=True
             )
 
-        user = find_user_by_role(session["user"]["id"], session["role"])
-        user.password_hash = generate_password_hash(form.new_password.data)
-        user.throwaway_password = False
+        u = find_user_by_role(session["user"]["id"], session["role"])
+        u.password_hash = generate_password_hash(form.new_password.data)
+        u.throwaway_password = False
         db.session.commit()
-        id, role = session["user"]["id"], session["role"]
+        user_id, role = session["user"]["id"], session["role"]
         del session["user"]
-        session["user"] = user_to_dict(find_user_by_role(id, role))
+        session["user"] = user_to_dict(find_user_by_role(user_id, role))
         return journal_render(
             "journal/settings.html", form=form, password_change_success=True
         )
@@ -499,18 +499,23 @@ def timetable(grade_id):
     schedule = get_grade_schedule(grade_id, session["user"]["school_id"])
     teachers_subjects = get_teachers_subjects(session["user"]["school_id"])
     return journal_render(
-        "journal/timetable.html", week_days=week_days, next=next,
-        schedule=schedule, teachers_subjects=teachers_subjects
+        "journal/timetable.html",
+        week_days=week_days,
+        next=next,
+        schedule=schedule,
+        teachers_subjects=teachers_subjects,
     )
 
 
 @app.route("/announcements", methods=["GET", "POST"])
 @login_required
 @need_to_change_password
-def announcements():
+def announcements_route():
     if request.method == "POST":
-        for_users = " ".join([elem[0] for elem in request.form.items()
-                              if elem[1] == "on"] + ["SchoolAdmin"])
+        for_users = " ".join(
+            [elem[0] for elem in request.form.items() if elem[1] == "on"]
+            + ["SchoolAdmin"]
+        )
         db.session.add(
             Announcement(
                 school_id=session["user"]["school_id"],
@@ -518,15 +523,15 @@ def announcements():
                 author_role=session["role"],
                 header=request.form.get("announcementHeader"),
                 text=request.form.get("announcement"),
-                for_users=for_users
+                for_users=for_users,
             )
         )
         db.session.commit()
     announcements = {}
     for announcement in (
-            Announcement.query.filter_by(school_id=session["user"]["school_id"])
-                    .order_by(Announcement.date)
-                    .all()
+        Announcement.query.filter_by(school_id=session["user"]["school_id"])
+        .order_by(Announcement.date)
+        .all()
     ):
         author = find_user_by_role(announcement.author_id, announcement.author_role)
         announcements.update(
@@ -535,12 +540,12 @@ def announcements():
                     "author": {
                         "name": get_fullname(author),
                         "id": author.id,
-                        "role": author.__class__.__name__
+                        "role": author.__class__.__name__,
                     },
                     "header": announcement.header,
                     "text": announcement.text,
                     "date": announcement.date,
-                    "for_users": announcement.for_users
+                    "for_users": announcement.for_users,
                 }
             }
         )
@@ -580,7 +585,7 @@ def lesson_times():
 
     schedule = {}
     for subject in CallSchedule.query.filter_by(
-            school_id=session["user"]["school_id"]
+        school_id=session["user"]["school_id"]
     ).all():
         schedule[subject.subject_number] = {"start": subject.start, "end": subject.end}
 
