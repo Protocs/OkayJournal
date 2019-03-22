@@ -175,10 +175,13 @@ def admin():
 
 
 @app.route("/diary")
-@restricted_access(["Student", "Parent"])
+@restricted_access(["Student"])
 @need_to_change_password
 def diary():
-    return journal_render("journal/diary.html", week_days=week_days, next=next)
+    schedule = get_grade_schedule(session["user"]["grade_id"],
+                                  session["user"]["school_id"])
+    return journal_render("journal/diary.html", week_days=week_days, next=next,
+                          schedule=schedule)
 
 
 @app.route("/messages", methods=["POST", "GET"])

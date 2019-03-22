@@ -16,14 +16,22 @@ border-top: 0;
 <div class="mx-5 mt-3">
     {% for i in range(2) %}
     <div class="row justify-content-around flex-nowrap align-items-stretch">
-        {% for j in range(3) %}
+        {% for j in range(1, 4) %}
         <div class="day d-flex flex-column p-3">
             <h3>{{ next(week_days) }}</h3>
             <table class="table table-hover table-dark">
                 {% for k in range(6) %}
                 <tr>
                     <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
-                    <td class="align-middle"><b>Мотьематика</b></td>
+                    <td class="align-middle">
+                        <b>
+                            {% if schedule.get(3*i+j) and schedule.get(3*i+j).get(k+1) %}
+                            {{ schedule[3*i+j][k+1]["subject"]["name"] }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </b>
+                    </td>
                     <td class="homework align-middle text-left p-0"><div class="text-truncate"></div></td>
                     <td class="mark_ align-middle pr-3 pl-0 py-0"><div class="text-nowrap">5 5</div></td>
                 </tr>
