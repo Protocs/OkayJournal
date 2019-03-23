@@ -469,19 +469,32 @@ def journal():
     if request.method == 'GET':
         return journal_render("journal/journal.html")
     if request.method == 'POST':
-        subject = int(request.form['subject'])
+        subject_id = int(request.form['subject'])
         grade_number = request.form['grade-number']
         grade_letter = request.form['grade-letter']
+        grade = Grade.query.filter_by(school_id=session["user"]["school_id"],
+                                      number=int(grade_number),
+                                      letter=grade_letter).first()
         quarter = int(request.form['quarter'])
 
-        date_range = list(get_quarter_date_range(quarter))
+        weekdays = [subject.day for subject in Schedule.query.filter_by(
+            subject_id=subject_id,
+            grade_id=grade.id,
+            teacher_id=session["user"]["id"],
+            school_id=session["user"]["school_id"]
+        )]
 
+        date_range = filter(lambda d: (d.weekday() + 1) in weekdays,
+                            list(get_quarter_date_range(quarter)))
+
+        # TODO: subject_id от класса SubjectDescription
         marks = Marks.query.filter_by(
-            subject_id=subject,
-            school_id=session['user']['school_id']
+            subject_id=subject_id,
+            school_id=session['user']['school_id'],
+
         )
 
-        return render_template(
+        return journal_render(
             "journal/journal.html",
             date_range=date_range,
             marks_query=marks

@@ -89,8 +89,8 @@ class SubjectDescription(db.Model):
     school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     grade_id = db.Column(db.Integer, db.ForeignKey("grade.id"), nullable=False)
-    grade = db.relationship("Grade", backref="homework", lazy=True)
-    subject = db.relationship("Subject", backref="homework", lazy=True)
+    grade = db.relationship("Grade", backref="subject_descriptions", lazy=True)
+    subject = db.relationship("Subject", backref="subject_descriptions", lazy=True)
     theme = db.Column(db.Text, nullable=False, unique=False)
     homework = db.Column(db.Text, nullable=False, unique=False)
 
@@ -99,10 +99,11 @@ class Marks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     mark = db.Column(db.Integer, nullable=False, unique=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subject_description.id"),
+                           nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
-    subject = db.relationship("Subject", backref="marks", lazy=True)
+    subject = db.relationship("SubjectDescription", backref="marks", lazy=True)
     student = db.relationship("Student", backref="marks", lazy=True)
 
 
