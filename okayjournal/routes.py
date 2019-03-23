@@ -466,8 +466,7 @@ def settings():
 @restricted_access(["Teacher"])
 @need_to_change_password
 def journal():
-    subjects = Subject.query.filter_by(school_id=session["user"]["school_id"]).all()
-    return journal_render("journal.html", str=str, subjects=subjects)
+    return journal_render("journal/journal.html", str=str)
 
 
 @app.route("/timetable", methods=["GET", "POST"])
@@ -494,13 +493,13 @@ def timetable(grade_id):
             for j in range(1, 7):
                 subject = request.form["subject" + str(i) + str(j)]
                 teacher = request.form.get("teacher" + str(i) + str(j), None)
+                schedule = Schedule.query.filter_by(
+                    school_id=session["user"]["school_id"],
+                    day=i,
+                    subject_number=j,
+                    grade_id=grade_id,
+                ).first()
                 if subject != "none" and teacher is not None:
-                    schedule = Schedule.query.filter_by(
-                        school_id=session["user"]["school_id"],
-                        day=i,
-                        subject_number=j,
-                        grade_id=grade_id,
-                    ).first()
                     if schedule is None:
                         db.session.add(
                             Schedule(
@@ -516,6 +515,10 @@ def timetable(grade_id):
                         schedule.subject_id = int(subject)
                         schedule.teacher_id = int(teacher)
                     db.session.commit()
+                else:
+                    if schedule is not None:
+                        db.session.delete(schedule)
+                        db.session.commit()
     schedule = get_grade_schedule(grade_id, session["user"]["school_id"])
     teachers_subjects = get_teachers_subjects(session["user"]["school_id"])
     return journal_render(

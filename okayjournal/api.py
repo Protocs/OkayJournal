@@ -101,8 +101,8 @@ def get_dialogs():
         if any(partner.login == dialogs[k]["partner"]["login"] for k in dialogs):
             continue
         if (message.sender_id, message.sender_role) == (
-            session["user"]["id"],
-            session["role"],
+                session["user"]["id"],
+                session["role"],
         ):
             last_message_text = "Вы: " + message.text
         else:
@@ -152,8 +152,8 @@ def get_classes():
         grades_structured[n] = {
             g.id: g.letter
             for g in sorted(
-                filter(lambda g: g.number == n, grades), key=lambda g: g.letter
-            )
+            filter(lambda g: g.number == n, grades), key=lambda g: g.letter
+        )
         }
     return jsonify(grades_structured)
 
@@ -186,7 +186,7 @@ def get_class(grade_id):
         "letter": grade.letter,
     }
     for student in sorted(
-        grade.students, key=lambda s: (s.surname, s.name, s.patronymic)
+            grade.students, key=lambda s: (s.surname, s.name, s.patronymic)
     ):
         response["students"].append(get_fullname(student))
     return jsonify(response)
@@ -196,3 +196,24 @@ def get_class(grade_id):
 @restricted_access(["SchoolAdmin"])
 def get_teachers_subjects_route():
     return jsonify(get_teachers_subjects(session["user"]["school_id"]))
+
+
+@app.route("/get_teacher_schedule")
+@restricted_access(["SchoolAdmin", "Teacher"])
+def get_teacher_schedule():
+    teacher = find_user_by_role(session["user"]["id"], session["role"])
+    response = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}}
+    for subject in teacher.schedule:
+        response[subject.day].update(
+            {
+                subject.subject_number: {
+                    "subject": {"id": subject.subject.id, "name": subject.subject.name},
+                    "grade": {
+                        "id": subject.grade_id,
+                        "letter": subject.grade.letter,
+                        "number": subject.grade.number
+                    }
+                }
+            }
+        )
+    return jsonify(response)

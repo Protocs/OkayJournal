@@ -10,10 +10,7 @@
     <div class="pt-3 px-5 d-flex align-items-center">
         <div class="mr-3">
             <p class="lead">Предмет</p>
-            <select class="d-block custom-select class-select form-control mt-0">
-                {% for subj in subjects %}
-                    <option value="{{ subj.id }}">{{ subj.name }}</option>
-                {% endfor %}
+            <select class="d-block custom-select class-select form-control mt-0" id="subject_select">
             </select>
         </div>
         <div class="mr-3">
@@ -67,6 +64,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/journal.js') }}"></script>
 
 {% endblock %}
