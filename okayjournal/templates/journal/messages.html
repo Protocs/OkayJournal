@@ -64,31 +64,6 @@
         </div>
     </div>
 
-    <!-- TODO: Изыди -->
-    <script type="text/javascript">
-        $("#role-select").change(function () {
-            $("#user-select").empty();
-            if ($("#role-select").val() === "SchoolAdmin") {
-                {% for user in users["SchoolAdmin"] %}
-                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-                {% endfor %}
-            } else if ($("#role-select").val() === "Teacher") {
-                {% for user in users["Teacher"] %}
-                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-                {% endfor %}
-            } else if ($("#role-select").val() === "Parent") {
-                {% for user in users["Parent"] %}
-                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-                {% endfor %}
-            } else if ($("#role-select").val() === "Student") {
-                {% for user in users["Student"] %}
-                $("#user-select").append($('<option value="{{ user.id }}">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</option>'));
-                {% endfor %}
-            }
-        });
-
-    </script>
-
     <div class="messenger">
         <div class="dialogs-drawer" id="dialogs">
             <a href="#" data-toggle="modal" data-target="#newMessage" id="addRecipientLink">

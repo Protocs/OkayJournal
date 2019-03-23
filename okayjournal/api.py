@@ -217,3 +217,19 @@ def get_teacher_schedule():
             }
         )
     return jsonify(response)
+
+
+@app.route("/get_users")
+@login_required_rest
+def get_users():
+    response = {}
+    for user_class in USER_CLASSES:
+        response.update({user_class.__name__: {}})
+        for user in user_class.query.filter_by(school_id=session["user"]["school_id"]) \
+                .all():
+            response[user_class.__name__].update({
+                user.id: {
+                    "name": get_fullname(user)
+                }
+            })
+    return jsonify(response)

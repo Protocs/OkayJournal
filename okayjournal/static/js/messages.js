@@ -172,3 +172,23 @@ function updateDialogs() {
 }
 
 setInterval(updateMessages, 1000);
+
+
+// Выбор получателя в диалоге нового сообщения
+
+var role_select = $("#role-select");
+var user_select = $("#user-select");
+
+$.ajax("/get_users").done(function (users) {
+    role_select.change(function () {
+        user_select.empty();
+        for (var u in users[role_select.val()]) {
+            if ($("user").attr("user-role") === role_select.val() && $("user").attr("user-id") === u)
+                continue;
+            user_select.append($("<option/>", {
+                text: users[role_select.val()][u]["name"],
+                value: u
+            }));
+        }
+    });
+});
