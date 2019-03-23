@@ -54,7 +54,7 @@
             {% if date_range %}
             <div class="mr-3">
                 <p class="lead">Классный руководитель</p>
-                <input class="form-control" value="Зубенко М. П." readonly>
+                <input class="form-control" value="{{ homeroom_teacher }}" readonly>
             </div>
             {% endif %}
             <div>
@@ -67,7 +67,7 @@
 
     <div class="mt-3 w-100 px-3" style="overflow-y: auto">
         <div class="day d-flex flex-column">
-            <h3>Оценки 9 "Б" класса</h3>
+            <h3>Оценки {{ selected['grade_number_select'] }} "{{ selected['grade_letter_select'] }}" класса</h3>
             <table class="table table-hover table-dark flex-shrink-0">
                 <tr>
                     <th></th>
@@ -76,9 +76,9 @@
                     {% endfor %}
                     <th class="px-0 text-muted">Средняя</th>
                 </tr>
-                {% for k in range(20) %}
+                {% for student in students %}
                     <tr>
-                        <td>Жмышенко Валера</td>
+                        <td>{{ students[student] }}</td>
                         {% for d2 in date_range %}
                             <td class="mark_">
                                 5

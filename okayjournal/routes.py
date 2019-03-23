@@ -491,8 +491,13 @@ def journal():
         marks = Marks.query.filter_by(
             subject_id=subject_id,
             school_id=session['user']['school_id'],
-
         )
+
+        students = {}
+        for student in grade.students:
+            students.update({
+                student.id: student.surname + " " + student.name
+            })
 
         return journal_render(
             "journal/journal.html",
@@ -502,7 +507,9 @@ def journal():
                 "grade_number_select": grade_number,
                 "grade_letter_select": grade_letter,
                 "quarter": quarter
-            }
+            },
+            students=students,
+            homeroom_teacher=get_fullname(grade.homeroom_teacher[0])
         )
 
 
@@ -652,10 +659,11 @@ def lesson_times():
     return journal_render("journal/lesson_times.html", schedule=schedule)
 
 
-@app.route("/grading", methods=["GET", "POST"])
+@app.route("/grading/<int:subject_id>/<int:grade_id>/<date>", methods=["GET", "POST"])
 @restricted_access(["Teacher"])
 @need_to_change_password
-def grading():
+def grading(subject_id, grade_id, date):
+    print(date)
     return journal_render("journal/grading.html")
 
 

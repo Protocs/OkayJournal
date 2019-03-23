@@ -1,7 +1,7 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', 'css/grading.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/grading.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -18,7 +18,7 @@
 
         <div class="form-group mb-5">
             <label for="homework">Домашнее задание</label>
-            <textarea class="form-control"></textarea>
+            <textarea class="form-control" id="homework"></textarea>
         </div>
 
         <table class="table table-bordered table-dark w-50 mx-auto">
