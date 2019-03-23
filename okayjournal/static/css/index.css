@@ -51,7 +51,7 @@
 }
 
 #billboard {
-    background-image: url('static/img/index_billboard.png');
+    background-image: url('../img/index_billboard.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
