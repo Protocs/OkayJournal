@@ -461,7 +461,7 @@ def settings():
 
     return journal_render("journal/settings.html", form=form)
 
-
+# TODO
 @app.route("/journal", methods=['GET', 'POST'])
 @restricted_access(["Teacher"])
 @need_to_change_password
@@ -469,12 +469,23 @@ def journal():
     if request.method == 'GET':
         return journal_render("journal/journal.html")
     if request.method == 'POST':
-        subject = request.form['subject']
-        grade = ... #TODO
+        subject = int(request.form['subject'])
+        grade_number = request.form['grade-number']
+        grade_letter = request.form['grade-letter']
         quarter = int(request.form['quarter'])
 
         date_range = list(get_quarter_date_range(quarter))
-        return render_template("journal/journal.html", date_range=date_range)
+
+        marks = Marks.query.filter_by(
+            subject_id=subject,
+            school_id=session['user']['school_id']
+        )
+
+        return render_template(
+            "journal/journal.html",
+            date_range=date_range,
+            marks_query=marks
+        )
 
 
 @app.route("/timetable", methods=["GET", "POST"])
