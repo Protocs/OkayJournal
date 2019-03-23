@@ -2,11 +2,51 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}">
+    <style>
+        .day {
+            max-width: unset;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
     {{ super() }}
 
+    <form method="post">
+        <div class="pt-3 px-5 d-flex align-items-center">
+            <div class="mr-3">
+                <p class="lead">Предмет</p>
+                <select class="d-block custom-select class-select form-control mt-0" name="subject">
+                    {% for subj in subjects %}
+                        <option value="{{ subj.id }}">{{ subj.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mr-3">
+                <p class="lead">Класс</p>
+                <select class="custom-select class-select form-control mt-0" id="grade_number_select"
+                        name="grade-number"></select>
+                <select class="custom-select class-select form-control mt-0" id="grade_letter_select"
+                        name="grade-letter"></select>
+            </div>
+            <div class="mr-3">
+                <p class="lead">Четверть</p>
+                <select class="d-block custom-select class-select form-control mt-0" name="quarter">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="mr-3">
+                <p class="lead">Классный руководитель</p>
+                <input class="form-control" value="Зубенко М. П." readonly>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="load" type="submit">Загрузить</button>
+            </div>
+        </div>
+    </form>
     <div class="pt-3 px-5 d-flex align-items-center">
         <div class="mr-3">
             <p class="lead">Предмет</p>
@@ -36,31 +76,29 @@
         </div>
     </div>
 
-    <div class="mx-5 mt-3">
-        <div class="row justify-content-around flex-nowrap align-items-stretch">
-            <div class="day d-flex flex-column p-3">
-                <h3>Оценки 9 "Б" класса</h3>
-                <table class="table table-hover table-dark">
-                    <tr>
-                        <th></th>
-                        {% for i in range(20) %}
-                            <th class="text-muted">{{ str(i + 1).zfill(2) }}.01</th>
-                        {% endfor %}
-                        <th class="px-0 text-muted">Средняя</th>
-                    </tr>
-                    {% for k in range(20) %}
-                        <tr>
-                            <td>Жмышенко Валера</td>
-                            {% for i in range(20) %}
-                                <td class="mark_">
-                                    {% if i % 2 == 0 %} 5 5 {% else %} 4 4 {% endif %}
-                                </td>
-                            {% endfor %}
-                            <td class="mark_">4.5</td>
-                        </tr>
+    <div class="mt-3 w-100 px-3" style="overflow-y: auto">
+        <div class="day d-flex flex-column">
+            <h3>Оценки 9 "Б" класса</h3>
+            <table class="table table-hover table-dark flex-shrink-0">
+                <tr>
+                    <th></th>
+                    {% for d in date_range %}
+                        <th class="text-muted px-1">{{ (d.day | string).zfill(2) }}.{{ (d.month | string).zfill(2) }}</th>
                     {% endfor %}
-                </table>
-            </div>
+                    <th class="px-0 text-muted">Средняя</th>
+                </tr>
+                {% for k in range(20) %}
+                    <tr>
+                        <td>Жмышенко Валера</td>
+                        {% for d2 in date_range %}
+                            <td class="mark_">
+                                5
+                            </td>
+                        {% endfor %}
+                        <td class="mark_">4.5</td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 

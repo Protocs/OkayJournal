@@ -1,4 +1,5 @@
 from itertools import cycle
+from datetime import date, timedelta
 
 from flask import session, redirect, abort, jsonify
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
@@ -60,6 +61,50 @@ REJECTION_LETTER_TEXT = """Здравствуйте, {}.
 Администрация OkayJournal"""
 
 week_days = cycle(["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"])
+
+quarter_ranges = [
+    ((1, 9, 2018), (26, 10, 2018)),
+    ((6, 11, 2018), (28, 12, 2018)),
+    ((10, 1, 2019), (22, 3, 2019)),
+    ((1, 4, 2019), (24, 5, 2019)),
+]
+
+
+# def get_quarter(day):
+#     """Возвращает четверть, в которой находится данный день."""
+#     ranges = [
+#         (
+#             date(date.today().year, d[0][1], d[0][0]),
+#             date(date.today().year, d[1][1], d[1][0]),
+#         )
+#         for d in quarter_ranges
+#     ]
+#     for n, r in enumerate(ranges, 1):
+#         if r[0] <= day <= r[1]:
+#             return n
+#     raise ValueError(f'{day} не находится ни в одной из четвертей')
+
+
+class DateRange:
+    def __init__(self, from_: date, to: date):
+        self.current = from_
+        self.to = to
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        self.current += timedelta(1)
+        if self.current > self.to:
+            raise StopIteration
+        return self.current
+
+
+def get_quarter_date_range(quarter):
+    return DateRange(
+        date(*reversed(quarter_ranges[quarter - 1][0])),
+        date(*reversed(quarter_ranges[quarter - 1][1])),
+    )
 
 
 def generate_unique_login(user_status):
