@@ -2,17 +2,19 @@
     transform: translate(-5%, 0);
 }
 
-.nav-item a {
+#navLink {
+    color: #B0B0B0;
     transition: ease-in-out color .25s;
 }
 
-.nav-item a:hover {
+#navLink:hover {
+    color: #fff;
     text-decoration: none;
 }
 
 #navbarDropdownMenuLink {
     transition: 0.25s all;
-    color: #a2a2a2;
+    color: #b0b0b0;
 }
 
 #navbarDropdownMenuLink:hover {
