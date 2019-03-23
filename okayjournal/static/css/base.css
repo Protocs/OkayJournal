@@ -3,9 +3,18 @@
 }
 
 .nav-item a {
-    transition: ease-in-out color .15s;
+    transition: ease-in-out color .25s;
 }
 
 .nav-item a:hover {
     text-decoration: none;
+}
+
+#navbarDropdownMenuLink {
+    transition: 0.25s all;
+    color: #a2a2a2;
+}
+
+#navbarDropdownMenuLink:hover {
+    color: #fff;
 }
