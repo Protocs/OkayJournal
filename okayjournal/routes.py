@@ -497,7 +497,12 @@ def journal():
         return journal_render(
             "journal/journal.html",
             date_range=date_range,
-            marks_query=marks
+            marks_query=marks,
+            selected={
+                "grade_number_select": grade_number,
+                "grade_letter_select": grade_letter,
+                "quarter": quarter
+            }
         )
 
 

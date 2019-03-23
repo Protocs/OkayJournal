@@ -22,17 +22,33 @@
             <div class="mr-3">
                 <p class="lead">Класс</p>
                 <select class="custom-select class-select form-control mt-0" id="grade_number_select"
-                        name="grade-number"></select>
+                        name="grade-number">
+                    {% if selected %}
+                    <option selected value="{{ selected['grade_number_select'] }}">{{ selected['grade_number_select'] }}</option>
+                    {% endif %}
+                </select>
                 <select class="custom-select class-select form-control mt-0" id="grade_letter_select"
-                        name="grade-letter"></select>
+                        name="grade-letter">
+                    {% if selected %}
+                    <option selected value="{{ selected['grade_letter_select'] }}">{{ selected['grade_letter_select'] }}</option>
+                    {% endif %}
+                </select>
             </div>
             <div class="mr-3">
                 <p class="lead">Четверть</p>
-                <select class="d-block custom-select class-select form-control mt-0" name="quarter">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                <select class="d-block custom-select class-select form-control mt-0" name="quarter" id="quarter_select">
+                    {% if selected %}
+                    <option selected value="{{ selected['quarter'] }}">{{ selected['quarter'] }}</option>
+                    {% for q in range(1, 5) %}
+                    {% if q != selected['quarter'] %}
+                    <option value="{{ q }}">{{ q }}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for q in range(1, 5) %}
+                    <option value="{{ q }}">{{ q }}</option>
+                    {% endfor %}
+                    {% endif %}
                 </select>
             </div>
             {% if date_range %}
