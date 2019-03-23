@@ -1,3 +1,11 @@
 .dropdown-menu {
     transform: translate(-5%, 0);
 }
+
+.nav-item a {
+    transition: ease-in-out color .15s;
+}
+
+.nav-item a:hover {
+    text-decoration: none;
+}
