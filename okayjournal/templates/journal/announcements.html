@@ -78,8 +78,8 @@
         <h5 class="card-header">
             {{ v["header"] }}
             <div class="announcement-info">
-                <span class="text-muted">{{ v["author"]["name"] }}</span>
-                <small class="text-muted">{{ v["date"].strftime("%d.%m.%y") }}</small>
+                <span id="info" class="text">{{ v["author"]["name"] }}</span>
+                <small id="info" class="text">{{ v["date"].strftime("%d.%m.%y") }}</small>
             </div>
         </h5>
         <div class="card-body">

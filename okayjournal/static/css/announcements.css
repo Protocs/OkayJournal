@@ -4,8 +4,23 @@ small {
     line-height: 175%;
 }
 
+span {
+    font-size: 85%;
+}
+
+#info {
+    margin-right: 10px;
+    color: #919191;
+}
+
 .card {
+    transition: 0.5s;
+    box-shadow: #32383e;
     margin-top: 10px;
+}
+
+.card:hover {
+    box-shadow: #32383e;
 }
 
 .announcement-info {
