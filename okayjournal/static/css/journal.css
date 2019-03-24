@@ -39,6 +39,10 @@
     font-family: 'Courgette', cursive;
 }
 
+.mark_:hover {
+    cursor: pointer;
+}
+
 
 tr:first-child * {
     border-top: 0;

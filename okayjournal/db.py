@@ -97,8 +97,8 @@ class SubjectDescription(db.Model):
 
 class Marks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
-    mark = db.Column(db.Integer, nullable=False, unique=False)
+    mark = db.Column(db.Integer, nullable=True, unique=False)
+    attendance = db.Column(db.Text, nullable=True, unique=False)
     subject_id = db.Column(
         db.Integer, db.ForeignKey("subject_description.id"), nullable=False
     )
@@ -261,6 +261,19 @@ def get_teachers_subjects(school_id):
             }
         )
     return response
+
+
+def get_subject_marks(subject_id):
+    marks = {}
+    marks_query = Marks.query.filter_by(subject_id=subject_id).all()
+    for mark in marks_query:
+        marks.update({
+            mark.student_id: {
+                "mark": mark.mark,
+                "attendance": mark.attendance
+            }
+        })
+    return marks
 
 
 def email_exists(email):

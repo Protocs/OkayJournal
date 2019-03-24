@@ -4,6 +4,7 @@ from flask import render_template, request
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from validate_email import validate_email
+from datetime import datetime
 
 from okayjournal.app import app
 from okayjournal.forms import *
@@ -505,11 +506,17 @@ def journal():
             list(get_quarter_date_range(quarter)),
         ))
 
-        # TODO: subject_id от класса SubjectDescription
-        marks = Marks.query.filter_by(
-            subject_id=subject_id, school_id=session["user"]["school_id"]
-        )
+        marks = {}
+        for date_obj in date_range:
+            # TODO: Параметр date - ультра-костыль 80 уровня
+            subject_desc = SubjectDescription.query.filter_by(
+                date=datetime.strptime(date_obj.strftime("%d-%m-%Y"), "%d-%m-%Y"),
+                grade_id=grade.id,
+                subject_id=subject_id)
 
+            if subject_desc is not None:
+                if subject_desc.first() is not None:
+                    marks.update({date_obj: get_subject_marks(subject_desc.first().id)})
         students = []
         for student in grade.students:
             students.append((student.id, student.surname + " " + student.name))
@@ -517,7 +524,6 @@ def journal():
         return journal_render(
             "journal/journal.html",
             date_range=date_range,
-            marks_query=marks,
             selected={
                 "grade_number_select": grade_number,
                 "grade_letter_select": grade_letter,
@@ -527,6 +533,7 @@ def journal():
             },
             students=sorted(students, key=lambda s: s[1]),
             homeroom_teacher=get_fullname(grade.homeroom_teacher[0]),
+            marks=marks
         )
 
 
@@ -705,13 +712,81 @@ def lesson_times():
 @restricted_access(["Teacher"])
 @need_to_change_password
 def grading(subject_id, grade_id, date):
-    print(date)
+    date_object = datetime.strptime(date, "%d-%m-%Y")
     if request.method == "POST":
+        lesson_topic = request.form["lesson-topic"]
+        homework = request.form["homework"]
+        # Проверим, существует ли в базе описание предмета для этой даты
+        subject_description = SubjectDescription.query.filter_by(
+            date=date_object,
+            grade_id=grade_id,
+            school_id=session["user"]["school_id"],
+            subject_id=subject_id
+        ).first()
+        # Если да, то просто меняем тему и домашнее задание для этого объекта
+        if subject_description:
+            subject_description.theme = lesson_topic
+            subject_description.homework = homework
+        # Если нет, то добавляем новый объект в базу
+        else:
+            subject_description = SubjectDescription(
+                date=date_object,
+                school_id=session["user"]["school_id"],
+                grade_id=grade_id,
+                subject_id=subject_id,
+                theme=lesson_topic,
+                homework=homework
+            )
+            db.session.add(subject_description)
+        db.session.commit()
+        # Заполним оценки и посещаемость
+        for key in request.form:
+            if key.startswith("mark"):
+                student_id = int(key.split("-")[1])
+                atd_key = "attendance-" + str(student_id)
+                # Если учитель не выбирает оценку или посещаемость, то передаваться
+                # будет пустая строка
+                mark = request.form[key]
+                attendance = request.form[atd_key]
+                # Проверим, существует ли объект оценки для этого ученика
+                mark_obj = Marks.query.filter_by(
+                    subject_id=subject_description.id,
+                    student_id=student_id
+                ).first()
+                # Если да, то меняем оценку и посещаемость
+                if mark_obj:
+                    mark_obj.mark = mark
+                    mark_obj.attendance = attendance
+                # Если нет, добавляем новый объект в базу
+                else:
+                    mark = Marks(mark=mark,
+                                 subject_id=subject_description.id,
+                                 student_id=student_id,
+                                 school_id=session["user"]["school_id"],
+                                 attendance=attendance)
+                    db.session.add(mark)
+        db.session.commit()
+
         if "save-and-return" in request.form:
             return redirect("/journal")
 
-    students = {}
-    return journal_render("journal/grading.html")
+    grade = Grade.query.filter_by(id=grade_id).first()
+    subject_description = SubjectDescription.query.filter_by(
+        date=date_object,
+        grade_id=grade_id,
+        school_id=session["user"]["school_id"],
+        subject_id=subject_id
+    ).first()
+    marks = None
+    if subject_description:
+        marks = get_subject_marks(subject_description.id)
+    students = []
+    for student in grade.students:
+        students.append((student.id, student.surname + " " + student.name))
+    return journal_render("journal/grading.html",
+                          students=sorted(students, key=lambda s: s[1]),
+                          subject=subject_description,
+                          marks=marks)
 
 
 @app.errorhandler(404)

@@ -85,7 +85,9 @@
                                 <td class="mark_"
                                     onclick="window.location =
                                             'http://localhost:8080/grading/{{ selected.subject_id }}/{{ selected.grade_id }}/{{ d2.strftime('%d-%m-%Y') }}'">
-                                    5
+                                    {% if marks.get(d2) and marks.get(d2).get(student[0]) %}
+                                    {{ marks[d2][student[0]]["mark"] }}
+                                    {% endif %}
                                 </td>
                             {% endfor %}
                             <td class="mark_">4.5</td>
