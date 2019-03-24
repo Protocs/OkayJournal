@@ -2,7 +2,8 @@
 
 {% block body %}
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-    <a href="/main_page"><img class="mr-5" src="../static/img/logo.png" width="30" height="25" alt="OkayJournal"></a>
+    <a href="/main_page"><img class="mr-5" src="{{ url_for('static', filename='img/logo.png') }}"
+                              width="30" height="25" alt="OkayJournal"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
     </button>
