@@ -704,7 +704,10 @@ def lesson_times():
 @need_to_change_password
 def grading(subject_id, grade_id, date):
     print(date)
-    return journal_render("journal/grading.html")
+    if request.method == "POST" and "save-and-return" in request.form:
+        return redirect("/journal")
+    else:
+        return journal_render("journal/grading.html")
 
 
 @app.errorhandler(404)

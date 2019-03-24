@@ -35,3 +35,7 @@ option {
 input[type=submit] {
     height: 3rem;
 }
+
+.form-root {
+    width: 30%;
+}
