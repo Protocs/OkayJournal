@@ -2,6 +2,7 @@ body {
     display: grid;
     grid-template-rows: 56px auto;
     height: 100vh;
+    overflow-y: hidden;
 }
 
 user {
@@ -16,32 +17,29 @@ a:hover {
     text-decoration: none;
 }
 
+.card-with-shadow {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 17px #00000026;
+}
+
 messenger {
-    display: flex;
+    display: grid;
     margin: 2rem;
-    height: calc(100vh - 120px);
+    grid-template: 3.5em auto 3em / 25% 75%;
+    grid-template-areas: "  new-message  dialog-header"
+                         "dialogs-drawer     dialog   "
+                         "dialogs-drawer message-input";
+    grid-gap: 0.7em;
 }
 
 dialogs-drawer {
     display: flex;
     flex-direction: column;
-    width: 35%;
-    margin-right: 1.5em;
     border: 1px solid #dee2e6;
     border-radius: 0.5rem;
     overflow-y: auto;
-}
-
-dialogs-drawer h1 {
-    display: inline;
-    margin-bottom: 0;
-    margin-right: 0.5em;
-}
-
-dialogs-drawer span {
-    vertical-align: middle;
-    line-height: 1.2em;
-    color: #b1bac1;
+    grid-area: dialogs-drawer;
 }
 
 .new-message-button {
@@ -51,6 +49,23 @@ dialogs-drawer span {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: box-shadow 0.2s ease-out 0s
+}
+
+.new-message-button:hover {
+    box-shadow: 0 0 17px #00000040;
+}
+
+.new-message-button h1 {
+    display: inline;
+    margin-bottom: 0;
+    margin-right: 0.5em;
+}
+
+.new-message-button span {
+    vertical-align: middle;
+    line-height: 1.2em;
+    color: #949a9e;
 }
 
 okayjournal-dialog {
@@ -71,25 +86,30 @@ dialogs-drawer > * {
 dialog-option {
     padding: 0.5rem 1rem;
     cursor: pointer;
+    transition: box-shadow 0.2s ease-out 0s, background-color 0.2s ease-out 0s;
+}
+
+dialog-option:hover, dialog-option[selected] {
+    box-shadow: 0 0 17px 0px #0000001f;
+}
+
+dialog-option[selected] {
+    background-color: #dfeffd;
 }
 
 okayjournal-dialog content {
     display: block;
 }
 
-okayjournal-dialog header {
+.dialog-header {
     font-size: 150%;
-    padding: 1rem 1.5rem;
     border-bottom: 1px solid #dee2e6;
     vertical-align: middle;
-}
-
-#dialog-recipient {
-    position: relative;
-    bottom: 0.25em;
+    padding: 0.4em 1.5rem 1rem;
 }
 
 messages {
+    grid-area: dialog;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -100,15 +120,6 @@ messages {
 
 #dialog-messages > :first-child {
     margin-top: auto !important;
-}
-
-#message-send {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-color: rgb(206, 212, 218);
-    height: 2.5em;
-    display: block;
-    position: relative;
 }
 
 message {
@@ -140,23 +151,55 @@ message {
     letter-spacing: -0.5em;
 }
 
-input {
+.message-input {
+    grid-area: message-input;
+    display: flex;
+    align-items: center;
+    justify-items: stretch;
+    transition: box-shadow .15s ease-in-out;
+}
+
+.message-input:focus-within {
+    box-shadow: 0px 0px 7px #00000054;
+}
+
+.message-input input {
     display: block;
     width: 100%;
+    height: 100%;
     font-size: 1rem;
-    line-height: 1.5;
     color: #495057;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: box-shadow .15s ease-in-out;
     padding: 0.5rem;
     position: relative;
     border-radius: .25rem 0 0 .25rem;
-    border-right: 0;
-    height: 2.5em;
+    border: 0;
+    padding-left: 1em;
 }
 
-input:focus {
+.message-input input:focus {
+    outline: none;
     z-index: 2;
+}
+
+.message-input button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 0;
+    position: relative;
+    padding: 0;
+    width: 3em;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.message-input button:focus {
+    box-shadow: none;
+}
+
+.message-input button svg {
+    width: 60%;
 }

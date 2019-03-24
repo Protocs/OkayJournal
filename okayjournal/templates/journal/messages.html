@@ -64,33 +64,26 @@
     </div>
 
     <messenger>
-        <dialogs-drawer>
-            <div class="new-message-button add-button" onclick="$('#newMessage').modal('show')">
-                <h1>+</h1><span>Новое сообщение</span>
-            </div>
-        </dialogs-drawer>
+        <div class="new-message-button card-with-shadow" onclick="$('#newMessage').modal('show')">
+            <h1>+</h1><span>Новое сообщение</span>
+        </div>
 
-        <okayjournal-dialog>
-            <content>
-                <header>
-                    <span id="dialog-recipient"></span>
-                </header>
-                <messages></messages>
-                <div class="d-flex m-2">
-                    <input id="message-text">
-                    <button class="btn btn-light" id="message-send" onclick="sendMessage()">
-                        <svg style="width:24px; height:24px" viewBox="0 0 24 24">
-                            <path fill="#000000" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
-                        </svg>
-                    </button>
-                </div>
-            </content>
-        </okayjournal-dialog>
+        <dialogs-drawer></dialogs-drawer>
+
+        <dialog-header class="dialog dialog-header card-with-shadow"></dialog-header>
+
+        <messages class="dialog card-with-shadow"></messages>
+
+        <div class="dialog message-input card-with-shadow">
+            <input>
+            <button class="btn btn-light" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#505050" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                </svg>
+            </button>
+        </div>
     </messenger>
-    <!--<script>-->
-    <!--var height = parseInt($('#dialog').css('height'), 10) + 1;-->
-    <!--$('#dialog').css('height', height.toString(10) + 'px');-->
-    <!--</script>-->
+    
     <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
     <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 

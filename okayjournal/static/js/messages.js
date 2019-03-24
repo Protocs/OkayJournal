@@ -1,15 +1,25 @@
-$('okayjournal-dialog header').css('height', $('.new-message-button').css('height'));
+"use strict";
 
-$('okayjournal-dialog content').hide();
+$('.dialog').hide();
 
-$('input').on('keypress', function (e) {
+let input = $('input');
+
+input.on('keypress', function (e) {
     if (e.key == 'Enter')
         sendMessage();
 });
 
-var recipient = null;
-var recipientRole = null;
-var recipientId = null;
+input.on('focus', function(e) {
+    $('.message-input').css('box-shadow', '0px 0px 7px #00000054');
+});
+
+input.on('focusout', function(e) {
+    $('.message-input').css('box-shadow', '');
+});
+
+let recipient = null;
+let recipientRole = null;
+let recipientId = null;
 
 const ROLES = {
     "SchoolAdmin": "школьный администратор",
@@ -19,14 +29,19 @@ const ROLES = {
 };
 
 function openDialog(element) {
-    let dialogMessages = $('messages');
-    dialogMessages.empty();
+    for (let dialog of $('dialogs-drawer').children().toArray()) {
+        $(dialog).removeAttr('selected');
+    }
+    $(element).attr('selected', true);
+
+    let messages = $('messages');
+    messages.empty();
     recipient = $(element).attr('recipient');
     recipientRole = $(element).attr('recipient_role');
     recipientId = $(element).attr('recipient_id');
 
     let recipientRoleText = ROLES[recipientRole];
-    $('#dialog-recipient').html($(element).attr('recipient_name')
+    $('dialog-header').html($(element).attr('recipient_name')
         + ' <span style="color: #bfbfbf">' + recipientRoleText + '</span>');
 
     // Пометим сообщения как прочитанные
@@ -46,8 +61,8 @@ function openDialog(element) {
     }
 
     updateMessages();
-    $('okayjournal-dialog content').show();
-    dialogMessages.scrollTo(dialogMessages.children().last());
+    $('.dialog').show();
+    messages.scrollTo(messages.children().last());
 }
 
 function addMessage(message) {
@@ -102,14 +117,14 @@ function updateMessages() {
     $.ajax('messages/' + recipient).done(function (messages) {
         for (let i in messages) {
             if (!$('messages').children().toArray().some(
-                (element, _, __) => $(element).attr('message_id') == messages[i].id)
+                (element, _, let__) => $(element).attr('message_id') == messages[i].id)
             ) addMessage(messages[i]);
         }
     });
 }
 
 function sendMessage() {
-    let text = $('#message-text');
+    let text = $('.message-input input');
     if (text.val() === '')
         return;
 
@@ -131,8 +146,10 @@ function sendMessage() {
 
 function updateDialogs() {
     $.ajax("dialogs").done(function (dialogs) {
-        $("dialog-option").detach();
         for (let d in dialogs) {
+            if ($('dialogs-drawer').children().toArray().some(
+                (element, _, __) => $(element).attr('recipient') == dialogs[d]["partner"]["login"])
+            ) continue;
             let dialog = $("<dialog-option></dialog-option>", {
                 recipient: dialogs[d]["partner"]["login"],
                 recipient_role: dialogs[d]["partner"]["role"],
@@ -158,7 +175,7 @@ function updateDialogs() {
             }
             name.appendTo(dialog);
             last_message.appendTo(dialog);
-            dialog.insertAfter(".new-message-button");
+            dialog.appendTo("dialogs-drawer");
         }
     });
 }
@@ -168,8 +185,8 @@ setInterval(updateMessages, 1000);
 
 // Выбор получателя в диалоге нового сообщения
 
-var role_select = $("#role-select");
-var user_select = $("#user-select");
+let role_select = $("#role-select");
+let user_select = $("#user-select");
 
 $.ajax("/get_users").done(function (users) {
     role_select.change(function () {
