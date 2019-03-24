@@ -500,10 +500,10 @@ def journal():
             )
         ]
 
-        date_range = filter(
+        date_range = list(filter(
             lambda d: (d.weekday() + 1) in weekdays,
             list(get_quarter_date_range(quarter)),
-        )
+        ))
 
         # TODO: subject_id от класса SubjectDescription
         marks = Marks.query.filter_by(
@@ -522,6 +522,8 @@ def journal():
                 "grade_number_select": grade_number,
                 "grade_letter_select": grade_letter,
                 "quarter": quarter,
+                "subject_id": subject_id,
+                "grade_id": grade.id,
             },
             students=students,
             homeroom_teacher=get_fullname(grade.homeroom_teacher[0]),
