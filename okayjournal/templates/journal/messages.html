@@ -1,15 +1,14 @@
 {% extends "journal/base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
 {% endblock %}
 
 {% block body %}
-<user user-id="{{ session['user']['id'] }}" user-role="{{ session['role'] }}"></user>
+    <user user-id="{{ session['user']['id'] }}" user-role="{{ session['role'] }}"></user>
 
-<div class="root d-flex flex-column">
     {{ super() }}
 
     <div class="modal fade" id="newMessage" tabindex="-1" role="dialog">
@@ -29,7 +28,7 @@
                                 <option value="Teacher" selected>Учитель</option>
                                 <option value="Parent">Родитель</option>
                                 {% if session["role"] != "SchoolAdmin" %}
-                                <option value="SchoolAdmin">Администратор школы</option>
+                                    <option value="SchoolAdmin">Администратор школы</option>
                                 {% endif %}
                                 <option value="Student">Ученик</option>
                             </select>
@@ -41,9 +40,9 @@
                             </div>
                             <select class="custom-select" id="user-select" name="user-select" required>
                                 {% for teacher in users["Teacher"] %}
-                                <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }}
-                                    {{ teacher.patronymic }}
-                                </option>
+                                    <option value="{{ teacher.id }}">{{ teacher.surname }} {{ teacher.name }}
+                                        {{ teacher.patronymic }}
+                                    </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -64,37 +63,35 @@
         </div>
     </div>
 
-    <div class="messenger">
-        <div class="dialogs-drawer" id="dialogs">
-            <a href="#" data-toggle="modal" data-target="#newMessage" id="addRecipientLink">
-                <div class="dialog-btn container py-1 px-3 border-bottom add-button" id="div-new-dialog">
-                    <h1 class="text-muted text-center m-0">+</h1>
-                </div>
-            </a>
-        </div>
+    <messenger>
+        <dialogs-drawer>
+            <div class="new-message-button add-button" onclick="$('#newMessage').modal('show')">
+                <h1>+</h1><span>Новое сообщение</span>
+            </div>
+        </dialogs-drawer>
 
-        <div class="flex-grow-1 w-100 border" id="dialog">
-            <div class="dialog-content">
-                <div class="py-3 pl-4 border-bottom align-middle" id="dialog-header">
+        <okayjournal-dialog>
+            <content>
+                <header>
                     <span id="dialog-recipient"></span>
-                </div>
-                <div id="dialog-messages"></div>
+                </header>
+                <messages></messages>
                 <div class="d-flex m-2">
-                    <input class="form-control p-2 flex-grow-1 w-100" id="message-text">
+                    <input id="message-text">
                     <button class="btn btn-light" id="message-send" onclick="sendMessage()">
                         <svg style="width:24px; height:24px" viewBox="0 0 24 24">
                             <path fill="#000000" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
                         </svg>
                     </button>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--<script>-->
-<!--var height = parseInt($('#dialog').css('height'), 10) + 1;-->
-<!--$('#dialog').css('height', height.toString(10) + 'px');-->
-<!--</script>-->
-<script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+            </content>
+        </okayjournal-dialog>
+    </messenger>
+    <!--<script>-->
+    <!--var height = parseInt($('#dialog').css('height'), 10) + 1;-->
+    <!--$('#dialog').css('height', height.toString(10) + 'px');-->
+    <!--</script>-->
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 
 {% endblock %}

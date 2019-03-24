@@ -1,8 +1,8 @@
-$('#dialog-header').css('height', $('#div-new-dialog').css('height'));
+$('okayjournal-dialog header').css('height', $('.new-message-button').css('height'));
 
-$('.dialog-content').hide();
+$('okayjournal-dialog content').hide();
 
-$('#message-text').on('keypress', function (e) {
+$('input').on('keypress', function (e) {
     if (e.key == 'Enter')
         sendMessage();
 });
@@ -19,7 +19,7 @@ const ROLES = {
 };
 
 function openDialog(element) {
-    let dialogMessages = $('#dialog-messages');
+    let dialogMessages = $('messages');
     dialogMessages.empty();
     recipient = $(element).attr('recipient');
     recipientRole = $(element).attr('recipient_role');
@@ -46,12 +46,12 @@ function openDialog(element) {
     }
 
     updateMessages();
-    $('.dialog-content').show();
+    $('okayjournal-dialog content').show();
+    dialogMessages.scrollTo(dialogMessages.children().last());
 }
 
 function addMessage(message) {
-    let messageBody = $('<div/>', {
-        'class': 'message card align-items-end',
+    let messageBody = $('<message></message>', {
         text: message.text,
         message_id: message.id
     });
@@ -91,7 +91,7 @@ function addMessage(message) {
     }
 
 
-    $('#dialog-messages').append(messageBody);
+    $('messages').append(messageBody);
 }
 
 function updateMessages() {
@@ -99,11 +99,9 @@ function updateMessages() {
     if (recipient === null)
         return;
 
-    //$('#dialog-messages').empty();
-
     $.ajax('messages/' + recipient).done(function (messages) {
         for (let i in messages) {
-            if (!$('#dialog-messages').children().toArray().some(
+            if (!$('messages').children().toArray().some(
                 (element, _, __) => $(element).attr('message_id') == messages[i].id)
             ) addMessage(messages[i]);
         }
@@ -133,19 +131,14 @@ function sendMessage() {
 
 function updateDialogs() {
     $.ajax("dialogs").done(function (dialogs) {
-        $("#dialogs>a.hidden-link").detach();
+        $("dialog-option").detach();
         for (let d in dialogs) {
-            let link = $("<a/>", {
-                href: "#",
-                class: "hidden-link",
+            let dialog = $("<dialog-option></dialog-option>", {
                 recipient: dialogs[d]["partner"]["login"],
                 recipient_role: dialogs[d]["partner"]["role"],
                 recipient_id: dialogs[d]["partner"]["id"],
                 recipient_name: dialogs[d]["partner"]["name"],
                 onclick: "openDialog(this)"
-            });
-            let dialog = $("<div/>", {
-                class: "dialog-btn container py-2 px-3 border-bottom dialog-option"
             });
             let name = $("<h5/>", {
                 text: dialogs[d]["partner"]["name"]
@@ -165,8 +158,7 @@ function updateDialogs() {
             }
             name.appendTo(dialog);
             last_message.appendTo(dialog);
-            dialog.appendTo(link);
-            link.insertAfter($("#addRecipientLink"));
+            dialog.insertAfter(".new-message-button");
         }
     });
 }
