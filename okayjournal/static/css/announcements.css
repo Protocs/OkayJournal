@@ -4,11 +4,11 @@ small {
     line-height: 175%;
 }
 
-span {
+#authorName {
     font-size: 85%;
 }
 
-#info {
+.info {
     margin-right: 10px;
     color: #919191;
 }
