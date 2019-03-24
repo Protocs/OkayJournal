@@ -427,7 +427,8 @@ def classes():
         db.session.commit()
         teacher.homeroom_grade_id = grade.id
         db.session.commit()
-    free_teachers = Teacher.query.filter_by(homeroom_grade_id=None).all()
+    free_teachers = Teacher.query.filter_by(homeroom_grade_id=None,
+                                            school_id=session["user"]["id"]).all()
     return journal_render("journal/classes.html", free_teachers=free_teachers)
 
 
