@@ -14,13 +14,12 @@ span {
 }
 
 .card {
-    transition: 0.5s;
-    box-shadow: #32383e;
+    transition: 0.35s;
     margin-top: 10px;
 }
 
 .card:hover {
-    box-shadow: #32383e;
+    box-shadow: 0 0 9px #00000038;
 }
 
 .announcement-info {
