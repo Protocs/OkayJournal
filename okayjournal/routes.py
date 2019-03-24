@@ -510,9 +510,9 @@ def journal():
             subject_id=subject_id, school_id=session["user"]["school_id"]
         )
 
-        students = {}
+        students = []
         for student in grade.students:
-            students.update({student.id: student.surname + " " + student.name})
+            students.append((student.id, student.surname + " " + student.name))
 
         return journal_render(
             "journal/journal.html",
@@ -525,7 +525,7 @@ def journal():
                 "subject_id": subject_id,
                 "grade_id": grade.id,
             },
-            students=students,
+            students=sorted(students, key=lambda s: s[1]),
             homeroom_teacher=get_fullname(grade.homeroom_teacher[0]),
         )
 
@@ -564,13 +564,13 @@ def timetable(grade_id):
                 if subject != "none" and teacher is not None:
                     # Если у учителя уже есть урок под таким номером в этот день,
                     # То выводим ошибку
-                    collisions = Schedule.query.filter_by(
+                    collision = Schedule.query.filter_by(
                         school_id=session["user"]["school_id"],
                         teacher_id=int(teacher),
                         day=i,
                         subject_number=j,
                     ).first()
-                    if collisions and collisions.grade_id != grade_id:
+                    if collision and collision.grade_id != grade_id:
                         error = "У учителя {} уже запланирован {} урок в {}"
                         teacher_name = get_fullname(
                             find_user_by_role(int(teacher), "Teacher")
@@ -706,10 +706,12 @@ def lesson_times():
 @need_to_change_password
 def grading(subject_id, grade_id, date):
     print(date)
-    if request.method == "POST" and "save-and-return" in request.form:
-        return redirect("/journal")
-    else:
-        return journal_render("journal/grading.html")
+    if request.method == "POST":
+        if "save-and-return" in request.form:
+            return redirect("/journal")
+
+    students = {}
+    return journal_render("journal/grading.html")
 
 
 @app.errorhandler(404)

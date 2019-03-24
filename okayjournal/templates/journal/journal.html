@@ -80,7 +80,7 @@
                     </tr>
                     {% for student in students %}
                         <tr>
-                            <td>{{ students[student] }}</td>
+                            <td>{{ student[1] }}</td>
                             {% for d2 in date_range %}
                                 <td class="mark_"
                                     onclick="window.location =
