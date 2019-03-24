@@ -86,10 +86,13 @@ def register():
                 error="Некорректный адрес электронной почты",
             )
         if email_exists(request.form["email"]):
-            return render_template("register_request.html", session=session,
-                                   error="Пользователь с такой электронной почтой "
-                                         "уже существует", form=form,
-                                   title="Запрос на регистрацию")
+            return render_template(
+                "register_request.html",
+                session=session,
+                error="Пользователь с такой электронной почтой уже существует",
+                form=form,
+                title="Запрос на регистрацию",
+            )
         if password_first == password_second:
             password_hash = generate_password_hash(password_first)
             db.session.add(
@@ -183,10 +186,12 @@ def diary():
         if parent.children:
             return redirect("diary/" + str(parent.children[0].id))
         return journal_render("journal/diary.html", parent=parent)
-    schedule = get_grade_schedule(session["user"]["grade_id"],
-                                  session["user"]["school_id"])
-    return journal_render("journal/diary.html", week_days=week_days, next=next,
-                          schedule=schedule)
+    schedule = get_grade_schedule(
+        session["user"]["grade_id"], session["user"]["school_id"]
+    )
+    return journal_render(
+        "journal/diary.html", week_days=week_days, next=next, schedule=schedule
+    )
 
 
 @app.route("/diary/<int:student_id>")
@@ -195,10 +200,15 @@ def diary():
 def children_diary(student_id):
     student = find_user_by_role(student_id, "Student")
     parent = find_user_by_role(session["user"]["id"], "Parent")
-    schedule = get_grade_schedule(student.grade_id,
-                                  session["user"]["school_id"])
-    return journal_render("journal/diary.html", week_days=week_days, next=next,
-                          schedule=schedule, parent=parent, student=student)
+    schedule = get_grade_schedule(student.grade_id, session["user"]["school_id"])
+    return journal_render(
+        "journal/diary.html",
+        week_days=week_days,
+        next=next,
+        schedule=schedule,
+        parent=parent,
+        student=student,
+    )
 
 
 @app.route("/messages", methods=["POST", "GET"])
@@ -461,43 +471,48 @@ def settings():
 
     return journal_render("journal/settings.html", form=form)
 
+
 # TODO
-@app.route("/journal", methods=['GET', 'POST'])
+@app.route("/journal", methods=["GET", "POST"])
 @restricted_access(["Teacher"])
 @need_to_change_password
 def journal():
-    if request.method == 'GET':
+    if request.method == "GET":
         return journal_render("journal/journal.html")
-    if request.method == 'POST':
-        subject_id = int(request.form['subject'])
-        grade_number = request.form['grade-number']
-        grade_letter = request.form['grade-letter']
-        grade = Grade.query.filter_by(school_id=session["user"]["school_id"],
-                                      number=int(grade_number),
-                                      letter=grade_letter).first()
-        quarter = int(request.form['quarter'])
+    if request.method == "POST":
+        subject_id = int(request.form["subject"])
+        grade_number = request.form["grade-number"]
+        grade_letter = request.form["grade-letter"]
+        grade = Grade.query.filter_by(
+            school_id=session["user"]["school_id"],
+            number=int(grade_number),
+            letter=grade_letter,
+        ).first()
+        quarter = int(request.form["quarter"])
 
-        weekdays = [subject.day for subject in Schedule.query.filter_by(
-            subject_id=subject_id,
-            grade_id=grade.id,
-            teacher_id=session["user"]["id"],
-            school_id=session["user"]["school_id"]
-        )]
+        weekdays = [
+            subject.day
+            for subject in Schedule.query.filter_by(
+                subject_id=subject_id,
+                grade_id=grade.id,
+                teacher_id=session["user"]["id"],
+                school_id=session["user"]["school_id"],
+            )
+        ]
 
-        date_range = filter(lambda d: (d.weekday() + 1) in weekdays,
-                            list(get_quarter_date_range(quarter)))
+        date_range = filter(
+            lambda d: (d.weekday() + 1) in weekdays,
+            list(get_quarter_date_range(quarter)),
+        )
 
         # TODO: subject_id от класса SubjectDescription
         marks = Marks.query.filter_by(
-            subject_id=subject_id,
-            school_id=session['user']['school_id'],
+            subject_id=subject_id, school_id=session["user"]["school_id"]
         )
 
         students = {}
         for student in grade.students:
-            students.update({
-                student.id: student.surname + " " + student.name
-            })
+            students.update({student.id: student.surname + " " + student.name})
 
         return journal_render(
             "journal/journal.html",
@@ -506,10 +521,10 @@ def journal():
             selected={
                 "grade_number_select": grade_number,
                 "grade_letter_select": grade_letter,
-                "quarter": quarter
+                "quarter": quarter,
             },
             students=students,
-            homeroom_teacher=get_fullname(grade.homeroom_teacher[0])
+            homeroom_teacher=get_fullname(grade.homeroom_teacher[0]),
         )
 
 
@@ -548,16 +563,24 @@ def timetable(grade_id):
                     # Если у учителя уже есть урок под таким номером в этот день,
                     # То выводим ошибку
                     collisions = Schedule.query.filter_by(
-                            school_id=session["user"]["school_id"],
-                            teacher_id=int(teacher),
-                            day=i,
-                            subject_number=j).first()
+                        school_id=session["user"]["school_id"],
+                        teacher_id=int(teacher),
+                        day=i,
+                        subject_number=j,
+                    ).first()
                     if collisions and collisions.grade_id != grade_id:
                         error = "У учителя {} уже запланирован {} урок в {}"
-                        teacher_name = get_fullname(find_user_by_role(int(teacher),
-                                                                     "Teacher"))
-                        weekday = ["понедельник", "вторник", "среду", "четверг",
-                                   "пятницу", "субботу"][i-1]
+                        teacher_name = get_fullname(
+                            find_user_by_role(int(teacher), "Teacher")
+                        )
+                        weekday = [
+                            "понедельник",
+                            "вторник",
+                            "среду",
+                            "четверг",
+                            "пятницу",
+                            "субботу",
+                        ][i - 1]
                         errors.append(error.format(teacher_name, str(j), weekday))
                         break
                     if schedule is None:
@@ -587,7 +610,7 @@ def timetable(grade_id):
         next=next,
         schedule=schedule,
         teachers_subjects=teachers_subjects,
-        errors=errors
+        errors=errors,
     )
 
 
@@ -613,9 +636,9 @@ def announcements_route():
         db.session.commit()
     announcements = {}
     for announcement in (
-            Announcement.query.filter_by(school_id=session["user"]["school_id"])
-                    .order_by(Announcement.date)
-                    .all()
+        Announcement.query.filter_by(school_id=session["user"]["school_id"])
+        .order_by(Announcement.date)
+        .all()
     ):
         author = find_user_by_role(announcement.author_id, announcement.author_role)
         announcements.update(
@@ -669,7 +692,7 @@ def lesson_times():
 
     schedule = {}
     for subject in CallSchedule.query.filter_by(
-            school_id=session["user"]["school_id"]
+        school_id=session["user"]["school_id"]
     ).all():
         schedule[subject.subject_number] = {"start": subject.start, "end": subject.end}
 

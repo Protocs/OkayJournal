@@ -76,7 +76,6 @@ if (pathname.length === 3) {
                             text: "-"
                         }).appendTo(current_teacher_select);
                     }
-
                 });
             }
         }

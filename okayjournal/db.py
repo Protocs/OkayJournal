@@ -99,8 +99,9 @@ class Marks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     mark = db.Column(db.Integer, nullable=False, unique=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subject_description.id"),
-                           nullable=False)
+    subject_id = db.Column(
+        db.Integer, db.ForeignKey("subject_description.id"), nullable=False
+    )
     student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey("school.id"), nullable=False)
     subject = db.relationship("SubjectDescription", backref="marks", lazy=True)
@@ -176,7 +177,8 @@ POSSIBLE_ATTRIBUTES = [
 def user_to_dict(user):
     """
     Просто так засунуть обьект из БД в session невозможно.
-    Эта функция конвертирует User в словарь."""
+    Эта функция конвертирует User в словарь.
+    """
     result = {}
     for k, v in vars(user).items():
         if k in POSSIBLE_ATTRIBUTES:
@@ -185,14 +187,18 @@ def user_to_dict(user):
 
 
 def find_user_by_role(id, role):
-    """Возвращает объект пользователя по его id и role.
-    Если пользователь не найден, вернет None."""
+    """
+    Возвращает объект пользователя по его id и role.
+    Если пользователь не найден, вернет None.
+    """
     return globals()[role].query.filter_by(id=id).first()
 
 
 def find_user_by_login(login):
-    """Возвращает объект пользователя по его логину.
-    Если пользователь не найден, вернет None"""
+    """
+    Возвращает объект пользователя по его логину.
+    Если пользователь не найден, вернет None.
+    """
     for user_class in USER_CLASSES:
         user = user_class.query.filter_by(login=login).first()
         if user:
@@ -218,7 +224,7 @@ def get_count_unread_messages(recipient, sender):
 
 
 def get_grade_schedule(grade_id, school_id):
-    from .utils import get_fullname
+    from okayjournal.utils import get_fullname
 
     schedule = Schedule.query.filter_by(grade_id=grade_id, school_id=school_id).all()
     response = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}}
@@ -238,7 +244,7 @@ def get_grade_schedule(grade_id, school_id):
 
 
 def get_teachers_subjects(school_id):
-    from .utils import get_fullname
+    from okayjournal.utils import get_fullname
 
     subjects = Subject.query.filter_by(school_id=school_id).all()
     response = {}

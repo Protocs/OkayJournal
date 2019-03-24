@@ -101,8 +101,8 @@ def get_dialogs():
         if any(partner.login == dialogs[k]["partner"]["login"] for k in dialogs):
             continue
         if (message.sender_id, message.sender_role) == (
-                session["user"]["id"],
-                session["role"],
+            session["user"]["id"],
+            session["role"],
         ):
             last_message_text = "Вы: " + message.text
         else:
@@ -152,8 +152,8 @@ def get_classes():
         grades_structured[n] = {
             g.id: g.letter
             for g in sorted(
-            filter(lambda g: g.number == n, grades), key=lambda g: g.letter
-        )
+                filter(lambda g: g.number == n, grades), key=lambda g: g.letter
+            )
         }
     return jsonify(grades_structured)
 
@@ -186,7 +186,7 @@ def get_class(grade_id):
         "letter": grade.letter,
     }
     for student in sorted(
-            grade.students, key=lambda s: (s.surname, s.name, s.patronymic)
+        grade.students, key=lambda s: (s.surname, s.name, s.patronymic)
     ):
         response["students"].append(get_fullname(student))
     return jsonify(response)
@@ -211,8 +211,8 @@ def get_teacher_schedule():
                     "grade": {
                         "id": subject.grade_id,
                         "letter": subject.grade.letter,
-                        "number": subject.grade.number
-                    }
+                        "number": subject.grade.number,
+                    },
                 }
             }
         )
@@ -225,11 +225,10 @@ def get_users():
     response = {}
     for user_class in USER_CLASSES:
         response.update({user_class.__name__: {}})
-        for user in user_class.query.filter_by(school_id=session["user"]["school_id"]) \
-                .all():
-            response[user_class.__name__].update({
-                user.id: {
-                    "name": get_fullname(user)
-                }
-            })
+        for user in user_class.query.filter_by(
+            school_id=session["user"]["school_id"]
+        ).all():
+            response[user_class.__name__].update(
+                {user.id: {"name": get_fullname(user)}}
+            )
     return jsonify(response)

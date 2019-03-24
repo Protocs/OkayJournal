@@ -71,5 +71,4 @@ $.ajax("/get_teacher_schedule").done(function (schedule) {
     grade_number_select.change(function () {
         fillGradeLetterSelect(schedule);
     })
-
 });

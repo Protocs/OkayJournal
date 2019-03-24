@@ -27,10 +27,7 @@ class RegisterRequestForm(FlaskForm):
     )
     password_second = PasswordField(
         id="input_password_second",
-        validators=[
-            DataRequired(),
-            EqualTo("password_first", "Пароли не совпадают"),
-        ],
+        validators=[DataRequired(), EqualTo("password_first", "Пароли не совпадают")],
     )
     submit = SubmitField("Отправить")
 
