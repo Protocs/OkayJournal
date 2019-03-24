@@ -7,6 +7,12 @@
 {% block body %}
 {{ super() }}
 
+{% if errors %}
+    {% for error in errors %}
+    <div class="alert alert-warning">{{ error }}</div>
+    {% endfor %}
+    {% endif %}
+
 <div class="mx-5 my-3">
     <p class="lead mb-1"><span class="align-middle">Класс</span></p>
     <form method="post" action="/timetable">

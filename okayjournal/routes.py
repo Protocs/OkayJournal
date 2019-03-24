@@ -532,6 +532,7 @@ def timetable_index():
 @restricted_access(["SchoolAdmin"])
 @need_to_change_password
 def timetable(grade_id):
+    errors = []
     if request.method == "POST":
         for i in range(1, 7):
             for j in range(1, 7):
@@ -544,6 +545,21 @@ def timetable(grade_id):
                     grade_id=grade_id,
                 ).first()
                 if subject != "none" and teacher is not None:
+                    # Если у учителя уже есть урок под таким номером в этот день,
+                    # То выводим ошибку
+                    collisions = Schedule.query.filter_by(
+                            school_id=session["user"]["school_id"],
+                            teacher_id=int(teacher),
+                            day=i,
+                            subject_number=j).first()
+                    if collisions and collisions.grade_id != grade_id:
+                        error = "У учителя {} уже запланирован {} урок в {}"
+                        teacher_name = get_fullname(find_user_by_role(int(teacher),
+                                                                     "Teacher"))
+                        weekday = ["понедельник", "вторник", "среду", "четверг",
+                                   "пятницу", "субботу"][i-1]
+                        errors.append(error.format(teacher_name, str(j), weekday))
+                        break
                     if schedule is None:
                         db.session.add(
                             Schedule(
@@ -571,6 +587,7 @@ def timetable(grade_id):
         next=next,
         schedule=schedule,
         teachers_subjects=teachers_subjects,
+        errors=errors
     )
 
 
