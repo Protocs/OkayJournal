@@ -62,6 +62,7 @@ function openDialog(element) {
 
     updateMessages();
     $('.dialog').show();
+    $('.message-input input').focus();
 }
 
 function addMessage(message) {
