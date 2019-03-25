@@ -200,6 +200,7 @@ def diary(week):
         marks=marks,
         weeks=weeks,
         current_week=week,
+        timedelta=timedelta,
     )
 
 
@@ -223,6 +224,7 @@ def children_diary(week, student_id):
         subject_descriptions=subject_descriptions,
         marks=marks,
         current_week=week,
+        timedelta=timedelta,
     )
 
 
