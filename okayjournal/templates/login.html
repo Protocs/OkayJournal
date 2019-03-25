@@ -1,49 +1,47 @@
 {% extends "base.html" %}
 
-{% block body_params %} class="text-center" {% endblock %}
-
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
 
 {% block body %}
-<form class="form-signin" method="post">
-    {{ form.hidden_tag() }}
-    <a href="/"><img class="mb-3" src="../static/img/logo.png" alt="logo"></a>
-    <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
+    <form class="form-signin" method="post">
+        {{ form.hidden_tag() }}
+        <a href="/"><img class="mb-3" src="{{ url_for('static', filename='img/logo.png') }}" alt="logo"></a>
+        <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
 
-    {% if login_error is defined %}
-    <div class="alert alert-danger py-2 rounded" role="alert">
-        {{ login_error }}
-    </div>
-    {% endif %}
+        {% if login_error is defined %}
+            <div class="alert alert-danger py-2 rounded" role="alert">
+                {{ login_error }}
+            </div>
+        {% endif %}
 
-    <div class="mb-3">
-        {{ form.login(class_='form-control', placeholder="Логин или электронная почта", autofocus=True) }}
-        {% for error in form.login.errors %}
-        <div class="alert alert-danger py-2" role="alert">
-            {{ error }}
+        <div class="mb-3">
+            {{ form.login(class_='form-control', placeholder="Логин или электронная почта", autofocus=True) }}
+            {% for error in form.login.errors %}
+                <div class="alert alert-danger py-2" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+            {{ form.password(class_='form-control', placeholder="Пароль") }}
+            {% for error in form.password.errors %}
+                <div class="alert alert-danger py-2" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        {{ form.password(class_='form-control', placeholder="Пароль") }}
-        {% for error in form.password.errors %}
-        <div class="alert alert-danger py-2" role="alert">
-            {{ error }}
-        </div>
-        {% endfor %}
-    </div>
 
-    <div class="mb-3">
-        <div class="checkbox my-3">
-            <label>
-                {{ form.remember }} Запомнить меня
-            </label>
+        <div class="mb-3">
+            <div class="checkbox my-3">
+                <label>
+                    {{ form.remember }} Запомнить меня
+                </label>
+            </div>
         </div>
-    </div>
 
-    <div class="mb-3">
-        {{ form.submit(class_='btn btn-lg btn-primary btn-block') }}
-    </div>
-    <br>
-</form>
+        <div class="mb-3">
+            {{ form.submit(class_='btn btn-lg btn-primary btn-block') }}
+        </div>
+        <br>
+    </form>
 {% endblock %}
