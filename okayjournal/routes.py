@@ -33,7 +33,7 @@ def index():
     return render_template(
         "index.html",
         title="OkayJournal",
-        after_reg=request.referrer == "http://127.0.0.1:8080/register",
+        after_reg=request.referrer.endswith("/register"),
     )
 
 
