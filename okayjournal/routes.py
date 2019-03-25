@@ -31,7 +31,7 @@ def index():
     return render_template(
         "index.html",
         title="OkayJournal",
-        after_reg=request.referrer.endswith("/register"),
+        after_reg=(request.referrer and request.referrer.endswith("/register")),
     )
 
 
