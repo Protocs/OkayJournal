@@ -275,6 +275,7 @@ def get_subject_marks(subject_id):
         })
     return marks
 
+
 def get_student_week(week, student_id, school_id):
     """Возвращает всю информацию о учебной неделе ученика: оценки, предметы..."""
     from okayjournal.utils import get_week, DateRange
@@ -297,7 +298,8 @@ def get_student_week(week, student_id, school_id):
                 date=datetime.strptime(datetime.strftime(day, "%d-%m-%Y"), "%d-%m-%Y"),
                 grade_id=student.grade_id).all():
             subject_descriptions[day_number].update({subject.subject_id: subject})
-            mark = Marks.query.filter_by(subject_id=subject.id).first()
+            mark = Marks.query.filter_by(subject_id=subject.id,
+                                         student_id=student_id).first()
             if mark:
                 marks[day_number].update({subject.subject_id: mark.mark})
         day_number += 1
