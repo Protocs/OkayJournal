@@ -1,5 +1,9 @@
 .dropdown-menu {
-    transform: translate(-5%, 0);
+    position: absolute;
+    top: 35px;
+    left: unset;
+    right: 0;
+    box-shadow: 0 0 16px #0000003b;
 }
 
 #navLink {
