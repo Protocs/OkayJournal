@@ -65,7 +65,7 @@ def main_page():
     if not logged_in():
         return redirect("/index")
     if session["role"] in ("Student", "Parent"):
-        return redirect("/diary")
+        return redirect("/diary/" + str(today_week()))
     if session["role"] == "Teacher":
         return redirect("/journal")
     if session["role"] == "SystemAdmin":
