@@ -8,12 +8,14 @@
     {{ super() }}
 
     {% if parent %}
-
-        <div class="m-3">
+        <div class="mt-3 ml-5 d-flex align-items-middle">
+            <h4 class="mr-2 mb-0 mt-1 vertical-align-middle">Ребенок</h4>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown">
-                    Дети
+                    {% if student %}
+                        {{ student.surname }} {{ student.name }}
+                    {% endif %}
                 </button>
                 <div class="dropdown-menu">
                     {% for child in parent.children %}
@@ -22,33 +24,29 @@
                     {% endfor %}
                 </div>
             </div>
-            {% if student %}
-                <p class="lead">{{ student.surname }} {{ student.name }}</p>
-            {% endif %}
         </div>
-
     {% endif %}
 
     {% if schedule %}
-    <div class="mt-3 ml-5 d-flex align-items-middle">
-        <h4 class="mr-2 mb-0 mt-1 vertical-align-middle">Неделя</h4>
-        <div class="dropdown">
-            
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="weeksChoose" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                {{ weeks[current_week - 1][1] }} - {{ weeks[current_week - 1][2] }}
-            </button>
-            <ul class="dropdown-menu scrollable" aria-labelledby="weeksChoose">
-                {% for week in weeks %}
-                    {% if parent %}
-                        <li><a class="dropdown-item" href="/diary/{{ week[0] }}/{{ student.id }}">{{ week[1] }}
-                            - {{ week[2] }}</a></li>
-                    {% else %}
-                        <li><a class="dropdown-item" href="/diary/{{ week[0] }}">{{ week[1] }} - {{ week[2] }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+        <div class="mt-3 ml-5 d-flex align-items-middle">
+            <h4 class="mr-2 mb-0 mt-1 vertical-align-middle">Неделя</h4>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="weeksChoose" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{ weeks[current_week - 1][1] }} - {{ weeks[current_week - 1][2] }}
+                </button>
+                <ul class="dropdown-menu scrollable" aria-labelledby="weeksChoose">
+                    {% for week in weeks %}
+                        {% if parent %}
+                            <li><a class="dropdown-item" href="/diary/{{ week[0] }}/{{ student.id }}">{{ week[1] }}
+                                - {{ week[2] }}</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="/diary/{{ week[0] }}">{{ week[1] }} - {{ week[2] }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
 
         <div class="mx-5 mt-3">
