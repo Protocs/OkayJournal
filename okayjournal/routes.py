@@ -499,29 +499,48 @@ def subjects_route():
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
-    form = ChangePasswordForm()
-    if form.validate_on_submit():
+    change_password_form = ChangePasswordForm(prefix='pwd')
+    change_email_form = ChangeEmailForm(prefix='email')
+    u = find_user_by_role(session["user"]["id"], session["role"])
+
+    if change_password_form.submit.data and change_password_form.validate_on_submit():
         print(session["user"]["password_hash"])
         old_password_right = check_password_hash(
-            session["user"]["password_hash"], form.old_password.data
+            session["user"]["password_hash"], change_password_form.old_password.data
         )
         if not old_password_right:
             return journal_render(
-                "journal/settings.html", form=form, password_change_error=True
+                "journal/settings.html",
+                change_password_form=change_password_form,
+                change_email_form=change_email_form,
+                password_change_error=True,
+                current_email=u.email,
             )
 
-        u = find_user_by_role(session["user"]["id"], session["role"])
-        u.password_hash = generate_password_hash(form.new_password.data)
+        u.password_hash = generate_password_hash(change_password_form.new_password.data)
         u.throwaway_password = False
         db.session.commit()
         user_id, role = session["user"]["id"], session["role"]
         del session["user"]
         session["user"] = user_to_dict(find_user_by_role(user_id, role))
         return journal_render(
-            "journal/settings.html", form=form, password_change_success=True
+            "journal/settings.html",
+            change_password_form=change_password_form,
+            change_email_form=change_email_form,
+            password_change_success=True,
+            current_email=u.email,
         )
 
-    return journal_render("journal/settings.html", form=form)
+    if change_email_form.submit.data and change_email_form.validate_on_submit():
+        u.email = change_email_form.email.data
+        db.session.commit()
+
+    return journal_render(
+        "journal/settings.html",
+        change_password_form=change_password_form,
+        change_email_form=change_email_form,
+        current_email=u.email,
+    )
 
 
 # TODO

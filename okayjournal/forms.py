@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, Length
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired, EqualTo, Length, ValidationError
+from validate_email import validate_email
 
 
 class LoginForm(FlaskForm):
@@ -48,6 +50,16 @@ class ChangePasswordForm(FlaskForm):
         "Новый пароль (ещё раз)",
         validators=[DataRequired(), EqualTo("new_password", "Пароли не совпадают")],
     )
+    submit = SubmitField("Сменить")
+
+
+def email_validator(_, field):
+    if not validate_email(field.data):
+        raise ValidationError("Недействительный адрес электронной почты")
+
+
+class ChangeEmailForm(FlaskForm):
+    email = EmailField("Сменить почту", validators=[email_validator])
     submit = SubmitField("Сменить")
 
 
