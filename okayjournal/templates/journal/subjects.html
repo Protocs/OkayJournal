@@ -1,55 +1,55 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subjects.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/subjects.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
+    {{ super() }}
 
-<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
-     aria-labelledby="add-subject" aria-hidden="true" id="add-subject">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Добавить предмет</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <form method="post" id="add-subject-form">
-                        <div class="form-group">
-                            <label for="subject">Предмет</label>
-                            <div class="composed-text-inputs" id="subject">
-                                {{ form.name(class_='form-control', placeholder="Введите название предмета") }}
-                            </div>
-                        </div>
-                    </form>
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
+         aria-labelledby="add-subject" aria-hidden="true" id="add-subject">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить предмет</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                {{ form.submit(class_='btn btn-primary', form='add-subject-form') }}
+                <div class="modal-body">
+                    <div>
+                        <form method="post" id="add-subject-form">
+                            <div class="form-group">
+                                <label for="subject">Предмет</label>
+                                <div class="composed-text-inputs" id="subject">
+                                    {{ form.name(class_='form-control', placeholder="Введите название предмета") }}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    {{ form.submit(class_='btn btn-primary', form='add-subject-form') }}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<ul class="list-group w-50 mx-auto py-3">
-    <div class="col">
-        <h3 class="text-center">Предметы</h3>
-        <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal"
-               data-target="#add-subject">
-                <li class="add text-center list-group-item text-muted add-button">+</li>
-            </a>
-            {% for subject in subjects %}
-            <li class="list-group-item">{{ subject.name }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</ul>
+    <ul class="list-group w-50 mx-auto py-3">
+        <div class="col">
+            <h3 class="text-center">Предметы</h3>
+            <ul class="list-group">
+                <a href="#" class="hidden-link" data-toggle="modal"
+                   data-target="#add-subject">
+                    <li class="add text-center list-group-item text-muted add-button">+</li>
+                </a>
+                {% for subject in subjects %}
+                    <li class="list-group-item">{{ subject.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </ul>
 
 {% endblock %}

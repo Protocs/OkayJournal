@@ -2,11 +2,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}">
-    <style>
-        .day {
-            max-width: unset;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mark-table.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -58,36 +54,40 @@
 
     {% if date_range %}
 
-        <h3 style="margin-left: 0.8em;">Оценки {{ selected['grade_number_select'] }} "{{ selected['grade_letter_select'] }}" класса</h3>
+        <h3 style="margin-left: 0.8em;">
+            Оценки {{ selected['grade_number_select'] }} "{{ selected['grade_letter_select'] }}" класса
+        </h3>
         <div class="mt-3 mx-3" style="overflow-y: auto">
-                <table class="table-dark">
-                    <tr>
-                        <th></th>
-                        {% for d in date_range %}
-                            <th class="text-muted px-1">{{ (d.day | string).zfill(2) }}.{{ (d.month | string).zfill(2) }}</th>
-                        {% endfor %}
-                        <th class="px-0 text-muted">Средняя</th>
-                    </tr>
-                    {% for student in students %}
-                        <tr>
-                            <td>{{ student[1] }}</td>
-                            {% for d2 in date_range %}
-                                <td class="mark_"
-                                    onclick="window.location =
-                                            'http://localhost:8080/grading/{{ selected.subject_id }}/{{ selected.grade_id }}/{{ d2.strftime('%d-%m-%Y') }}'">
-                                    {% if marks.get(d2) and marks.get(d2).get(student[0]) %}
-                                        {{ marks[d2][student[0]]["mark"] }}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                            {% if student[2] %}
-                            <td class="mark_">{{ student[2] }}</td>
-                            {% else %}
-                            <td></td>
-                            {% endif %}
-                        </tr>
+            <table class="table-dark">
+                <tr>
+                    <th></th>
+                    {% for d in date_range %}
+                        <th class="text-muted px-1">
+                            {{ (d.day | string).zfill(2) }}.{{ (d.month | string).zfill(2) }}
+                        </th>
                     {% endfor %}
-                </table>
+                    <th class="px-0 text-muted">Средняя</th>
+                </tr>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student[1] }}</td>
+                        {% for d2 in date_range %}
+                            <td class="mark_"
+                                onclick="window.location =
+                                        'http://localhost:8080/grading/{{ selected.subject_id }}/{{ selected.grade_id }}/{{ d2.strftime('%d-%m-%Y') }}'">
+                                {% if marks.get(d2) and marks.get(d2).get(student[0]) %}
+                                    {{ marks[d2][student[0]]["mark"] }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        {% if student[2] %}
+                            <td class="mark_">{{ student[2] }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
 
     {% endif %}

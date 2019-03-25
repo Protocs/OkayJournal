@@ -1,43 +1,50 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/lesson_times.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lesson_times.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
+    {{ super() }}
 
-<div class="mt-4 w-50 mx-auto">
-    <form method="post">
-    <table class="table table-hover table-dark mb-0">
-        <col>
-        <thead>
-        <tr><th></th><th>Начинается в</th><th>Заканчивается в</th></tr>
-        </thead>
-        {% for k in range(1, 7) %}
-        <tr>
-            <td class="lesson-number text-muted border-right align-middle text-center">{{ k }}</td>
-            <td class="align-middle">
-                {% if schedule.get(k, None) and schedule[k]["start"] %}
-                <input type="time" name="start{{ k }}" value="{{ schedule[k]['start'] }}">
-                {% else %}
-                <input type="time" name="start{{ k }}">
-                {% endif %}
-            </td>
-            <td class="align-middle">
-                {% if schedule.get(k, None) and schedule[k]["end"] %}
-                <input type="time" name="end{{ k }}" value="{{ schedule[k]['end'] }}">
-                {% else %}
-                <input type="time" name="end{{ k }}">
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-        <tr><td></td><td id="add-lesson" colspan="2" class="text-center text-muted p-0" onclick="">+</td></tr>
-    </table>
-    <button class="btn btn-primary w-25 mt-3" type="submit">Сохранить</button>
-    </form>
-</div>
+    <div class="mt-4 w-50 mx-auto">
+        <form method="post">
+            <table class="table table-hover table-dark mb-0">
+                <col>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Начинается в</th>
+                    <th>Заканчивается в</th>
+                </tr>
+                </thead>
+                {% for k in range(1, 7) %}
+                    <tr>
+                        <td class="lesson-number text-muted border-right align-middle text-center">{{ k }}</td>
+                        <td class="align-middle">
+                            {% if schedule.get(k, None) and schedule[k]["start"] %}
+                                <input type="time" name="start{{ k }}" value="{{ schedule[k]['start'] }}">
+                            {% else %}
+                                <input type="time" name="start{{ k }}">
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            {% if schedule.get(k, None) and schedule[k]["end"] %}
+                                <input type="time" name="end{{ k }}" value="{{ schedule[k]['end'] }}">
+                            {% else %}
+                                <input type="time" name="end{{ k }}">
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td id="add-lesson" colspan="2" class="text-center text-muted p-0" onclick="">+</td>
+                </tr>
+            </table>
+            <button class="btn btn-primary w-25 mt-3" type="submit">Сохранить</button>
+        </form>
+    </div>
 {% endblock %}

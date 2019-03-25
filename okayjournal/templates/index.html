@@ -1,109 +1,109 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block body %}
 
-{% if after_reg %}
+    {% if after_reg %}
+        <div class="modal" tabindex="-1" role="dialog" id="after_reg_notification">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Запрос отправлен</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ваш запрос отправлен на обработку. Мы отправим письмо с ответом на Вашу электронную
+                            почту.</p>
+                        <p>Спасибо, что выбрали OkayJournal!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="modal" tabindex="-1" role="dialog" id="after_reg_notification">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Запрос отправлен</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Ваш запрос отправлен на обработку. Мы отправим письмо с ответом на Вашу электронную почту.</p>
-                <p>Спасибо, что выбрали OkayJournal!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <script>
+            $(document).ready(function () {
+                if ([1, 2].indexOf(performance.navigation.type) === -1) {
+                    $("#after_reg_notification").modal('show');
+                }
+            });
+        </script>
+    {% endif %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="support">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Поддержка</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Для поддержки обращайтесь по адресу admin@okayjournal.ru</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function () {
-        if ([1, 2].indexOf(performance.navigation.type) === -1) {
-            $("#after_reg_notification").modal('show');
-        }
-    });
-</script>
+    <nav class="site-header sticky-top py-1">
+        <div class="container d-flex flex-column flex-md-row justify-content-between">
+            <a class="py-2 d-none d-md-inline-block" href="#features">Возможности</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" data-toggle="modal" data-target="#support">Поддержка</a>
+            <a class="h-75 mt-2 px-2 d-none d-md-inline-block" href="/login">Войти</a>
+        </div>
+    </nav>
 
-{% endif %}
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light" id="billboard">
+        <div class="col-md-5 p-lg-5 mx-auto">
+            <img class="mb-3" src="../static/img/logo.png" alt="LOGO">
+            <h1 class="display-4 font-weight-normal">OkayJournal</h1>
+            <p class="lead font-weight-normal">Электронный дневник</p>
+            <a class="btn btn-outline-secondary" href="/register">Попробовать</a>
+            <p class="mt-3">Есть аккаунт? <a href="/login">Войдите</a></p>
+        </div>
+    </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="support">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Поддержка</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Для поддержки обращайтесь по адресу admin@okayjournal.ru</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="features">
+        <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
+            <div class="my-3 py-3">
+                <h2 class="display-5">Для учеников</h2>
+                <p class="lead">Просмотр оценок и домашнего задания, внутренняя система сообщений</p>
             </div>
         </div>
-    </div>
-</div>
-
-<nav class="site-header sticky-top py-1">
-    <div class="container d-flex flex-column flex-md-row justify-content-between">
-        <a class="py-2 d-none d-md-inline-block" href="#features">Возможности</a>
-        <a class="py-2 d-none d-md-inline-block" href="#" data-toggle="modal" data-target="#support">Поддержка</a>
-        <a class="h-75 mt-2 px-2 d-none d-md-inline-block" href="/login">Войти</a>
-    </div>
-</nav>
-
-<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light" id="billboard">
-    <div class="col-md-5 p-lg-5 mx-auto">
-        <img class="mb-3" src="../static/img/logo.png" alt="LOGO">
-        <h1 class="display-4 font-weight-normal">OkayJournal</h1>
-        <p class="lead font-weight-normal">Электронный дневник</p>
-        <a class="btn btn-outline-secondary" href="/register">Попробовать</a>
-        <p class="mt-3">Есть аккаунт? <a href="/login">Войдите</a></p>
-    </div>
-</div>
-
-<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3" id="features">
-    <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
-        <div class="my-3 py-3">
-            <h2 class="display-5">Для учеников</h2>
-            <p class="lead">Просмотр оценок и домашнего задания, внутренняя система сообщений</p>
+        <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+            <div class="my-3 p-3">
+                <h2 class="display-5">Для учителей</h2>
+                <p class="lead">Ведение электронного классного журнала, посещаемости и успеваемости учеников</p>
+            </div>
         </div>
     </div>
-    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-        <div class="my-3 p-3">
-            <h2 class="display-5">Для учителей</h2>
-            <p class="lead">Ведение электронного классного журнала, посещаемости и успеваемости учеников</p>
-        </div>
-    </div>
-</div>
 
-<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
-    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-        <div class="my-3 p-3">
-            <h2 class="display-5">Для родителей</h2>
-            <p class="lead">Контролирование детей и их успеваемости в школе, просмотр расписания школьных событий</p>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+        <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+            <div class="my-3 p-3">
+                <h2 class="display-5">Для родителей</h2>
+                <p class="lead">Контролирование детей и их успеваемости в школе, просмотр расписания школьных
+                    событий</p>
+            </div>
+        </div>
+        <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
+            <div class="my-3 py-3">
+                <h2 class="display-5">Для администрации школы</h2>
+                <p class="lead">
+                    Управление классами и школой в целом. Создание расписания школьных и классных мероприятий
+                </p>
+            </div>
         </div>
     </div>
-    <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
-        <div class="my-3 py-3">
-            <h2 class="display-5">Для администрации школы</h2>
-            <p class="lead">
-                Управление классами и школой в целом. Создание расписания школьных и классных мероприятий
-            </p>
-        </div>
-    </div>
-</div>
 {% endblock %}

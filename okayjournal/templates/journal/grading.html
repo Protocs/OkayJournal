@@ -18,15 +18,17 @@
             <div class="form-group mb-3">
                 <label for="lesson-topic">Тема урока</label>
                 {% if subject and subject.theme %}
-                <input type="text" class="form-control" id="lesson-topic" name="lesson-topic" value="{{ subject.theme }}">
+                    <input type="text" class="form-control" id="lesson-topic" name="lesson-topic"
+                           value="{{ subject.theme }}">
                 {% else %}
-                <input type="text" class="form-control" id="lesson-topic" name="lesson-topic">
+                    <input type="text" class="form-control" id="lesson-topic" name="lesson-topic">
                 {% endif %}
             </div>
 
             <div class="form-group mb-5">
                 <label for="homework">Домашнее задание</label>
-                <textarea class="form-control" id="homework" name="homework">{% if subject and subject.homework %}{{ subject.homework }}{% endif %}</textarea>
+                <textarea class="form-control" id="homework" name="homework">{% if subject and subject.homework %}
+                    {{ subject.homework }}{% endif %}</textarea>
             </div>
 
             <table class="table table-bordered table-dark mx-auto">
@@ -44,36 +46,40 @@
                         <td>
                             <select name="attendance-{{ student[0] }}">
                                 {% if marks and marks.get(student[0]) and marks[student[0]]['attendance'] %}
-                                <option selected value="{{ marks[student[0]]['attendance'] }}">{{ marks[student[0]]['attendance'] }}</option>
+                                    <option selected value="{{ marks[student[0]]['attendance'] }}">
+                                        {{ marks[student[0]]['attendance'] }}
+                                    </option>
                                     {% for attendance in ['Уважительная причина', 'Отсутствует', 'Болеет', 'Опоздал', ''] %}
-                                    {% if attendance != marks[student[0]]['attendance'] %}
-                                        <option value="{{ attendance }}">{{ attendance }}</option>
+                                        {% if attendance != marks[student[0]]['attendance'] %}
+                                            <option value="{{ attendance }}">{{ attendance }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 {% else %}
-                                <option></option>
-                                <option value="Уважительная причина">Уважительная причина</option>
-                                <option value="Отсутствует">Отсутствует</option>
-                                <option value="Болеет">Болеет</option>
-                                <option value="Опоздал">Опоздал</option>
+                                    <option></option>
+                                    <option value="Уважительная причина">Уважительная причина</option>
+                                    <option value="Отсутствует">Отсутствует</option>
+                                    <option value="Болеет">Болеет</option>
+                                    <option value="Опоздал">Опоздал</option>
                                 {% endif %}
                             </select>
                         </td>
                         <td>
                             <select name="mark-{{ student[0] }}">
                                 {% if marks and marks.get(student[0]) and marks[student[0]]['mark'] %}
-                                <option selected value="{{ marks[student[0]]['mark'] }}">{{ marks[student[0]]['mark'] }}</option>
+                                    <option selected value="{{ marks[student[0]]['mark'] }}">
+                                        {{ marks[student[0]]['mark'] }}
+                                    </option>
                                     {% for mark in [5, 4, 3, 2, ''] %}
-                                    {% if mark != marks[student[0]]['mark'] %}
-                                        <option value="{{ mark }}">{{ mark }}</option>
+                                        {% if mark != marks[student[0]]['mark'] %}
+                                            <option value="{{ mark }}">{{ mark }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 {% else %}
-                                <option></option>
-                                <option value="5">5</option>
-                                <option value="4">4</option>
-                                <option value="3">3</option>
-                                <option value="2">2</option>
+                                    <option></option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
                                 {% endif %}
                             </select>
                         </td>

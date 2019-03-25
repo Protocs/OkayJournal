@@ -3,8 +3,6 @@ from functools import partial
 from flask import render_template, request
 from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
-from validate_email import validate_email
-from datetime import datetime
 
 from okayjournal.app import app
 from okayjournal.forms import *
@@ -190,9 +188,8 @@ def diary(week):
         return journal_render("journal/diary.html", parent=parent, current_week=week)
 
     schedule, subject_descriptions, marks = get_student_week(
-        week,
-        session["user"]["id"],
-        session["user"]["school_id"])
+        week, session["user"]["id"], session["user"]["school_id"]
+    )
 
     return journal_render(
         "journal/diary.html",
@@ -202,7 +199,7 @@ def diary(week):
         subject_descriptions=subject_descriptions,
         marks=marks,
         weeks=weeks,
-        current_week=week
+        current_week=week,
     )
 
 
@@ -213,9 +210,8 @@ def children_diary(week, student_id):
     student = find_user_by_role(student_id, "Student")
     parent = find_user_by_role(session["user"]["id"], "Parent")
     schedule, subject_descriptions, marks = get_student_week(
-        week,
-        student_id,
-        session["user"]["school_id"])
+        week, student_id, session["user"]["school_id"]
+    )
     return journal_render(
         "journal/diary.html",
         week_days=week_days,
@@ -240,25 +236,28 @@ def reports():
             child_id = int(request.form["childSelect"])
             quarter = int(request.form["quarterSelect"])
             report = get_student_marks(child_id, quarter)
-            return journal_render("journal/reports.html",
-                                  selected={
-                                      "child": find_user_by_role(child_id, "Student"),
-                                      "quarter": quarter
-                                  },
-                                  report=report,
-                                  children=children,
-                                  len=len,
-                                  sum=sum)
-        return journal_render("journal/reports.html",
-                              children=children)
+            return journal_render(
+                "journal/reports.html",
+                selected={
+                    "child": find_user_by_role(child_id, "Student"),
+                    "quarter": quarter,
+                },
+                report=report,
+                children=children,
+                len=len,
+                sum=sum,
+            )
+        return journal_render("journal/reports.html", children=children)
     if request.method == "POST":
         quarter = int(request.form["quarterSelect"])
         report = get_student_marks(session["user"]["id"], quarter)
-        return journal_render("journal/reports.html",
-                              selected={
-                                  "quarter": quarter
-                              },
-                              report=report, len=len, sum=sum)
+        return journal_render(
+            "journal/reports.html",
+            selected={"quarter": quarter},
+            report=report,
+            len=len,
+            sum=sum,
+        )
     return journal_render("journal/reports.html")
 
 
@@ -477,8 +476,9 @@ def classes():
         db.session.commit()
         teacher.homeroom_grade_id = grade.id
         db.session.commit()
-    free_teachers = Teacher.query.filter_by(homeroom_grade_id=None,
-                                            school_id=session["user"]["id"]).all()
+    free_teachers = Teacher.query.filter_by(
+        homeroom_grade_id=None, school_id=session["user"]["id"]
+    ).all()
     return journal_render("journal/classes.html", free_teachers=free_teachers)
 
 
@@ -499,8 +499,8 @@ def subjects_route():
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
-    change_password_form = ChangePasswordForm(prefix='pwd')
-    change_email_form = ChangeEmailForm(prefix='email')
+    change_password_form = ChangePasswordForm(prefix="pwd")
+    change_email_form = ChangeEmailForm(prefix="email")
     u = find_user_by_role(session["user"]["id"], session["role"])
 
     if change_password_form.submit.data and change_password_form.validate_on_submit():
@@ -570,10 +570,12 @@ def journal():
                 school_id=session["user"]["school_id"],
             )
         ]
-        date_range = list(filter(
-            lambda d: (d.weekday() + 1) in weekdays,
-            list(get_quarter_date_range(quarter)),
-        ))
+        date_range = list(
+            filter(
+                lambda d: (d.weekday() + 1) in weekdays,
+                list(get_quarter_date_range(quarter)),
+            )
+        )
 
         marks = {}
         for date_obj in date_range:
@@ -581,7 +583,8 @@ def journal():
             subject_desc = SubjectDescription.query.filter_by(
                 date=datetime.strptime(date_obj.strftime("%d-%m-%Y"), "%d-%m-%Y"),
                 grade_id=grade.id,
-                subject_id=subject_id)
+                subject_id=subject_id,
+            )
 
             if subject_desc is not None:
                 if subject_desc.first() is not None:
@@ -594,8 +597,9 @@ def journal():
                 average_mark = sum(student_marks["marks"]) / len(student_marks["marks"])
             else:
                 average_mark = None
-            students.append((student.id, student.surname + " " + student.name,
-                             average_mark))
+            students.append(
+                (student.id, student.surname + " " + student.name, average_mark)
+            )
 
         return journal_render(
             "journal/journal.html",
@@ -609,7 +613,7 @@ def journal():
             },
             students=sorted(students, key=lambda s: s[1]),
             homeroom_teacher=get_fullname(grade.homeroom_teacher[0]),
-            marks=marks
+            marks=marks,
         )
 
 
@@ -721,9 +725,9 @@ def announcements_route():
         db.session.commit()
     announcements = {}
     for announcement in (
-            Announcement.query.filter_by(school_id=session["user"]["school_id"])
-                    .order_by(Announcement.date)
-                    .all()
+        Announcement.query.filter_by(school_id=session["user"]["school_id"])
+        .order_by(Announcement.date)
+        .all()
     ):
         author = find_user_by_role(announcement.author_id, announcement.author_role)
         announcements.update(
@@ -777,7 +781,7 @@ def lesson_times():
 
     schedule = {}
     for subject in CallSchedule.query.filter_by(
-            school_id=session["user"]["school_id"]
+        school_id=session["user"]["school_id"]
     ).all():
         schedule[subject.subject_number] = {"start": subject.start, "end": subject.end}
 
@@ -797,7 +801,7 @@ def grading(subject_id, grade_id, date):
             date=date_object,
             grade_id=grade_id,
             school_id=session["user"]["school_id"],
-            subject_id=subject_id
+            subject_id=subject_id,
         ).first()
         # Если да, то просто меняем тему и домашнее задание для этого объекта
         if subject_description:
@@ -811,7 +815,7 @@ def grading(subject_id, grade_id, date):
                 grade_id=grade_id,
                 subject_id=subject_id,
                 theme=lesson_topic,
-                homework=homework
+                homework=homework,
             )
             db.session.add(subject_description)
         db.session.commit()
@@ -826,8 +830,7 @@ def grading(subject_id, grade_id, date):
                 attendance = request.form[atd_key]
                 # Проверим, существует ли объект оценки для этого ученика
                 mark_obj = Marks.query.filter_by(
-                    subject_id=subject_description.id,
-                    student_id=student_id
+                    subject_id=subject_description.id, student_id=student_id
                 ).first()
                 # Если да, то меняем оценку и посещаемость
                 if mark_obj:
@@ -835,11 +838,13 @@ def grading(subject_id, grade_id, date):
                     mark_obj.attendance = attendance
                 # Если нет, добавляем новый объект в базу
                 else:
-                    mark = Marks(mark=mark,
-                                 subject_id=subject_description.id,
-                                 student_id=student_id,
-                                 school_id=session["user"]["school_id"],
-                                 attendance=attendance)
+                    mark = Marks(
+                        mark=mark,
+                        subject_id=subject_description.id,
+                        student_id=student_id,
+                        school_id=session["user"]["school_id"],
+                        attendance=attendance,
+                    )
                     db.session.add(mark)
         db.session.commit()
 
@@ -851,7 +856,7 @@ def grading(subject_id, grade_id, date):
         date=date_object,
         grade_id=grade_id,
         school_id=session["user"]["school_id"],
-        subject_id=subject_id
+        subject_id=subject_id,
     ).first()
     marks = None
     if subject_description:
@@ -859,10 +864,12 @@ def grading(subject_id, grade_id, date):
     students = []
     for student in grade.students:
         students.append((student.id, student.surname + " " + student.name))
-    return journal_render("journal/grading.html",
-                          students=sorted(students, key=lambda s: s[1]),
-                          subject=subject_description,
-                          marks=marks)
+    return journal_render(
+        "journal/grading.html",
+        students=sorted(students, key=lambda s: s[1]),
+        subject=subject_description,
+        marks=marks,
+    )
 
 
 @app.errorhandler(404)

@@ -186,12 +186,12 @@ def user_to_dict(user):
     return result
 
 
-def find_user_by_role(id, role):
+def find_user_by_role(user_id, role):
     """
     Возвращает объект пользователя по его id и role.
     Если пользователь не найден, вернет None.
     """
-    return globals()[role].query.filter_by(id=id).first()
+    return globals()[role].query.filter_by(id=user_id).first()
 
 
 def find_user_by_login(login):
@@ -267,12 +267,9 @@ def get_subject_marks(subject_id):
     marks = {}
     marks_query = Marks.query.filter_by(subject_id=subject_id).all()
     for mark in marks_query:
-        marks.update({
-            mark.student_id: {
-                "mark": mark.mark,
-                "attendance": mark.attendance
-            }
-        })
+        marks.update(
+            {mark.student_id: {"mark": mark.mark, "attendance": mark.attendance}}
+        )
     return marks
 
 
@@ -281,9 +278,7 @@ def get_student_week(week, student_id, school_id):
     from okayjournal.utils import get_week, DateRange
 
     student = find_user_by_role(student_id, "Student")
-    schedule = get_grade_schedule(
-        student.grade_id, school_id
-    )
+    schedule = get_grade_schedule(student.grade_id, school_id)
     subject_descriptions = {}
     marks = {}
     week_range = get_week(week)
@@ -295,11 +290,13 @@ def get_student_week(week, student_id, school_id):
         subject_descriptions.update({day_number: {}})
         marks.update({day_number: {}})
         for subject in SubjectDescription.query.filter_by(
-                date=datetime.strptime(datetime.strftime(day, "%d-%m-%Y"), "%d-%m-%Y"),
-                grade_id=student.grade_id).all():
+            date=datetime.strptime(datetime.strftime(day, "%d-%m-%Y"), "%d-%m-%Y"),
+            grade_id=student.grade_id,
+        ).all():
             subject_descriptions[day_number].update({subject.subject_id: subject})
-            mark = Marks.query.filter_by(subject_id=subject.id,
-                                         student_id=student_id).first()
+            mark = Marks.query.filter_by(
+                subject_id=subject.id, student_id=student_id
+            ).first()
             if mark:
                 marks[day_number].update({subject.subject_id: mark.mark})
         day_number += 1
@@ -319,21 +316,24 @@ def get_student_marks(student_id, quarter):
     from okayjournal.utils import get_quarter_date_range, date
 
     student = find_user_by_role(student_id, "Student")
-    marks = filter(lambda m: date(
-        m.subject.date.year,
-        m.subject.date.month,
-        m.subject.date.day) in get_quarter_date_range(quarter),
-                   student.marks)
+    marks = filter(
+        lambda m: date(m.subject.date.year, m.subject.date.month, m.subject.date.day)
+        in get_quarter_date_range(quarter),
+        student.marks,
+    )
     schedule = get_grade_schedule(student.grade_id, student.school_id)
     response = {}
     for day in schedule:
         for subject in schedule[day]:
             if schedule[day][subject]["subject"]["id"] not in response:
                 response.update(
-                    {schedule[day][subject]["subject"]["id"]: {
-                        "name": schedule[day][subject]["subject"]["name"],
-                        "marks": []
-                    }})
+                    {
+                        schedule[day][subject]["subject"]["id"]: {
+                            "name": schedule[day][subject]["subject"]["name"],
+                            "marks": [],
+                        }
+                    }
+                )
     for mark in marks:
         if mark.mark:
             response[mark.subject.subject.id]["marks"].append(mark.mark)

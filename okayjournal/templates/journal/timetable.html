@@ -1,103 +1,108 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/timetable.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
+    {{ super() }}
 
-{% if errors %}
-    {% for error in errors %}
-    <div class="alert alert-warning">{{ error }}</div>
-    {% endfor %}
-    {% endif %}
-
-<div class="mx-5 my-3">
-    <p class="lead mb-1"><span class="align-middle">Класс</span></p>
-    <form method="post" action="/timetable">
-        <select class="custom-select class-select" id="grade_number_select" name="number" required>
-        </select>
-        <select class="custom-select class-select" id="grade_letter_select" name="letter" required>
-        </select>
-        <button class="btn btn-primary" type="submit">Загрузить</button>
-    </form>
-    {% if teachers_subjects %}
-    <button type="submit" class="btn btn-success mt-3" form="configureSchedule">Сохранить</button>
-    {% endif %}
-</div>
-
-{% if teachers_subjects %}
-
-<div class="mx-5 mt-3 mb-5" id="#scheduleContent">
-    <form method="post" id="configureSchedule">
-        {% for i in range(2) %}
-        <div class="row justify-content-around flex-nowrap align-items-stretch">
-            {% for j in range(1, 4) %}
-            <div class="day">
-                <h3>{{ next(week_days) }}</h3>
-                <table class="table table-hover table-dark mb-0">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Предмет</th>
-                        <th>Учитель</th>
-                    </tr>
-                    </thead>
-                    {% for k in range(6) %}
-                    <tr>
-                        <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
-                        <td class="align-middle">
-                            <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
-                                    id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
-                                <option selected value="{{ schedule[3 * i + j][k + 1]['subject']['id'] }}">
-                                    {{ schedule[3 * i + j][k + 1]["subject"]["name"] }}
-                                </option>
-                                {% for id, subject in teachers_subjects.items() %}
-                                {% if id != schedule[3 * i + j][k + 1]['subject']['id'] %}
-                                <option value="{{ id }}">
-                                    {{ subject["name"] }}
-                                </option>
-                                {% endif %}
-                                {% endfor %}
-
-                                <option value="none">-</option>
-
-                                {% else %}
-                                <option selected value="none">-</option>
-
-                                {% for id, subject in teachers_subjects.items() %}
-                                <option value="{{ id }}">
-                                    {{ subject["name"] }}
-                                </option>
-                                {% endfor %}
-
-                                {% endif %}
-                            </select>
-                        </td>
-                        <td class="align-middle">
-                            <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
-                                    id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}" subject="{{ k + 1 }}">
-                                {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
-                                <option selected value="{{ schedule[3 * i + j][k + 1]['teacher']['id'] }}">
-                                    {{ schedule[3 * i + j][k + 1]["teacher"]["name"] }}
-                                </option>
-                                {% endif %}
-                            </select>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            {% endfor %}
-        </div>
+    {% if errors %}
+        {% for error in errors %}
+            <div class="alert alert-warning">{{ error }}</div>
         {% endfor %}
-    </form>
-</div>
-{% endif %}
+    {% endif %}
 
-<script src="{{ url_for('static', filename='js/grade_selectors.js') }}"></script>
-<script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
+    <div class="mx-5 my-3">
+        <p class="lead mb-1"><span class="align-middle">Класс</span></p>
+        <form method="post" action="/timetable">
+            <select class="custom-select class-select" id="grade_number_select" name="number" required>
+            </select>
+            <select class="custom-select class-select" id="grade_letter_select" name="letter" required>
+            </select>
+            <button class="btn btn-primary" type="submit">Загрузить</button>
+        </form>
+        {% if teachers_subjects %}
+            <button type="submit" class="btn btn-success mt-3" form="configureSchedule">Сохранить</button>
+        {% endif %}
+    </div>
+
+    {% if teachers_subjects %}
+
+        <div class="mx-5 mt-3 mb-5" id="#scheduleContent">
+            <form method="post" id="configureSchedule">
+                {% for i in range(2) %}
+                    <div class="row justify-content-around flex-nowrap align-items-stretch">
+                        {% for j in range(1, 4) %}
+                            <div class="day">
+                                <h3>{{ next(week_days) }}</h3>
+                                <table class="table table-hover table-dark mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Предмет</th>
+                                        <th>Учитель</th>
+                                    </tr>
+                                    </thead>
+                                    {% for k in range(6) %}
+                                        <tr>
+                                            <td class="lesson-number text-muted border-right align-middle">
+                                                {{ k + 1 }}
+                                            </td>
+                                            <td class="align-middle">
+                                                <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
+                                                        id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}"
+                                                        subject="{{ k + 1 }}">
+                                                    {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                                                        <option selected value="{{ schedule[3 * i + j][k + 1]['subject']['id'] }}">
+                                                            {{ schedule[3 * i + j][k + 1]["subject"]["name"] }}
+                                                        </option>
+                                                        {% for id, subject in teachers_subjects.items() %}
+                                                            {% if id != schedule[3 * i + j][k + 1]['subject']['id'] %}
+                                                                <option value="{{ id }}">
+                                                                    {{ subject["name"] }}
+                                                                </option>
+                                                            {% endif %}
+                                                        {% endfor %}
+
+                                                        <option value="none">-</option>
+
+                                                    {% else %}
+                                                        <option selected value="none">-</option>
+
+                                                        {% for id, subject in teachers_subjects.items() %}
+                                                            <option value="{{ id }}">
+                                                                {{ subject["name"] }}
+                                                            </option>
+                                                        {% endfor %}
+
+                                                    {% endif %}
+                                                </select>
+                                            </td>
+                                            <td class="align-middle">
+                                                <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
+                                                        id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}"
+                                                        subject="{{ k + 1 }}">
+                                                    {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                                                        <option selected
+                                                                value="{{ schedule[3 * i + j][k + 1]['teacher']['id'] }}">
+                                                            {{ schedule[3 * i + j][k + 1]["teacher"]["name"] }}
+                                                        </option>
+                                                    {% endif %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/grade_selectors.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timetable.js') }}"></script>
 
 {% endblock %}

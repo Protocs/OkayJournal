@@ -1,193 +1,192 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/links.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/anim.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
+    {{ super() }}
 
-<!-- Диалог добавления учителя -->
-<div class="modal fade" tabindex="-1" role="dialog" id="add-teacher">
-    <form method="post" id="add-teacher-form">
-        {{ add_teacher_form.csrf_token }}
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить учителя</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body d-flex">
-                    <div class="w-50">
-                        <div class="form-group mb-1">
-                            <label for="add-teacher-surname">ФИО</label>
-                            <div class="composed-text-inputs">
-                                {{ add_teacher_form.surname(class_='form-control', placeholder="Фамилия") }}
-                                {{ add_teacher_form.name(class_='form-control', placeholder="Имя") }}
-                                {{ add_teacher_form.patronymic(class_='form-control', placeholder="Отчество") }}
+    <!-- Диалог добавления учителя -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="add-teacher">
+        <form method="post" id="add-teacher-form">
+            {{ add_teacher_form.csrf_token }}
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавить учителя</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body d-flex">
+                        <div class="w-50">
+                            <div class="form-group mb-1">
+                                <label for="add-teacher-surname">ФИО</label>
+                                <div class="composed-text-inputs">
+                                    {{ add_teacher_form.surname(class_='form-control', placeholder="Фамилия") }}
+                                    {{ add_teacher_form.name(class_='form-control', placeholder="Имя") }}
+                                    {{ add_teacher_form.patronymic(class_='form-control', placeholder="Отчество") }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ add_teacher_form.email.label(style='position: relative; top: 2px;') }}
+                                {{ add_teacher_form.email(class_='form-control', placeholder="Электронная почта") }}
                             </div>
                         </div>
-                        <div class="form-group">
-                            {{ add_teacher_form.email.label(style='position: relative; top: 2px;') }}
-                            {{ add_teacher_form.email(class_='form-control', placeholder="Электронная почта") }}
+                        <div class="w-50 ml-3">
+                            <label for="subjectSelect1">Предметы</label>
+                            <div class="composed-text-inputs">
+                                <select class="custom-select" name="subjectSelect1" id="subjectSelect1"
+                                        required></select>
+                                <select class="custom-select" name="subjectSelect2" id="subjectSelect2"></select>
+                                <select class="custom-select" name="subjectSelect3" id="subjectSelect3"></select>
+                                <select class="custom-select" name="subjectSelect4" id="subjectSelect4"></select>
+                                <select class="custom-select" name="subjectSelect5" id="subjectSelect5"></select>
+                            </div>
                         </div>
                     </div>
-                    <div class="w-50 ml-3">
-                        <label for="subjectSelect1">Предметы</label>
-                        <div class="composed-text-inputs">
-                            <select class="custom-select" name="subjectSelect1" id="subjectSelect1" required></select>
-                            <select class="custom-select" name="subjectSelect2" id="subjectSelect2"></select>
-                            <select class="custom-select" name="subjectSelect3" id="subjectSelect3"></select>
-                            <select class="custom-select" name="subjectSelect4" id="subjectSelect4"></select>
-                            <select class="custom-select" name="subjectSelect5" id="subjectSelect5"></select>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                        {{ add_teacher_form.submit(class_='btn btn-primary', form='add-teacher-form') }}
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    {{ add_teacher_form.submit(class_='btn btn-primary', form='add-teacher-form') }}
                 </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
-<!-- Диалог добавления ученика -->
-<div class="modal fade" tabindex="-1" role="dialog" id="add-student">
-    <form method="post" id="add-student-form" action="/users">
-        {{ add_student_form.csrf_token }}
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить ученика</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body d-flex">
-                    <div class="w-50">
-                        <div class="form-group">
-                            <label for="add-student-surname">ФИО</label>
-                            <div class="composed-text-inputs">
-                                {{ add_student_form.surname(class_='form-control', placeholder="Фамилия") }}
-                                {{ add_student_form.name(class_='form-control', placeholder="Имя") }}
-                                {{ add_student_form.patronymic(class_='form-control', placeholder="Отчество") }}
+    <!-- Диалог добавления ученика -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="add-student">
+        <form method="post" id="add-student-form" action="/users">
+            {{ add_student_form.csrf_token }}
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавить ученика</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body d-flex">
+                        <div class="w-50">
+                            <div class="form-group">
+                                <label for="add-student-surname">ФИО</label>
+                                <div class="composed-text-inputs">
+                                    {{ add_student_form.surname(class_='form-control', placeholder="Фамилия") }}
+                                    {{ add_student_form.name(class_='form-control', placeholder="Имя") }}
+                                    {{ add_student_form.patronymic(class_='form-control', placeholder="Отчество") }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ add_student_form.email.label(style='position: relative; top: 2px;') }}
+                                {{ add_student_form.email(class_='form-control', placeholder="Электронная почта") }}
                             </div>
                         </div>
-                        <div class="form-group">
-                            {{ add_student_form.email.label(style='position: relative; top: 2px;') }}
-                            {{ add_student_form.email(class_='form-control', placeholder="Электронная почта") }}
-                        </div>
-                    </div>
-                    <div class="w-50 ml-3">
-                        <div class="form-group">
-                            <label for="grade_number_select">Класс</label>
-                            <div class="composed-text-inputs">
-                                <select id="grade_number_select" name="grade_number" class="form-control" required>
-                                </select>
-                                <select name="grade_letter" class="form-control" id="grade_letter_select" required>
-                                </select>
+                        <div class="w-50 ml-3">
+                            <div class="form-group">
+                                <label for="grade_number_select">Класс</label>
+                                <div class="composed-text-inputs">
+                                    <select id="grade_number_select" name="grade_number" class="form-control" required>
+                                    </select>
+                                    <select name="grade_letter" class="form-control" id="grade_letter_select" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="parent_select">Законный представитель</label>
+                                <select id="parent_select" class="form-control" name="parent" required></select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="parent_select">Законный представитель</label>
-                            <select id="parent_select" class="form-control" name="parent" required></select>
-                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    {{ add_student_form.submit(class_='btn btn-primary', form='add-student-form') }}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                        {{ add_student_form.submit(class_='btn btn-primary', form='add-student-form') }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
-<!-- Диалог добавления родителя -->
-<div class="modal fade" tabindex="-1" role="dialog" id="add-parent">
-    <form method="post" id="add-parent-form">
-        {{ add_parent_form.csrf_token }}
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить законного представителя</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body d-flex">
-                    <div class="w-100">
-                        <div class="form-group">
-                            <label for="add-parent-surname">ФИО</label>
-                            <div class="composed-text-inputs">
-                                {{ add_parent_form.surname(class_='form-control', placeholder="Фамилия") }}
-                                {{ add_parent_form.name(class_='form-control', placeholder="Имя") }}
-                                {{ add_parent_form.patronymic(class_='form-control', placeholder="Отчество") }}
+    <!-- Диалог добавления родителя -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="add-parent">
+        <form method="post" id="add-parent-form">
+            {{ add_parent_form.csrf_token }}
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавить законного представителя</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body d-flex">
+                        <div class="w-100">
+                            <div class="form-group">
+                                <label for="add-parent-surname">ФИО</label>
+                                <div class="composed-text-inputs">
+                                    {{ add_parent_form.surname(class_='form-control', placeholder="Фамилия") }}
+                                    {{ add_parent_form.name(class_='form-control', placeholder="Имя") }}
+                                    {{ add_parent_form.patronymic(class_='form-control', placeholder="Отчество") }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ add_parent_form.email.label(style='position: relative; top: 2px;') }}
+                                {{ add_parent_form.email(class_='form-control', placeholder="Электронная почта") }}
                             </div>
                         </div>
-                        <div class="form-group">
-                            {{ add_parent_form.email.label(style='position: relative; top: 2px;') }}
-                            {{ add_parent_form.email(class_='form-control', placeholder="Электронная почта") }}
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                        {{ add_parent_form.submit(class_='btn btn-primary', form='add-parent-form') }}
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
-                    {{ add_parent_form.submit(class_='btn btn-primary', form='add-parent-form') }}
-                </div>
             </div>
+        </form>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
         </div>
-    </form>
-</div>
+    {% endif %}
 
-{% if error %}
-<div class="alert alert-danger" role="alert">
-    {{ error }}
-</div>
-{% endif %}
+    <div class="mx-3 my-3 d-flex justify-content-around">
+        <div class="col">
+            <h3 class="text-center">Учителя</h3>
+            <ul class="list-group">
+                <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-teacher">
+                    <li class="add text-center list-group-item text-muted add-button">+</li>
+                </a>
+                {% for teacher in teachers %}
+                    <li class="list-group-item">{{ teacher.surname }} {{ teacher.name }} {{ teacher.patronymic }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h3 class="text-center">Ученики</h3>
+            <ul class="list-group">
+                <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-student">
+                    <li class="add text-center list-group-item text-muted add-button">+</li>
+                </a>
+                {% for student in students %}
+                    <li class="list-group-item">{{ student.surname }} {{ student.name }} {{ student.patronymic }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h3 class="text-center">Законные представители</h3>
+            <ul class="list-group">
+                <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-parent">
+                    <li class="add text-center list-group-item text-muted add-button">+</li>
+                </a>
+                {% for parent in parents %}
+                    <li class="list-group-item">{{ parent.surname }} {{ parent.name }}
+                        {{ parent.patronymic }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-<div class="mx-3 my-3 d-flex justify-content-around">
-    <div class="col">
-        <h3 class="text-center">Учителя</h3>
-        <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-teacher">
-                <li class="add text-center list-group-item text-muted add-button">+</li>
-            </a>
-            {% for teacher in teachers %}
-            <li class="list-group-item">{{ teacher.surname }} {{ teacher.name
-                }} {{ teacher.patronymic }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="col">
-        <h3 class="text-center">Ученики</h3>
-        <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-student">
-                <li class="add text-center list-group-item text-muted add-button">+</li>
-            </a>
-            {% for student in students %}
-            <li class="list-group-item">{{ student.surname }} {{ student.name
-                }} {{ student.patronymic }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="col">
-        <h3 class="text-center">Законные представители</h3>
-        <ul class="list-group">
-            <a href="#" class="hidden-link" data-toggle="modal" data-target="#add-parent">
-                <li class="add text-center list-group-item text-muted add-button">+</li>
-            </a>
-            {% for parent in parents %}
-            <li class="list-group-item">{{ parent.surname }} {{ parent.name }}
-                {{ parent.patronymic }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
-<script src="{{ url_for('static', filename='js/teacher_add.js') }}"></script>
-<script src="{{ url_for('static', filename='js/student_add.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/teacher_add.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/student_add.js') }}"></script>
 
 {% endblock %}

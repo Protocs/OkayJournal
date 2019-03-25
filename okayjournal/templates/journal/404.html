@@ -1,11 +1,11 @@
 {% extends "journal/base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/404.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/404.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
-<p class="error_number">404</p>
-<p class="error_text">Страница не найдена</p>
+    {{ super() }}
+    <p class="error_number">404</p>
+    <p class="error_text">Страница не найдена</p>
 {% endblock %}

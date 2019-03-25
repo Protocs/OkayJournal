@@ -70,34 +70,14 @@ quarter_ranges = [
 ]
 
 
-# def get_quarter(day):
-#     """Возвращает четверть, в которой находится данный день."""
-#     ranges = [
-#         (
-#             date(date.today().year, d[0][1], d[0][0]),
-#             date(date.today().year, d[1][1], d[1][0]),
-#         )
-#         for d in quarter_ranges
-#     ]
-#     for n, r in enumerate(ranges, 1):
-#         if r[0] <= day <= r[1]:
-#             return n
-#     raise ValueError(f'{day} не находится ни в одной из четвертей')
-
-
-def generate_weeks():
-    weeks = []
-    start = date(*reversed(quarter_ranges[0][0]))
-    end = date(*reversed(quarter_ranges[-1][-1]))
-    count = 0
-    while start < end:
-        count += 1
-        weeks.append((count, start, start + timedelta(6)))
-        start += timedelta(7)
-    return weeks
-
-
-weeks = generate_weeks()
+weeks = []
+start = date(*reversed(quarter_ranges[0][0]))
+end = date(*reversed(quarter_ranges[-1][-1]))
+count = 0
+while start < end:
+    count += 1
+    weeks.append((count, start, start + timedelta(6)))
+    start += timedelta(7)
 
 
 def today_week():
@@ -212,12 +192,12 @@ def need_to_change_password(func):
     return decorated
 
 
-def user(user):
+def user(user_db_obj):
     """
     Возвращает кортеж с id и role пользователя.
     Функция создана для сокращения кода.
     """
-    return user.id, user.__class__.__name__
+    return user_db_obj.id, user_db_obj.__class__.__name__
 
 
 def user_equal(user1, user2):
@@ -275,6 +255,6 @@ def send_rejection_letter(email, name):
     return True
 
 
-def get_fullname(user):
+def get_fullname(user_db_obj):
     """Возвращает ФИО пользователя."""
-    return " ".join([user.surname, user.name, user.patronymic])
+    return " ".join([user_db_obj.surname, user_db_obj.name, user_db_obj.patronymic])

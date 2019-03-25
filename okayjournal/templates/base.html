@@ -19,7 +19,7 @@
     {% block head %}{% endblock %}
     <title>
         {% if title is defined %}
-            {{ title }}
+            {{ title }} - OkayJournal
         {% else %}
             OkayJournal
         {% endif %}
@@ -28,7 +28,7 @@
         {% block style %}{% endblock %}
     </style>
 </head>
-<body {% block body_params %}{% endblock %}>
+<body>
     {% block body %}{% endblock %}
 </body>
 </html>
