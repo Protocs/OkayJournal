@@ -336,6 +336,15 @@ def get_student_marks(student_id, quarter):
                 )
     for mark in marks:
         if mark.mark:
+            if mark.subject.subject.id not in response:
+                response.update(
+                    {
+                        mark.subject.subject.id: {
+                            "name": mark.subject.subject.name,
+                            "marks": [],
+                        }
+                    }
+                )
             response[mark.subject.subject.id]["marks"].append(mark.mark)
     return response
 
