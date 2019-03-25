@@ -41,8 +41,8 @@ function openDialog(element) {
     recipientId = $(element).attr('recipient_id');
 
     let recipientRoleText = ROLES[recipientRole];
-    $('dialog-header').html($(element).attr('recipient_name')
-        + ' <span style="color: #bfbfbf">' + recipientRoleText + '</span>');
+    $('dialog-header').html('<div>' + $(element).attr('recipient_name')
+        + ' <span style="color: #bfbfbf">' + recipientRoleText + '</span></div>');
 
     // Пометим сообщения как прочитанные
     $.ajax("messages/" + recipient, {
