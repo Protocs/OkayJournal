@@ -167,6 +167,8 @@ message {
     flex-shrink: 0;
     max-width: 65%;
     word-break: break-all;
+    display: flex;
+    align-items: flex-end;
 }
 
 .time-mark {
@@ -174,8 +176,6 @@ message {
     margin-right: 0.25rem;
     font-size: 70%;
     color: #a2a2a2;
-    position: relative;
-    top: 0.25em;
     word-break: keep-all;
 }
 

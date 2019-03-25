@@ -62,7 +62,6 @@ function openDialog(element) {
 
     updateMessages();
     $('.dialog').show();
-    messages.scrollTo(messages.children().last());
 }
 
 function addMessage(message) {
@@ -115,11 +114,22 @@ function updateMessages() {
         return;
 
     $.ajax('messages/' + recipient).done(function (messages) {
+        let messagesChanged = false;
         for (let i in messages) {
             if (!$('messages').children().toArray().some(
                 (element, _, let__) => $(element).attr('message_id') == messages[i].id)
-            ) addMessage(messages[i]);
+            ) {
+                addMessage(messages[i]);
+                messagesChanged = true;
+            }
         }
+
+        let messagesElement = $('messages');
+//         messagesElement.scrollTo(messagesElement.children().last());
+        if (messagesChanged)
+            messagesElement.animate({
+                scrollTop: 50000 * messagesElement.children().length
+            }, 500);
     });
 }
 
