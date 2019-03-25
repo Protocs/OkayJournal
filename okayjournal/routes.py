@@ -187,7 +187,7 @@ def diary(week):
         parent = find_user_by_role(session["user"]["id"], "Parent")
         if parent.children:
             return redirect("diary/" + str(week) + "/" + str(parent.children[0].id))
-        return journal_render("journal/diary.html", parent=parent)
+        return journal_render("journal/diary.html", parent=parent, current_week=week)
 
     schedule, subject_descriptions, marks = get_student_week(
         week,
@@ -202,6 +202,7 @@ def diary(week):
         subject_descriptions=subject_descriptions,
         marks=marks,
         weeks=weeks,
+        current_week=week
     )
 
 
@@ -224,7 +225,8 @@ def children_diary(week, student_id):
         student=student,
         weeks=weeks,
         subject_descriptions=subject_descriptions,
-        marks=marks
+        marks=marks,
+        current_week=week,
     )
 
 

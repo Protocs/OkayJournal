@@ -16,7 +16,7 @@
         </button>
         <div class="dropdown-menu">
             {% for child in parent.children %}
-            <a class="dropdown-item" href="/diary/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
+            <a class="dropdown-item" href="/diary/{{ current_week }}/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
             {% endfor %}
         </div>
     </div>
@@ -29,7 +29,7 @@
 {% if schedule %}
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="weeksChoose" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Неделя
+        {{ weeks[current_week - 1][1] }} - {{ weeks[current_week - 1][2] }}
         </button>
   <ul class="dropdown-menu scrollable" aria-labelledby="weeksChoose">
       {% for week in weeks %}
