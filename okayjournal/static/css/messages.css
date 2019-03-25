@@ -48,7 +48,9 @@ dialogs-drawer {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: box-shadow 0.2s ease-out 0s
+    transition: box-shadow 0.2s ease-out 0s;
+    cursor: pointer;
+    user-select: none;
 }
 
 .new-message-button:hover {
@@ -89,7 +91,7 @@ dialog-option {
 }
 
 dialog-option:hover, dialog-option[selected] {
-    box-shadow: 0 0 17px 0px #0000001f;
+    box-shadow: 0 0 17px 0 #0000001f;
 }
 
 dialog-option[selected] {
@@ -134,7 +136,7 @@ okayjournal-dialog content {
         grid-gap: 0.2em;
         height: calc(100vh - 80px);
     }
-    
+
     dialog-option h5 {
         font-size: 100%;
         margin: 0;
@@ -197,7 +199,7 @@ message {
 }
 
 .message-input:focus-within {
-    box-shadow: 0px 0px 7px #00000054;
+    box-shadow: 0 0 7px #00000054;
 }
 
 .message-input input {
@@ -209,11 +211,9 @@ message {
     background-color: #fff;
     background-clip: padding-box;
     transition: box-shadow .15s ease-in-out;
-    padding: 0.5rem;
-    position: relative;
-    border-radius: .25rem 0 0 .25rem;
+    border-radius: 0.5rem 0 0 0.5rem;
     border: 0;
-    padding-left: 1em;
+    padding: 0.5rem 0.5rem 0.5rem 1em;
 }
 
 .message-input input:focus {
@@ -222,8 +222,7 @@ message {
 }
 
 .message-input button {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0 0.5rem 0.5rem 0;
     border: 0;
     position: relative;
     padding: 0;

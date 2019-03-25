@@ -154,12 +154,17 @@ function sendMessage() {
     updateMessages();
 }
 
+let previousDialogs;
+
 function updateDialogs() {
     $.ajax("dialogs").done(function (dialogs) {
+        dialogs = Object.values(dialogs);
+        dialogs.reverse();
+        if (previousDialogs !== undefined && JSON.stringify(previousDialogs) === JSON.stringify(dialogs))
+           return;
+        
+        $('dialog-option').detach();
         for (let d in dialogs) {
-            if ($('dialogs-drawer').children().toArray().some(
-                (element, _, __) => $(element).attr('recipient') == dialogs[d]["partner"]["login"])
-            ) continue;
             let dialog = $("<dialog-option></dialog-option>", {
                 recipient: dialogs[d]["partner"]["login"],
                 recipient_role: dialogs[d]["partner"]["role"],
@@ -187,6 +192,8 @@ function updateDialogs() {
             last_message.appendTo(dialog);
             dialog.appendTo("dialogs-drawer");
         }
+
+        previousDialogs = dialogs;
     });
 }
 
