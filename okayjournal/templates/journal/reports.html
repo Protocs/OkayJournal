@@ -1,96 +1,99 @@
 {% extends "journal/base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mark-table.css') }}">
+{% endblock %}
+
 {% block body %}
 
     {{ super() }}
 
     <div class="m-3">
+        <form method="post">
+            {% if session['role'] == "Parent" %}
 
-    <form method="post">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="childSelect">Ребенок</label>
+                    </div>
+                    <select class="custom-select" id="childSelect" name="childSelect">
 
-        {% if session['role'] == "Parent" %}
+                        {% if selected %}
+                            <option selected value="{{ selected['child'].id }}">
+                                {{ selected['child'].surname }} {{ selected['child'].name }}</option>
+                            {% for child in children %}
+                                {% if child.id != selected['child'].id %}
+                                    <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for child in children %}
+                                <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            {% endif %}
 
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="childSelect">Ребенок</label>
+                    <label class="input-group-text" for="quarterSelect">Четверть</label>
                 </div>
-                <select class="custom-select" id="childSelect" name="childSelect">
-
-                {% if selected %}
-                    <option selected value="{{ selected['child'].id }}">
-                        {{ selected['child'].surname }} {{ selected['child'].name }}</option>
-                    {% for child in children %}
-                        {% if child.id != selected['child'].id %}
-                            <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% for child in children %}
-                        <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
-                    {% endfor %}
-                {% endif %}
-                </select>
-            </div>
-        {% endif %}
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="quarterSelect">Четверть</label>
-            </div>
-            <select class="custom-select" id="quarterSelect" name="quarterSelect">
-                {% if selected %}
-                    <option value="{{ selected['quarter'] }}">{{ selected['quarter'] }}</option>
-                    {% for q in range(1, 5) %}
-                        {% if q != selected['quarter'] %}
+                <select class="custom-select" id="quarterSelect" name="quarterSelect">
+                    {% if selected %}
+                        <option value="{{ selected['quarter'] }}">{{ selected['quarter'] }}</option>
+                        {% for q in range(1, 5) %}
+                            {% if q != selected['quarter'] %}
+                                <option value="{{ q }}">{{ q }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% for q in range(1, 5) %}
                             <option value="{{ q }}">{{ q }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Показать</button>
+                </div>
+            </div>
+        </form>
+
+        {% if selected %}
+            <table class="table table-sm table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Предмет</th>
+                    <th scope="col">"5"</th>
+                    <th scope="col">"4"</th>
+                    <th scope="col">"3"</th>
+                    <th scope="col">"2"</th>
+                    <th scope="col">Ср. балл</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for subject_id in report %}
+                    <tr>
+                        <th scope="row">{{ report[subject_id]["name"] }}</th>
+                        {% for mark in range(5, 1, -1) %}
+                            {% if report[subject_id]["marks"].count(mark) != 0 %}
+                                <td>{{ report[subject_id]["marks"].count(mark) }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endfor %}
+                        {% if len(report[subject_id]["marks"]) != 0 %}
+                            <td>{{ sum(report[subject_id]["marks"]) / len(report[subject_id]["marks"]) }}</td>
+                        {% else %}
+                            <td></td>
                         {% endif %}
-                    {% endfor %}
-                {% else %}
-                {% for q in range(1, 5) %}
-                    <option value="{{ q }}">{{ q }}</option>
+                    </tr>
                 {% endfor %}
-                {% endif %}
-            </select>
-        </div>
+                </tbody>
+            </table>
 
-        <button type="submit" class="btn btn-primary">Показать</button>
-
-    </form>
-
-    {% if selected %}
-    <table class="table table-sm table-dark">
-        <thead>
-        <tr>
-            <th scope="col">Предмет</th>
-            <th scope="col">"5"</th>
-            <th scope="col">"4"</th>
-            <th scope="col">"3"</th>
-            <th scope="col">"2"</th>
-            <th scope="col">Ср. балл</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for subject_id in report %}
-        <tr>
-            <th scope="row">{{ report[subject_id]["name"] }}</th>
-            {% for mark in range(5, 1, -1) %}
-                {% if report[subject_id]["marks"].count(mark) != 0 %}
-                    <td>{{ report[subject_id]["marks"].count(mark) }}</td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-            {% endfor %}
-            {% if len(report[subject_id]["marks"]) != 0 %}
-                <td>{{ sum(report[subject_id]["marks"]) / len(report[subject_id]["marks"]) }}</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    {% endif %}
+        {% endif %}
 
     </div>
 

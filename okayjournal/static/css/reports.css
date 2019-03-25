@@ -1,0 +1,19 @@
+.input-group {
+    width: 25%;
+}
+
+tbody:last-child th {
+    border-bottom: 0;
+}
+
+th {
+    border-right: 1px solid #32383e;
+}
+
+td {
+    text-align: center;
+}
+
+th:last-child {
+    border-right: 0;
+}
