@@ -1,93 +1,106 @@
 {% extends 'journal/base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}">
 {% endblock %}
 
 {% block body %}
-{{ super() }}
+    {{ super() }}
 
-{% if parent %}
+    {% if parent %}
 
-<div class="m-3">
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-            Дети
-        </button>
-        <div class="dropdown-menu">
-            {% for child in parent.children %}
-            <a class="dropdown-item" href="/diary/{{ current_week }}/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
+        <div class="m-3">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown">
+                    Дети
+                </button>
+                <div class="dropdown-menu">
+                    {% for child in parent.children %}
+                        <a class="dropdown-item"
+                           href="/diary/{{ current_week }}/{{ child.id }}">{{ child.surname }} {{ child.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if student %}
+                <p class="lead">{{ student.surname }} {{ student.name }}</p>
+            {% endif %}
+        </div>
+
+    {% endif %}
+
+    {% if schedule %}
+    <div class="mt-3 ml-5 d-flex align-items-middle">
+        <h4 class="mr-2 mb-0 mt-1 vertical-align-middle">Неделя</h4>
+        <div class="dropdown">
+            
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="weeksChoose" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                {{ weeks[current_week - 1][1] }} - {{ weeks[current_week - 1][2] }}
+            </button>
+            <ul class="dropdown-menu scrollable" aria-labelledby="weeksChoose">
+                {% for week in weeks %}
+                    {% if parent %}
+                        <li><a class="dropdown-item" href="/diary/{{ week[0] }}/{{ student.id }}">{{ week[1] }}
+                            - {{ week[2] }}</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="/diary/{{ week[0] }}">{{ week[1] }} - {{ week[2] }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        </div>
+
+        <div class="mx-5 mt-3">
+            {% for i in range(2) %}
+                <div class="row justify-content-around flex-nowrap align-items-stretch">
+                    {% for j in range(1, 4) %}
+                        <div class="day d-flex flex-column p-3">
+                            <h3>{{ next(week_days) }}</h3>
+                            <table class="table table-hover table-dark">
+                                {% for k in range(6) %}
+                                    <tr>
+                                        <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
+                                        {% if not (schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1)) %}
+
+                                            <td class="align-middle"><b>-</b></td>
+                                            <td class="homework align-middle text-left p-0">
+                                                <div class="text-truncate"></div>
+                                            </td>
+                                            <td class="mark_ align-middle pr-3 pl-0 py-0">
+                                                <div class="text-nowrap"></div>
+                                            </td>
+
+                                        {% else %}
+
+                                            {% set subject_id = schedule[3 * i + j][k + 1]["subject"]["id"] %}
+
+                                            <td class="align-middle">
+                                                <b>{{ schedule[3 * i + j][k + 1]["subject"]["name"] }}</b>
+                                            </td>
+                                            <td class="homework align-middle text-left p-0">
+                                                <div class="text-truncate">
+                                                    {% if subject_descriptions[3 * i + j].get(subject_id) %}
+                                                        {{ subject_descriptions[3 * i + j][subject_id].homework }}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="mark_ align-middle pr-3 pl-0 py-0">
+                                                <div class="text-nowrap">
+                                                    {% if marks[3 * i + j].get(subject_id) %}
+                                                        {{ marks[3 * i + j][subject_id] }}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
-    </div>
-    {% if student %}
-    <p class="lead">{{ student.surname }} {{ student.name }}</p>
     {% endif %}
-</div>
-{% endif %}
-
-{% if schedule %}
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="weeksChoose" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{ weeks[current_week - 1][1] }} - {{ weeks[current_week - 1][2] }}
-        </button>
-  <ul class="dropdown-menu scrollable" aria-labelledby="weeksChoose">
-      {% for week in weeks %}
-      {% if parent %}
-          <li><a class="dropdown-item" href="/diary/{{ week[0] }}/{{ student.id }}">{{ week[1] }} - {{ week[2] }}</a></li>
-      {% else %}
-          <li><a class="dropdown-item" href="/diary/{{ week[0] }}">{{ week[1] }} - {{ week[2] }}</a></li>
-      {% endif %}
-      {% endfor %}
-  </ul>
-    </div>
-
-<div class="mx-5 mt-3">
-    {% for i in range(2) %}
-    <div class="row justify-content-around flex-nowrap align-items-stretch">
-        {% for j in range(1, 4) %}
-        <div class="day d-flex flex-column p-3">
-            <h3>{{ next(week_days) }}</h3>
-            <table class="table table-hover table-dark">
-                {% for k in range(6) %}
-                <tr>
-                    <td class="lesson-number text-muted border-right align-middle">{{ k + 1 }}</td>
-                    {% if not (schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1)) %}
-
-                    <td class="align-middle"><b>-</b></td>
-                    <td class="homework align-middle text-left p-0"><div class="text-truncate"></div></td>
-                    <td class="mark_ align-middle pr-3 pl-0 py-0"><div class="text-nowrap"></div></td>
-
-                    {% else %}
-
-                    {% set subject_id = schedule[3 * i + j][k + 1]["subject"]["id"] %}
-
-                    <td class="align-middle">
-                        <b>{{ schedule[3 * i + j][k + 1]["subject"]["name"] }}</b>
-                    </td>
-                    <td class="homework align-middle text-left p-0">
-                        <div class="text-truncate">
-                            {% if subject_descriptions[3 * i + j].get(subject_id) %}
-                            {{ subject_descriptions[3 * i + j][subject_id].homework }}
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td class="mark_ align-middle pr-3 pl-0 py-0">
-                        <div class="text-nowrap">
-                            {% if marks[3 * i + j].get(subject_id) %}
-                            {{ marks[3 * i + j][subject_id] }}
-                            {% endif %}
-                        </div>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endfor %}
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
 
 {% endblock %}
