@@ -314,6 +314,32 @@ def email_exists(email):
     return False
 
 
+def get_student_marks(student_id, quarter):
+    """Возвращает оценки ученика за четверть ``quarter``"""
+    from okayjournal.utils import get_quarter_date_range, date
+
+    student = find_user_by_role(student_id, "Student")
+    marks = filter(lambda m: date(
+        m.subject.date.year,
+        m.subject.date.month,
+        m.subject.date.day) in get_quarter_date_range(quarter),
+                   student.marks)
+    schedule = get_grade_schedule(student.grade_id, student.school_id)
+    response = {}
+    for day in schedule:
+        for subject in schedule[day]:
+            if schedule[day][subject]["subject"]["id"] not in response:
+                response.update(
+                    {schedule[day][subject]["subject"]["id"]: {
+                        "name": schedule[day][subject]["subject"]["name"],
+                        "marks": []
+                    }})
+    for mark in marks:
+        if mark.mark:
+            response[mark.subject.subject.id]["marks"].append(mark.mark)
+    return response
+
+
 db.create_all()
 
 # Добавим администратора

@@ -230,6 +230,38 @@ def children_diary(week, student_id):
     )
 
 
+@app.route("/reports", methods=["GET", "POST"])
+@restricted_access(["Parent", "Student"])
+@need_to_change_password
+def reports():
+    if session["role"] == "Parent":
+        children = find_user_by_role(session["user"]["id"], "Parent").children
+        if request.method == "POST":
+            child_id = int(request.form["childSelect"])
+            quarter = int(request.form["quarterSelect"])
+            report = get_student_marks(child_id, quarter)
+            return journal_render("journal/reports.html",
+                                  selected={
+                                      "child": find_user_by_role(child_id, "Student"),
+                                      "quarter": quarter
+                                  },
+                                  report=report,
+                                  children=children,
+                                  len=len,
+                                  sum=sum)
+        return journal_render("journal/reports.html",
+                              children=children)
+    if request.method == "POST":
+        quarter = int(request.form["quarterSelect"])
+        report = get_student_marks(session["user"]["id"], quarter)
+        return journal_render("journal/reports.html",
+                              selected={
+                                  "quarter": quarter
+                              },
+                              report=report, len=len, sum=sum)
+    return journal_render("journal/reports.html")
+
+
 @app.route("/messages", methods=["POST", "GET"])
 @login_required
 @need_to_change_password

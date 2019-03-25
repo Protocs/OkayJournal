@@ -1,0 +1,97 @@
+{% extends "journal/base.html" %}
+
+{% block body %}
+
+    {{ super() }}
+
+    <div class="m-3">
+
+    <form method="post">
+
+        {% if session['role'] == "Parent" %}
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="childSelect">Ребенок</label>
+                </div>
+                <select class="custom-select" id="childSelect" name="childSelect">
+
+                {% if selected %}
+                    <option selected value="{{ selected['child'].id }}">
+                        {{ selected['child'].surname }} {{ selected['child'].name }}</option>
+                    {% for child in children %}
+                        {% if child.id != selected['child'].id %}
+                            <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for child in children %}
+                        <option value="{{ child.id }}">{{ child.surname }} {{ child.name }}</option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+            </div>
+        {% endif %}
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="quarterSelect">Четверть</label>
+            </div>
+            <select class="custom-select" id="quarterSelect" name="quarterSelect">
+                {% if selected %}
+                    <option value="{{ selected['quarter'] }}">{{ selected['quarter'] }}</option>
+                    {% for q in range(1, 5) %}
+                        {% if q != selected['quarter'] %}
+                            <option value="{{ q }}">{{ q }}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                {% for q in range(1, 5) %}
+                    <option value="{{ q }}">{{ q }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Показать</button>
+
+    </form>
+
+    {% if selected %}
+    <table class="table table-sm table-dark">
+        <thead>
+        <tr>
+            <th scope="col">Предмет</th>
+            <th scope="col">"5"</th>
+            <th scope="col">"4"</th>
+            <th scope="col">"3"</th>
+            <th scope="col">"2"</th>
+            <th scope="col">Ср. балл</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject_id in report %}
+        <tr>
+            <th scope="row">{{ report[subject_id]["name"] }}</th>
+            {% for mark in range(5, 1, -1) %}
+                {% if report[subject_id]["marks"].count(mark) != 0 %}
+                    <td>{{ report[subject_id]["marks"].count(mark) }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            {% endfor %}
+            {% if len(report[subject_id]["marks"]) != 0 %}
+                <td>{{ sum(report[subject_id]["marks"]) / len(report[subject_id]["marks"]) }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+
+    </div>
+
+{% endblock %}
