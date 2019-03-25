@@ -80,7 +80,11 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
-                            <td class="mark_">4.5</td>
+                            {% if student[2] %}
+                            <td class="mark_">{{ student[2] }}</td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </table>

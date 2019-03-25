@@ -551,7 +551,6 @@ def journal():
                 school_id=session["user"]["school_id"],
             )
         ]
-        print(today_week())
         date_range = list(filter(
             lambda d: (d.weekday() + 1) in weekdays,
             list(get_quarter_date_range(quarter)),
@@ -568,9 +567,16 @@ def journal():
             if subject_desc is not None:
                 if subject_desc.first() is not None:
                     marks.update({date_obj: get_subject_marks(subject_desc.first().id)})
+
         students = []
         for student in grade.students:
-            students.append((student.id, student.surname + " " + student.name))
+            student_marks = get_student_marks(student.id, quarter).get(subject_id)
+            if student_marks["marks"]:
+                average_mark = sum(student_marks["marks"]) / len(student_marks["marks"])
+            else:
+                average_mark = None
+            students.append((student.id, student.surname + " " + student.name,
+                             average_mark))
 
         return journal_render(
             "journal/journal.html",
