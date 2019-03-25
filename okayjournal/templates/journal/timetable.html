@@ -45,20 +45,22 @@
                                     </tr>
                                     </thead>
                                     {% for k in range(6) %}
+                                        {% set day = 3 * i + j %}
+                                        {% set subj = k + 1 %}
                                         <tr>
                                             <td class="lesson-number text-muted border-right align-middle">
-                                                {{ k + 1 }}
+                                                {{ subj }}
                                             </td>
                                             <td class="align-middle">
-                                                <select class="subject" name="subject{{ 3 * i + j }}{{ k + 1 }}"
-                                                        id="subject{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}"
-                                                        subject="{{ k + 1 }}">
-                                                    {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
-                                                        <option selected value="{{ schedule[3 * i + j][k + 1]['subject']['id'] }}">
-                                                            {{ schedule[3 * i + j][k + 1]["subject"]["name"] }}
+                                                <select class="subject" name="subject{{ day }}{{ subj }}"
+                                                        id="subject{{ day }}{{ subj }}" day="{{ day }}"
+                                                        subject="{{ subj }}">
+                                                    {% if schedule.get(day) and schedule.get(day).get(subj) %}
+                                                        <option selected value="{{ schedule[day][subj]['subject']['id'] }}">
+                                                            {{ schedule[day][subj]["subject"]["name"] }}
                                                         </option>
                                                         {% for id, subject in teachers_subjects.items() %}
-                                                            {% if id != schedule[3 * i + j][k + 1]['subject']['id'] %}
+                                                            {% if id != schedule[day][subj]['subject']['id'] %}
                                                                 <option value="{{ id }}">
                                                                     {{ subject["name"] }}
                                                                 </option>
@@ -80,13 +82,13 @@
                                                 </select>
                                             </td>
                                             <td class="align-middle">
-                                                <select class="teacher" name="teacher{{ 3 * i + j }}{{ k + 1 }}"
-                                                        id="teacher{{ 3 * i + j }}{{ k + 1 }}" day="{{ 3 * i + j }}"
-                                                        subject="{{ k + 1 }}">
-                                                    {% if schedule.get(3 * i + j) and schedule.get(3 * i + j).get(k + 1) %}
+                                                <select class="teacher" name="teacher{{ day }}{{ subj }}"
+                                                        id="teacher{{ day }}{{ subj }}" day="{{ day }}"
+                                                        subject="{{ subj }}">
+                                                    {% if schedule.get(day) and schedule.get(day).get(subj) %}
                                                         <option selected
-                                                                value="{{ schedule[3 * i + j][k + 1]['teacher']['id'] }}">
-                                                            {{ schedule[3 * i + j][k + 1]["teacher"]["name"] }}
+                                                                value="{{ schedule[day][subj]['teacher']['id'] }}">
+                                                            {{ schedule[day][subj]["teacher"]["name"] }}
                                                         </option>
                                                     {% endif %}
                                                 </select>
