@@ -84,7 +84,7 @@
                             {% endif %}
                         {% endfor %}
                         {% if len(report[subject_id]["marks"]) != 0 %}
-                            <td>{{ sum(report[subject_id]["marks"]) / len(report[subject_id]["marks"]) }}</td>
+                            <td>{{ round(sum(report[subject_id]["marks"]) / len(report[subject_id]["marks"]), 2) }}</td>
                         {% else %}
                             <td></td>
                         {% endif %}

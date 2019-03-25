@@ -248,6 +248,7 @@ def reports():
                 children=children,
                 len=len,
                 sum=sum,
+                round=round,
             )
         return journal_render("journal/reports.html", children=children)
     if request.method == "POST":
@@ -259,6 +260,7 @@ def reports():
             report=report,
             len=len,
             sum=sum,
+            round=round,
         )
     return journal_render("journal/reports.html")
 
@@ -600,7 +602,8 @@ def journal():
             else:
                 average_mark = None
             students.append(
-                (student.id, student.surname + " " + student.name, average_mark)
+                (student.id, student.surname + " " + student.name,
+                 round(average_mark, 2))
             )
 
         return journal_render(
