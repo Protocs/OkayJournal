@@ -194,6 +194,8 @@ function updateDialogs() {
         }
 
         previousDialogs = dialogs;
+
+        $(`dialog-option[recipient_id=${recipientId}][recipient_role=${recipientRole}]`).attr('selected', true);
     });
 }
 
