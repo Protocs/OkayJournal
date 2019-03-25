@@ -1,5 +1,5 @@
 from itertools import cycle
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from flask import session, redirect, abort, jsonify
 from .db import USER_CLASSES, Student, Parent, SchoolAdmin, Teacher
@@ -63,10 +63,10 @@ REJECTION_LETTER_TEXT = """Здравствуйте, {}.
 week_days = cycle(["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"])
 
 quarter_ranges = [
-    ((1, 9, 2018), (26, 10, 2018)),
+    ((3, 9, 2018), (26, 10, 2018)),
     ((6, 11, 2018), (28, 12, 2018)),
     ((10, 1, 2019), (22, 3, 2019)),
-    ((1, 4, 2019), (24, 5, 2019)),
+    ((1, 4, 2019), (26, 5, 2019)),
 ]
 
 
@@ -85,9 +85,39 @@ quarter_ranges = [
 #     raise ValueError(f'{day} не находится ни в одной из четвертей')
 
 
+def generate_weeks():
+    weeks = []
+    start = date(*reversed(quarter_ranges[0][0]))
+    end = date(*reversed(quarter_ranges[-1][-1]))
+    count = 0
+    while start < end:
+        count += 1
+        weeks.append((count, start, start + timedelta(6)))
+        start += timedelta(7)
+    return weeks
+
+
+weeks = generate_weeks()
+
+
+def today_week():
+    now = datetime.now()
+    today = date(now.year, now.month, now.day)
+    for week in weeks:
+        if today in DateRange(week[1], week[2]):
+            return week[0]
+
+
+def get_week(week_number):
+    for week in weeks:
+        if week[0] == week_number:
+            return week
+
+
 class DateRange:
     def __init__(self, from_: date, to: date):
-        self.current = from_
+        self.from_ = from_
+        self.current = self.from_ - timedelta(1)
         self.to = to
 
     def __iter__(self):
@@ -98,6 +128,9 @@ class DateRange:
         if self.current > self.to:
             raise StopIteration
         return self.current
+
+    def __contains__(self, item):
+        return self.from_ <= item <= self.to
 
 
 def get_quarter_date_range(quarter):

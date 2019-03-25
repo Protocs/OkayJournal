@@ -275,6 +275,34 @@ def get_subject_marks(subject_id):
         })
     return marks
 
+def get_student_week(week, student_id, school_id):
+    """Возвращает всю информацию о учебной неделе ученика: оценки, предметы..."""
+    from okayjournal.utils import get_week, DateRange
+
+    student = find_user_by_role(student_id, "Student")
+    schedule = get_grade_schedule(
+        student.grade_id, school_id
+    )
+    subject_descriptions = {}
+    marks = {}
+    week_range = get_week(week)
+    day_number = 1
+    for day in DateRange(week_range[1], week_range[2]):
+        # TODO
+        # По непонятным причинам база не видит объекты с датой ``day``, хотя
+        # год, месяц и день этого объекта равны преобразованной дате datetime.strptime()
+        subject_descriptions.update({day_number: {}})
+        marks.update({day_number: {}})
+        for subject in SubjectDescription.query.filter_by(
+                date=datetime.strptime(datetime.strftime(day, "%d-%m-%Y"), "%d-%m-%Y"),
+                grade_id=student.grade_id).all():
+            subject_descriptions[day_number].update({subject.subject_id: subject})
+            mark = Marks.query.filter_by(subject_id=subject.id).first()
+            if mark:
+                marks[day_number].update({subject.subject_id: mark.mark})
+        day_number += 1
+    return schedule, subject_descriptions, marks
+
 
 def email_exists(email):
     """Проверяет, существует ли пользователь с такой электронной почтой"""

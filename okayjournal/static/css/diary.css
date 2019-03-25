@@ -36,3 +36,9 @@
 tr:first-child * {
     border-top: 0;
 }
+
+.dropdown-menu.scrollable {
+    height: auto;
+    max-height: 30em;
+    overflow-x: hidden;
+}

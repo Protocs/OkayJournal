@@ -21,6 +21,7 @@ def journal_render(*args, **kwargs):
         unread=get_count_unread_dialogs(
             user_id=session["user"]["id"], user_role=session["role"]
         ),
+        today_week=today_week(),
     )(*args, **kwargs)
 
 
@@ -178,30 +179,42 @@ def admin():
 # journal routes
 
 
-@app.route("/diary")
+@app.route("/diary/<int:week>")
 @restricted_access(["Student", "Parent"])
 @need_to_change_password
-def diary():
+def diary(week):
     if session["role"] == "Parent":
         parent = find_user_by_role(session["user"]["id"], "Parent")
         if parent.children:
-            return redirect("diary/" + str(parent.children[0].id))
+            return redirect("diary/" + str(week) + "/" + str(parent.children[0].id))
         return journal_render("journal/diary.html", parent=parent)
-    schedule = get_grade_schedule(
-        session["user"]["grade_id"], session["user"]["school_id"]
-    )
+
+    schedule, subject_descriptions, marks = get_student_week(
+        week,
+        session["user"]["id"],
+        session["user"]["school_id"])
+
     return journal_render(
-        "journal/diary.html", week_days=week_days, next=next, schedule=schedule
+        "journal/diary.html",
+        week_days=week_days,
+        next=next,
+        schedule=schedule,
+        subject_descriptions=subject_descriptions,
+        marks=marks,
+        weeks=weeks,
     )
 
 
-@app.route("/diary/<int:student_id>")
+@app.route("/diary/<int:week>/<int:student_id>")
 @restricted_access(["Parent"])
 @need_to_change_password
-def children_diary(student_id):
+def children_diary(week, student_id):
     student = find_user_by_role(student_id, "Student")
     parent = find_user_by_role(session["user"]["id"], "Parent")
-    schedule = get_grade_schedule(student.grade_id, session["user"]["school_id"])
+    schedule, subject_descriptions, marks = get_student_week(
+        week,
+        student_id,
+        session["user"]["school_id"])
     return journal_render(
         "journal/diary.html",
         week_days=week_days,
@@ -209,6 +222,9 @@ def children_diary(student_id):
         schedule=schedule,
         parent=parent,
         student=student,
+        weeks=weeks,
+        subject_descriptions=subject_descriptions,
+        marks=marks
     )
 
 
@@ -501,7 +517,7 @@ def journal():
                 school_id=session["user"]["school_id"],
             )
         ]
-
+        print(today_week())
         date_range = list(filter(
             lambda d: (d.weekday() + 1) in weekdays,
             list(get_quarter_date_range(quarter)),
@@ -646,9 +662,9 @@ def announcements_route():
         db.session.commit()
     announcements = {}
     for announcement in (
-        Announcement.query.filter_by(school_id=session["user"]["school_id"])
-        .order_by(Announcement.date)
-        .all()
+            Announcement.query.filter_by(school_id=session["user"]["school_id"])
+                    .order_by(Announcement.date)
+                    .all()
     ):
         author = find_user_by_role(announcement.author_id, announcement.author_role)
         announcements.update(
@@ -702,7 +718,7 @@ def lesson_times():
 
     schedule = {}
     for subject in CallSchedule.query.filter_by(
-        school_id=session["user"]["school_id"]
+            school_id=session["user"]["school_id"]
     ).all():
         schedule[subject.subject_number] = {"start": subject.start, "end": subject.end}
 
