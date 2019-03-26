@@ -598,12 +598,12 @@ def journal():
         for student in grade.students:
             student_marks = get_student_marks(student.id, quarter).get(subject_id)
             if student_marks["marks"]:
-                average_mark = sum(student_marks["marks"]) / len(student_marks["marks"])
+                average_mark = round(sum(student_marks["marks"]) /
+                                     len(student_marks["marks"]), 2)
             else:
                 average_mark = None
             students.append(
-                (student.id, student.surname + " " + student.name,
-                 round(average_mark, 2))
+                (student.id, student.surname + " " + student.name, average_mark)
             )
 
         return journal_render(
